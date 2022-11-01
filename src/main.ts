@@ -1,3 +1,4 @@
+import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -17,13 +18,16 @@ async function bootstrap() {
     app.useLogger(appConfig.log.enabled);
   }
 
+  app.useGlobalPipes(
+    new ValidationPipe({ forbidUnknownValues: true, whitelist: true }),
+  );
+
   const swaggerConfig = configService.getOrThrow<ISwaggerConfig>(
     ConfigNamespace.SWAGGER,
   );
-
   const swaggerEnabled = swaggerConfig.enabled;
+  const swaggerPath = swaggerConfig.path;
   if (swaggerEnabled) {
-    const swaggerPath = swaggerConfig.path;
     const swaggerTitle = swaggerConfig.title;
     const config = new DocumentBuilder()
       .setTitle(swaggerTitle)
@@ -37,9 +41,12 @@ async function bootstrap() {
   const httpConfig = configService.getOrThrow<IHttpConfig>(
     ConfigNamespace.HTTP,
   );
-
   app.enableCors({ origin: httpConfig.corsOrigins });
   await app.listen(httpConfig.port, httpConfig.host);
-  console.log('URL: http://localhost:' + httpConfig.port);
+
+  console.log(`URL: http://localhost:${httpConfig.port}`);
+  if (swaggerEnabled) {
+    console.log(`Swagger: http://localhost:${httpConfig.port}/${swaggerPath}`);
+  }
 }
 bootstrap();

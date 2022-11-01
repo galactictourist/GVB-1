@@ -1,0 +1,45 @@
+import { Inject, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { DateTime } from 'luxon';
+import * as randomstring from 'randomstring';
+import { DataSource, MoreThan, Repository } from 'typeorm';
+import { IAuthConfig } from '~/config/auth.config';
+import { ConfigNamespace } from '~/types/config';
+import { Nonce } from '../entity/nonce.entity';
+
+@Injectable()
+export class NonceRepository extends Repository<Nonce> {
+  @Inject(ConfigService)
+  private readonly configService: ConfigService;
+
+  constructor(private dataSource: DataSource) {
+    super(Nonce, dataSource.createEntityManager());
+  }
+
+  async createNonceForAuthSignin(wallet: string) {
+    const authConfig = this.configService.getOrThrow<IAuthConfig>(
+      ConfigNamespace.AUTH,
+    );
+    const code = `auth:signin:${wallet}`;
+    const otp = randomstring.generate({ length: 12 });
+    const message = `Verification code: ${otp}\nClick SIGN to sign-in`;
+    const nonce = this.create({
+      code,
+      data: message,
+      expiredAt: DateTime.now()
+        .plus({ seconds: authConfig.signIn.nonceTtl })
+        .toJSDate(),
+    });
+    await this.save(nonce);
+    return nonce;
+  }
+
+  async getMessageForAuthSignin(wallet: string) {
+    const code = `auth:signin:${wallet}`;
+    const nonce = await this.findOneBy({
+      code,
+      expiredAt: MoreThan(new Date()),
+    });
+    return nonce;
+  }
+}

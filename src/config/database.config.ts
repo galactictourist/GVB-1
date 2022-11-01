@@ -1,12 +1,15 @@
 import { registerAs } from '@nestjs/config';
 import { ConfigNamespace } from '~/types/config';
 
+type Logging = 'file' | 'debug';
+
 export interface IDatabaseConfig {
   host: string;
   port: number;
   username: string;
   password: string;
   database: string;
+  logging?: Logging;
 }
 
 export const databaseConfig = registerAs(
@@ -17,5 +20,6 @@ export const databaseConfig = registerAs(
     username: process.env.POSTGRES_USERNAME || 'postgres',
     password: process.env.POSTGRES_PASSWORD || 'secret',
     database: process.env.POSTGRES_DATABASE || 'postgres',
+    logging: process.env.DB_LOGGING as Logging,
   }),
 );

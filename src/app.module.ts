@@ -1,36 +1,29 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DataSourceOptions } from 'typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { configs } from './config';
-import { IDatabaseConfig } from './config/database.config';
-import { ConfigNamespace } from './types/config';
+import { TypeOrmConfigService } from './database/typeorm.service';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ load: configs }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService): DataSourceOptions => {
-        const databaseConfig = configService.getOrThrow<IDatabaseConfig>(
-          ConfigNamespace.DATABASE,
-        );
-        return {
-          type: 'postgres',
-          host: databaseConfig.host,
-          port: databaseConfig.port,
-          username: databaseConfig.username,
-          password: databaseConfig.password,
-          database: databaseConfig.database,
-          entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        };
-      },
-    }),
+    ConfigModule.forRoot({ isGlobal: true, load: configs }),
+    TypeOrmModule.forRootAsync({ useClass: TypeOrmConfigService }),
+    UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    AppService,
+  ],
 })
 export class AppModule {}
