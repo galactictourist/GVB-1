@@ -1,5 +1,13 @@
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface MetaData {}
+interface MetaData {
+  pagination?: Pagination;
+}
+
+interface Pagination {
+  limit: number;
+  total?: number;
+  page: number;
+  maxPage?: number;
+}
 
 export interface ResponseData<T> {
   data: T;
