@@ -2,9 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { UserEntity } from '../../user/entity/user.entity';
 import { CollectionStatus } from '../types';
 
 @Entity({ schema: 'nft', name: 'collection' })
@@ -15,8 +17,8 @@ export class CollectionEntity {
   @Column({ nullable: false, length: 200 })
   name: string;
 
-  // @ManyToOne(() => UserEntity)
-  // owner: UserEntity;
+  @ManyToOne(() => UserEntity, (user) => user.id)
+  owner: UserEntity;
 
   @Column({
     enum: CollectionStatus,

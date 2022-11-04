@@ -2,11 +2,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { BlockchainNetwork } from '../../types/blockchain';
+import { UserEntity } from '../../user/entity/user.entity';
 import { NftStatus } from '../types';
+import { CollectionEntity } from './collection.entity';
 
 @Entity({ schema: 'nft', name: 'nft' })
 export class NftEntity {
@@ -29,8 +32,11 @@ export class NftEntity {
   })
   tokenId: string;
 
-  // @ManyToOne(() => CollectionEntity)
-  // collection: CollectionEntity;
+  @ManyToOne(() => CollectionEntity, (collection) => collection.id)
+  collection: CollectionEntity;
+
+  @ManyToOne(() => UserEntity, (user) => user.id)
+  owner: UserEntity;
 
   @Column({
     enum: NftStatus,
