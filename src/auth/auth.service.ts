@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ContextUser } from '~/types/request';
 import { UserEntity } from '~/user/entity/user.entity';
 import { UserService } from '~/user/user.service';
-import { CreateNonceDto } from './dtos/create-nonce.dto';
+import { CreateNonceDto } from './dto/create-nonce.dto';
 import { NonceRepository } from './repository/nonce.repository';
 import { SignatureVerifierService } from './signature-verifier.service';
 

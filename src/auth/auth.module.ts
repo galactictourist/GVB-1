@@ -10,8 +10,8 @@ import { AuthService } from './auth.service';
 import { NonceEntity } from './entity/nonce.entity';
 import { NonceRepository } from './repository/nonce.repository';
 import { SignatureVerifierService } from './signature-verifier.service';
-import { JwtStrategy } from './strategies/jwt.strategy';
-import { Web3Strategy } from './strategies/web3.strategy';
+import { JwtStrategy } from './strategy/jwt.strategy';
+import { Web3Strategy } from './strategy/web3.strategy';
 
 @Module({
   imports: [

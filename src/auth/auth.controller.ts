@@ -4,11 +4,11 @@ import { Wallet } from 'ethers';
 import { UserRequest } from '~/types/request';
 import { ResponseData } from '~/types/response-data';
 import { AuthService } from './auth.service';
-import { Public } from './decorators/public.decorator';
-import { CreateNonceDto } from './dtos/create-nonce.dto';
-import { SignMessageDto } from './dtos/sign-message.dto';
-import { SigninWalletDto } from './dtos/signin-wallet.dto';
-import { Web3AuthGuard } from './guards/web3-auth.guard';
+import { Public } from './decorator/public.decorator';
+import { CreateNonceDto } from './dto/create-nonce.dto';
+import { SignMessageDto } from './dto/sign-message.dto';
+import { SigninWalletDto } from './dto/signin-wallet.dto';
+import { Web3AuthGuard } from './guard/web3-auth.guard';
 import {
   NonceGenerationResponse,
   SignedInResponse,
