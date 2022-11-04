@@ -1,7 +1,7 @@
 import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
 import { ApiBody } from '@nestjs/swagger';
 import { Wallet } from 'ethers';
-import { AuthedRequest } from '~/types/request';
+import { UserRequest } from '~/types/request';
 import { ResponseData } from '~/types/response-data';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
@@ -19,7 +19,7 @@ export class AuthController {
   @UseGuards(Web3AuthGuard)
   @Post('/signin/wallet')
   async signInUsingWallet(
-    @Request() req: AuthedRequest,
+    @Request() req: UserRequest,
   ): Promise<ResponseData<any>> {
     const result = await this.authService.signIn('wallet', req.user);
     return { data: result };
