@@ -8,7 +8,7 @@ import {
 import { UserStatus } from '../types';
 
 @Entity({ schema: 'user', name: 'user' })
-export class User {
+export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

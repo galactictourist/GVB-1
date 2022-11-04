@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, Raw, Repository } from 'typeorm';
-import { User } from '../entity/user.entity';
+import { UserEntity } from '../entity/user.entity';
 
 @Injectable()
-export class UserRepository extends Repository<User> {
+export class UserRepository extends Repository<UserEntity> {
   constructor(private dataSource: DataSource) {
-    super(User, dataSource.createEntityManager());
+    super(UserEntity, dataSource.createEntityManager());
   }
 
   async findOneByWallet(wallet: string) {

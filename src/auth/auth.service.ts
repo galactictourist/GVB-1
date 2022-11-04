@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '~/user/entity/user.entity';
+import { ContextUser } from '~/types/request';
+import { UserEntity } from '~/user/entity/user.entity';
 import { UserService } from '~/user/user.service';
 import { CreateNonceDto } from './dtos/create-nonce.dto';
 import { NonceRepository } from './repository/nonce.repository';
@@ -15,7 +16,7 @@ export class AuthService {
     private readonly signatureVerifierService: SignatureVerifierService,
   ) {}
 
-  async signIn(type: string, user: User) {
+  async signIn(type: string, user: ContextUser) {
     const payload = {
       type: type,
       wallet: user.wallet,
@@ -33,7 +34,7 @@ export class AuthService {
     return { message: nonce.data };
   }
 
-  async validateWallet(wallet: string, signature: string): Promise<User> {
+  async validateWallet(wallet: string, signature: string): Promise<UserEntity> {
     const nonce = await this.nonceRepository.getMessageForAuthSignin(wallet);
     if (nonce) {
       const valid = await this.signatureVerifierService.verify(

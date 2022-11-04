@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 
 @Entity({ schema: 'auth', name: 'nonce' })
-export class Nonce {
+export class NonceEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

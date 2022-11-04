@@ -5,15 +5,15 @@ import * as randomstring from 'randomstring';
 import { DataSource, MoreThan, Repository } from 'typeorm';
 import { IAuthConfig } from '~/config/auth.config';
 import { ConfigNamespace } from '~/types/config';
-import { Nonce } from '../entity/nonce.entity';
+import { NonceEntity } from '../entity/nonce.entity';
 
 @Injectable()
-export class NonceRepository extends Repository<Nonce> {
+export class NonceRepository extends Repository<NonceEntity> {
   @Inject(ConfigService)
   private readonly configService: ConfigService;
 
   constructor(private dataSource: DataSource) {
-    super(Nonce, dataSource.createEntityManager());
+    super(NonceEntity, dataSource.createEntityManager());
   }
 
   async createNonceForAuthSignin(wallet: string) {

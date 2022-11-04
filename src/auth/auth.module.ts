@@ -7,7 +7,7 @@ import { ConfigNamespace } from '~/types/config';
 import { UserModule } from '~/user/user.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { Nonce } from './entity/nonce.entity';
+import { NonceEntity } from './entity/nonce.entity';
 import { NonceRepository } from './repository/nonce.repository';
 import { SignatureVerifierService } from './signature-verifier.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
@@ -34,7 +34,7 @@ import { Web3Strategy } from './strategies/web3.strategy';
         return options;
       },
     }),
-    TypeOrmModule.forFeature([Nonce]),
+    TypeOrmModule.forFeature([NonceEntity]),
     forwardRef(() => UserModule),
   ],
   controllers: [AuthController],
