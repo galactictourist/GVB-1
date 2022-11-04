@@ -9,6 +9,12 @@ import { CreateNonceDto } from './dtos/create-nonce.dto';
 import { SignMessageDto } from './dtos/sign-message.dto';
 import { SigninWalletDto } from './dtos/signin-wallet.dto';
 import { Web3AuthGuard } from './guards/web3-auth.guard';
+import {
+  NonceGenerationResponse,
+  SignedInResponse,
+  WalletGenerationResponse,
+  WalletSignResponse,
+} from './types/responses';
 
 @Controller('auth')
 export class AuthController {
@@ -20,7 +26,7 @@ export class AuthController {
   @Post('/signin/wallet')
   async signInUsingWallet(
     @Request() req: UserRequest,
-  ): Promise<ResponseData<any>> {
+  ): Promise<ResponseData<SignedInResponse>> {
     const result = await this.authService.signIn('wallet', req.user);
     return { data: result };
   }
@@ -29,7 +35,7 @@ export class AuthController {
   @Post('/signin/wallet/sign')
   async signMessageUsingPrivateKey(
     @Body() signMessageDto: SignMessageDto,
-  ): Promise<ResponseData<any>> {
+  ): Promise<ResponseData<WalletSignResponse>> {
     const wallet = new Wallet(signMessageDto.privateKey);
     const signature = await wallet.signMessage(signMessageDto.message);
     return { data: { signature } };
@@ -37,7 +43,7 @@ export class AuthController {
 
   @Public()
   @Post('/signin/wallet/generate')
-  async generateWallet(): Promise<ResponseData<any>> {
+  async generateWallet(): Promise<ResponseData<WalletGenerationResponse>> {
     const wallet = Wallet.createRandom();
     return { data: { address: wallet.address, privateKey: wallet.privateKey } };
   }
@@ -46,7 +52,7 @@ export class AuthController {
   @Post('/signin/wallet/nonce')
   async createNonceToSignInUsingWallet(
     @Body() createNonceDto: CreateNonceDto,
-  ): Promise<ResponseData<any>> {
+  ): Promise<ResponseData<NonceGenerationResponse>> {
     const { message } = await this.authService.signInNonce(createNonceDto);
     return { data: { message } };
   }

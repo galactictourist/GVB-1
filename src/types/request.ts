@@ -6,12 +6,17 @@ export interface UserRequest extends Request {
   user: ContextUser;
 }
 
-export class ContextUser {
+export interface ContextUserInterface {
+  id: string;
+  wallet?: string;
+}
+
+export class ContextUser implements ContextUserInterface {
   @Expose()
   id: string;
 
   @Expose()
-  wallet: string;
+  wallet?: string;
 
   public static fromEntity(fromUser: UserEntity): ContextUser {
     const contextUser = plainToClass(ContextUser, fromUser, {
