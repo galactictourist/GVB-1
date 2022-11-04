@@ -27,4 +27,8 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  isActive() {
+    return this.status === UserStatus.ACTIVE;
+  }
 }

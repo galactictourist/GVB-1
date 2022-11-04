@@ -6,7 +6,6 @@ import { IJwtConfig } from '~/config/jwt.config';
 import { JwtAuthPayload } from '~/types';
 import { ConfigNamespace } from '~/types/config';
 import { ContextUser } from '~/types/request';
-import { UserStatus } from '~/user/types';
 import { UserService } from '~/user/user.service';
 
 @Injectable()
@@ -29,7 +28,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (!user) {
       throw new UnauthorizedException('User is not found');
     }
-    if (user.status !== UserStatus.ACTIVE) {
+    if (!user.isActive()) {
       throw new UnauthorizedException('User is not active');
     }
     return ContextUser.fromEntity(user);
