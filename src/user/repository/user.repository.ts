@@ -9,7 +9,6 @@ export class UserRepository extends Repository<UserEntity> {
   }
 
   async findOneByWallet(wallet: string) {
-    console.log('wallet', wallet);
     const user = await this.findOneBy({
       wallet: Raw((alias) => `LOWER(${alias}) = LOWER(:wallet)`, { wallet }),
     });
