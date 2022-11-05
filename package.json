@@ -19,7 +19,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm": "typeorm-ts-node-commonjs",
+    "cli": "node -r tsconfig-paths/register -r ts-node/register src/cli.ts",
+    "typeorm": "node -r tsconfig-paths/register -r ts-node/register node_modules/.bin/typeorm",
     "migration:run": "yarn typeorm -d ./src/database/typeorm.config.ts migration:run",
     "migration:revert": "yarn typeorm -d ./src/database/typeorm.config.ts migration:revert",
     "migration:generate": "sh scripts/migration_generate.sh",
@@ -45,6 +46,7 @@
     "ethereumjs-util": "^7.1.5",
     "ethers": "^5.7.2",
     "luxon": "^3.0.4",
+    "nest-commander": "^3.3.0",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
@@ -53,7 +55,8 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
-    "typeorm": "^0.3.10"
+    "typeorm": "^0.3.10",
+    "typeorm-seeding": "^1.6.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",

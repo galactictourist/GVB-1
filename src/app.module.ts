@@ -6,11 +6,12 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guard/jwt-auth.guard';
+import { CharityModule } from './charity/charity.module';
 import { configs } from './config';
+import { DatabaseSeedCommand } from './database/database-seed.command';
 import { TypeOrmConfigService } from './database/typeorm.service';
 import { NftModule } from './nft/nft.module';
 import { UserModule } from './user/user.module';
-import { CharityModule } from './charity/charity.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { CharityModule } from './charity/charity.module';
       useClass: JwtAuthGuard,
     },
     AppService,
+    DatabaseSeedCommand,
   ],
 })
 export class AppModule {}
