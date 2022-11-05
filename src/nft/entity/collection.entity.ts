@@ -17,6 +17,9 @@ export class CollectionEntity {
   @Column({ nullable: false, length: 200 })
   name: string;
 
+  @Column('uuid')
+  public ownerId: string;
+
   @ManyToOne(() => UserEntity, (user) => user.id)
   owner: UserEntity;
 

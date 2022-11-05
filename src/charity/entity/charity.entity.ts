@@ -27,7 +27,7 @@ export class CharityEntity {
   status: CharityStatus;
 
   @OneToMany(() => CharityTopicEntity, (charityTopic) => charityTopic.charityId)
-  public charityTopics!: CharityTopicEntity[];
+  public charityTopics: CharityTopicEntity[];
 
   @CreateDateColumn()
   createdAt: Date;
