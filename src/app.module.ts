@@ -10,6 +10,7 @@ import { configs } from './config';
 import { TypeOrmConfigService } from './database/typeorm.service';
 import { NftModule } from './nft/nft.module';
 import { UserModule } from './user/user.module';
+import { CharityModule } from './charity/charity.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UserModule } from './user/user.module';
     UserModule,
     AuthModule,
     NftModule,
+    CharityModule,
   ],
   controllers: [AppController],
   providers: [
