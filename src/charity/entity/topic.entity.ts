@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { CharityTopicEntity } from './charity-topic.entity';
 
 @Entity({ schema: 'charity', name: 'topic' })
 export class TopicEntity {
@@ -21,6 +22,9 @@ export class TopicEntity {
 
   @OneToMany(() => TopicEntity, (topic) => topic.parent)
   children: TopicEntity[];
+
+  @OneToMany(() => CharityTopicEntity, (charityTopic) => charityTopic.topicId)
+  public charityTopics!: CharityTopicEntity[];
 
   @CreateDateColumn()
   createdAt: Date;

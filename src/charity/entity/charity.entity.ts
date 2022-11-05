@@ -2,10 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { CharityStatus } from '../types';
+import { CharityTopicEntity } from './charity-topic.entity';
 
 @Entity({ schema: 'charity', name: 'charity' })
 export class CharityEntity {
@@ -23,6 +25,9 @@ export class CharityEntity {
     length: 20,
   })
   status: CharityStatus;
+
+  @OneToMany(() => CharityTopicEntity, (charityTopic) => charityTopic.charityId)
+  public charityTopics!: CharityTopicEntity[];
 
   @CreateDateColumn()
   createdAt: Date;
