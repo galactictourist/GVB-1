@@ -27,7 +27,7 @@ export class TopicEntity {
   children: TopicEntity[];
 
   @OneToMany(() => CharityTopicEntity, (charityTopic) => charityTopic.topicId)
-  public charityTopics: CharityTopicEntity[];
+  charityTopics: CharityTopicEntity[];
 
   @CreateDateColumn()
   createdAt: Date;

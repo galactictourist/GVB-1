@@ -33,13 +33,13 @@ export class NftEntity {
   tokenId: string;
 
   @Column('uuid')
-  public collectionId: string;
+  collectionId: string;
 
   @ManyToOne(() => CollectionEntity, (collection) => collection.id)
   collection: CollectionEntity;
 
   @Column('uuid')
-  public ownerId: string;
+  ownerId: string;
 
   @ManyToOne(() => UserEntity, (user) => user.id)
   owner: UserEntity;

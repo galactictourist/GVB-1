@@ -9,7 +9,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
   @Inject(ConfigService)
   private readonly configService: ConfigService;
 
-  public createTypeOrmOptions(): TypeOrmModuleOptions {
+  createTypeOrmOptions(): TypeOrmModuleOptions {
     const databaseConfig = this.configService.getOrThrow<IDatabaseConfig>(
       ConfigNamespace.DATABASE,
     );

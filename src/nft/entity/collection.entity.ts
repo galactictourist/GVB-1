@@ -18,7 +18,7 @@ export class CollectionEntity {
   name: string;
 
   @Column('uuid')
-  public ownerId: string;
+  ownerId: string;
 
   @ManyToOne(() => UserEntity, (user) => user.id)
   owner: UserEntity;

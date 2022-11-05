@@ -16,29 +16,29 @@ export class CharityTopicEntity {
   id: string;
 
   @Column('uuid')
-  public charityId: string;
+  charityId: string;
 
   @Column('uuid')
-  public topicId: string;
+  topicId: string;
 
   @Column()
-  public countryCode: string;
+  countryCode: string;
 
   @Column({
     enum: BlockchainNetwork,
     length: 20,
     nullable: true,
   })
-  public network: string;
+  network: string;
 
   @Column({ nullable: true })
-  public wallet: string;
+  wallet: string;
 
   @ManyToOne(() => CharityEntity, (charity) => charity.id)
-  public charity: CharityEntity;
+  charity: CharityEntity;
 
   @ManyToOne(() => TopicEntity, (topic) => topic.id)
-  public topic: TopicEntity;
+  topic: TopicEntity;
 
   @CreateDateColumn()
   createdAt: Date;

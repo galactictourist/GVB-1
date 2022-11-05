@@ -18,7 +18,7 @@ export class ContextUser implements ContextUserInterface {
   @Expose()
   wallet?: string;
 
-  public static fromEntity(fromUser: UserEntity): ContextUser {
+  static fromEntity(fromUser: UserEntity): ContextUser {
     const contextUser = plainToClass(ContextUser, fromUser, {
       excludeExtraneousValues: true,
     });
