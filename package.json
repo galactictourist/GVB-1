@@ -45,6 +45,7 @@
     "dotenv": "^16.0.3",
     "ethereumjs-util": "^7.1.5",
     "ethers": "^5.7.2",
+    "faker": "^6.6.6",
     "luxon": "^3.0.4",
     "nest-commander": "^3.3.0",
     "passport": "^0.6.0",
@@ -55,8 +56,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
-    "typeorm": "^0.3.10",
-    "typeorm-seeding": "^1.6.1"
+    "typeorm": "^0.3.10"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",

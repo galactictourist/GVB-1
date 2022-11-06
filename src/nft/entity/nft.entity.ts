@@ -1,21 +1,12 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne } from 'typeorm';
+import { BaseElement } from '~/lib/database/base-element';
 import { BlockchainNetwork } from '../../types/blockchain';
 import { UserEntity } from '../../user/entity/user.entity';
 import { NftStatus } from '../types';
 import { CollectionEntity } from './collection.entity';
 
 @Entity({ schema: 'nft', name: 'nft' })
-export class NftEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class NftEntity extends BaseElement {
   @Column({
     enum: BlockchainNetwork,
     length: 20,
@@ -50,12 +41,6 @@ export class NftEntity {
     length: 20,
   })
   status: NftStatus;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 
   isActive() {
     return this.status === NftStatus.ACTIVE;

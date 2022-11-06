@@ -1,19 +1,9 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { BaseElement } from '~/lib/database/base-element';
 import { CharityTopicEntity } from './charity-topic.entity';
 
 @Entity({ schema: 'charity', name: 'topic' })
-export class TopicEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class TopicEntity extends BaseElement {
   @Column({ length: 200 })
   name: string;
 
@@ -28,10 +18,4 @@ export class TopicEntity {
 
   @OneToMany(() => CharityTopicEntity, (charityTopic) => charityTopic.topicId)
   charityTopics: CharityTopicEntity[];
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }

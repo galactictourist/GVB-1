@@ -1,16 +1,8 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity } from 'typeorm';
+import { BaseElement } from '~/lib/database/base-element';
 
 @Entity({ schema: 'auth', name: 'nonce' })
-export class NonceEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class NonceEntity extends BaseElement {
   @Column({ length: 100 })
   code: string;
 
@@ -19,10 +11,4 @@ export class NonceEntity {
 
   @Column({ nullable: true })
   expiredAt?: Date;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }

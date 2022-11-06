@@ -1,19 +1,10 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
+import { BaseElement } from '~/lib/database/base-element';
 import { CharityStatus } from '../types';
 import { CharityTopicEntity } from './charity-topic.entity';
 
 @Entity({ schema: 'charity', name: 'charity' })
-export class CharityEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class CharityEntity extends BaseElement {
   @Column({
     length: 200,
   })
@@ -28,12 +19,6 @@ export class CharityEntity {
 
   @OneToMany(() => CharityTopicEntity, (charityTopic) => charityTopic.charityId)
   charityTopics: CharityTopicEntity[];
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 
   isActive() {
     return this.status === CharityStatus.ACTIVE;

@@ -1,19 +1,10 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne } from 'typeorm';
+import { BaseElement } from '~/lib/database/base-element';
 import { UserEntity } from '../../user/entity/user.entity';
 import { CollectionStatus } from '../types';
 
 @Entity({ schema: 'nft', name: 'collection' })
-export class CollectionEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class CollectionEntity extends BaseElement {
   @Column({ nullable: false, length: 200 })
   name: string;
 
@@ -29,12 +20,6 @@ export class CollectionEntity {
     length: 20,
   })
   status: CollectionStatus;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 
   isPublished() {
     return this.status === CollectionStatus.PUBLISHED;
