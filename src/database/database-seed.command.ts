@@ -6,6 +6,7 @@ import { TopicRepository } from '~/charity/repository/topic.repository';
 import { CollectionRepository } from '~/nft/repository/collection.repository';
 import { NftRepository } from '~/nft/repository/nft.repository';
 import { UserRepository } from '../user/repository/user.repository';
+import { userSeed } from './seeds/user.seed';
 
 @Command({ name: 'db:seed', description: 'Seed database' })
 export class DatabaseSeedCommand extends CommandRunner {
@@ -23,6 +24,7 @@ export class DatabaseSeedCommand extends CommandRunner {
 
   async run() {
     await this.clear();
+    await this.seed();
   }
 
   async clear() {
@@ -38,6 +40,6 @@ export class DatabaseSeedCommand extends CommandRunner {
   }
 
   async seed() {
-    // TODO add seed
+    await userSeed();
   }
 }
