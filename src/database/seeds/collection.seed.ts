@@ -10,7 +10,7 @@ export function createCollection(oriData: DeepPartial<CollectionEntity> = {}) {
   data.status =
     data.status ?? faker.helpers.arrayElement(Object.values(CollectionStatus));
   data.name = data.name ?? faker.commerce.productName();
-  return CollectionEntity.create(data);
+  return CollectionEntity.create<CollectionEntity>(data);
 }
 
 export async function createCollectionEntity(

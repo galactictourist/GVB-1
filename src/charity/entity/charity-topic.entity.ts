@@ -1,5 +1,6 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { BaseElement } from '~/lib/database/base-element';
+import { CountryCode } from '~/types/country';
 import { BlockchainNetwork } from '../../types/blockchain';
 import { CharityEntity } from './charity.entity';
 import { TopicEntity } from './topic.entity';
@@ -12,8 +13,8 @@ export class CharityTopicEntity extends BaseElement {
   @Column('uuid')
   topicId: string;
 
-  @Column()
-  countryCode: string;
+  @Column({ enum: CountryCode })
+  countryCode: CountryCode;
 
   @Column({
     enum: BlockchainNetwork,

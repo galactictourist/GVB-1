@@ -18,7 +18,7 @@ export function createNft(oriData: DeepPartial<NftEntity> = {}) {
   data.status =
     data.status ?? faker.helpers.arrayElement(Object.values(NftStatus));
 
-  return NftEntity.create(data);
+  return NftEntity.create<NftEntity>(data);
 }
 
 export async function createNftEntity(data: DeepPartial<NftEntity> = {}) {

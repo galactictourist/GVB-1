@@ -2,6 +2,8 @@ import { faker } from '@faker-js/faker';
 import _ from 'lodash';
 import { Command, CommandRunner } from 'nest-commander';
 import { NonceRepository } from '~/auth/repository/nonce.repository';
+import { CharityTopicEntity } from '~/charity/entity/charity-topic.entity';
+import { TopicEntity } from '~/charity/entity/topic.entity';
 import { CharityTopicRepository } from '~/charity/repository/charity-topic.repository';
 import { CharityRepository } from '~/charity/repository/charity.repository';
 import { TopicRepository } from '~/charity/repository/topic.repository';
@@ -10,6 +12,7 @@ import { NftRepository } from '~/nft/repository/nft.repository';
 import { BlockchainNetwork } from '~/types/blockchain';
 import { UserStatus } from '~/user/types';
 import { UserRepository } from '../user/repository/user.repository';
+import { createCharityTopic } from './seeds/charity-topic.seed';
 import { createCharityEntities } from './seeds/charity.seed';
 import { createCollectionEntities } from './seeds/collection.seed';
 import { createNftEntities } from './seeds/nft.seed';
@@ -79,7 +82,69 @@ export class DatabaseSeedCommand extends CommandRunner {
         return await createTopicEntities({ parentId: topicEntity.id }, 5);
       }),
     );
+    const childrenTopicEntitiesFlat: TopicEntity[] = [];
+    childrenTopicEntities.forEach((c) => {
+      childrenTopicEntitiesFlat.push(...c);
+    });
 
     const charityEntities = await createCharityEntities({}, 100);
+    const charityTopicEntities: CharityTopicEntity[] = [];
+    const charityEntitiesChunk1 = charityEntities.slice(20, 40);
+    charityEntitiesChunk1.forEach((charity) => {
+      faker.helpers
+        .arrayElements(childrenTopicEntitiesFlat, 5)
+        .forEach((childTopic) => {
+          charityTopicEntities.push(
+            createCharityTopic({
+              topicId: childTopic.id,
+              charityId: charity.id,
+              network: BlockchainNetwork.POLYGON_MUMBAI,
+            }),
+          );
+        });
+    });
+    const charityEntitiesChunk2 = charityEntities.slice(40, 60);
+    charityEntitiesChunk2.forEach((charity) => {
+      faker.helpers
+        .arrayElements(childrenTopicEntitiesFlat, 10)
+        .forEach((childTopic) => {
+          charityTopicEntities.push(
+            createCharityTopic({
+              topicId: childTopic.id,
+              charityId: charity.id,
+              network: BlockchainNetwork.POLYGON_MUMBAI,
+            }),
+          );
+        });
+    });
+    const charityEntitiesChunk3 = charityEntities.slice(60, 80);
+    charityEntitiesChunk3.forEach((charity) => {
+      faker.helpers
+        .arrayElements(childrenTopicEntitiesFlat, 15)
+        .forEach((childTopic) => {
+          charityTopicEntities.push(
+            createCharityTopic({
+              topicId: childTopic.id,
+              charityId: charity.id,
+              network: BlockchainNetwork.POLYGON_MUMBAI,
+            }),
+          );
+        });
+    });
+    const charityEntitiesChunk4 = charityEntities.slice(80, 100);
+    charityEntitiesChunk4.forEach((charity) => {
+      faker.helpers
+        .arrayElements(childrenTopicEntitiesFlat, 25)
+        .forEach((childTopic) => {
+          charityTopicEntities.push(
+            createCharityTopic({
+              topicId: childTopic.id,
+              charityId: charity.id,
+              network: BlockchainNetwork.POLYGON_MUMBAI,
+            }),
+          );
+        });
+    });
+    await CharityTopicEntity.save(charityTopicEntities);
   }
 }

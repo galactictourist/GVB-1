@@ -8,7 +8,7 @@ export function createUser(oriData: DeepPartial<UserEntity> = {}) {
   const data: DeepPartial<UserEntity> = { ...oriData };
   data.id = data.id ?? faker.datatype.uuid();
   data.wallet = data.wallet ?? generateWallet().address;
-  return UserEntity.create(data);
+  return UserEntity.create<UserEntity>(data);
 }
 
 export async function createUserEntity(data: DeepPartial<UserEntity> = {}) {

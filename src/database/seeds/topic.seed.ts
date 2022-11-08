@@ -7,7 +7,7 @@ export function createTopic(oriData: DeepPartial<TopicEntity> = {}) {
   const data: DeepPartial<TopicEntity> = { ...oriData };
   data.id = data.id ?? faker.datatype.uuid();
   data.name = data.name ?? faker.lorem.words();
-  return TopicEntity.create(data);
+  return TopicEntity.create<TopicEntity>(data);
 }
 
 export async function createTopicEntity(data: DeepPartial<TopicEntity> = {}) {

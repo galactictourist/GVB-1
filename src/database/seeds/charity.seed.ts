@@ -10,7 +10,7 @@ export function createCharity(oriData: DeepPartial<CharityEntity> = {}) {
   data.status =
     data.status ?? faker.helpers.arrayElement(Object.values(CharityStatus));
   data.name = data.name ?? faker.company.name();
-  return CharityEntity.create(data);
+  return CharityEntity.create<CharityEntity>(data);
 }
 
 export async function createCharityEntity(
