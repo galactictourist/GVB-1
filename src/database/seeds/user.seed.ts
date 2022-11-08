@@ -1,16 +1,18 @@
 import { utils, Wallet } from 'ethers';
 import _ from 'lodash';
 import { DeepPartial } from 'typeorm';
+import { faker } from '~/lib';
 import { UserEntity } from '~/user/entity/user.entity';
 
-export function createUserEntity(oriData: DeepPartial<UserEntity> = {}) {
+export function createUser(oriData: DeepPartial<UserEntity> = {}) {
   const data: DeepPartial<UserEntity> = { ...oriData };
+  data.id = data.id ?? faker.datatype.uuid();
   data.wallet = data.wallet ?? generateWallet().address;
   return UserEntity.create(data);
 }
 
-export async function createUser(data: DeepPartial<UserEntity> = {}) {
-  const user = await UserEntity.save(createUserEntity(data));
+export async function createUserEntity(data: DeepPartial<UserEntity> = {}) {
+  const user = await UserEntity.save(createUser(data));
   return user;
 }
 
@@ -31,12 +33,12 @@ function generateWallet(index?: number) {
   return new Wallet(node.privateKey);
 }
 
-export async function createUsers(
+export async function createUserEntities(
   data: DeepPartial<UserEntity> = {},
   count = 1,
 ) {
   const users: DeepPartial<UserEntity>[] = _.range(count).map(() =>
-    createUserEntity(data),
+    createUser(data),
   );
 
   const userEntities = await UserEntity.save(users);
