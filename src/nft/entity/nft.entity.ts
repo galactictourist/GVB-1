@@ -1,4 +1,6 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToOne } from 'typeorm';
+import { CharityEntity } from '~/charity/entity/charity.entity';
+import { TopicEntity } from '~/charity/entity/topic.entity';
 import { BaseElement } from '~/lib/database/base-element';
 import { BlockchainNetwork } from '../../types/blockchain';
 import { UserEntity } from '../../user/entity/user.entity';
@@ -34,6 +36,18 @@ export class NftEntity extends BaseElement {
 
   @ManyToOne(() => UserEntity, (user) => user.id)
   owner: UserEntity;
+
+  @Column('uuid', { nullable: true })
+  charityId?: string;
+
+  @Column('uuid', { nullable: true })
+  topicId?: string;
+
+  @OneToOne(() => CharityEntity, (charity) => charity.id, { nullable: true })
+  charity?: CharityEntity;
+
+  @OneToOne(() => TopicEntity, (topic) => topic.id, { nullable: true })
+  topic?: TopicEntity;
 
   @Column({
     enum: NftStatus,
