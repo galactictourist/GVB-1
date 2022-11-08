@@ -5,7 +5,7 @@ import { UserStatus } from '../types';
 @Entity({ schema: 'user', name: 'user' })
 export class UserEntity extends BaseElement {
   @Column({ nullable: true, length: 50 })
-  wallet: string;
+  wallet?: string;
 
   @Column({
     enum: UserStatus,

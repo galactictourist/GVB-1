@@ -7,11 +7,11 @@ export class TopicEntity extends BaseElement {
   @Column({ length: 200 })
   name: string;
 
-  @Column('uuid')
-  parentId: string;
+  @Column('uuid', { nullable: true })
+  parentId?: string;
 
-  @ManyToOne(() => TopicEntity, (topic) => topic.id)
-  parent: TopicEntity;
+  @ManyToOne(() => TopicEntity, (topic) => topic.id, { nullable: true })
+  parent?: TopicEntity;
 
   @OneToMany(() => TopicEntity, (topic) => topic.parent)
   children: TopicEntity[];

@@ -11,7 +11,7 @@ export class NftEntity extends BaseElement {
     enum: BlockchainNetwork,
     length: 20,
   })
-  network: string;
+  network: BlockchainNetwork;
 
   @Column({
     length: 50,

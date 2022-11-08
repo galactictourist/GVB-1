@@ -22,25 +22,25 @@ const hdNode = utils.HDNode.fromMnemonic(
   'beyond left mechanic arrow federal long recycle promote reform doctor plate elder',
 );
 
-function generateWallet(index?: number) {
+export function generateWallet(options?: { index?: number }) {
   let node;
-  if (index === undefined) {
+  if (options?.index === undefined) {
     node = hdNode.derivePath(`m/44'/60'/0'/0/${walletIndex}`);
     walletIndex++;
   } else {
-    node = hdNode.derivePath(`m/44'/60'/0'/0/${index}`);
+    node = hdNode.derivePath(`m/44'/60'/0'/0/${options.index}`);
   }
   return new Wallet(node.privateKey);
 }
 
 export async function createUserEntities(
   data: DeepPartial<UserEntity> = {},
-  count = 1,
+  count: number,
 ) {
-  const users: DeepPartial<UserEntity>[] = _.range(count).map(() =>
+  const instances: DeepPartial<UserEntity>[] = _.range(count).map(() =>
     createUser(data),
   );
 
-  const userEntities = await UserEntity.save(users);
-  return userEntities;
+  const entities = await UserEntity.save(instances);
+  return entities;
 }

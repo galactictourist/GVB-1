@@ -20,10 +20,10 @@ export class CharityTopicEntity extends BaseElement {
     length: 20,
     nullable: true,
   })
-  network: string;
+  network?: BlockchainNetwork;
 
   @Column({ nullable: true })
-  wallet: string;
+  wallet?: string;
 
   @ManyToOne(() => CharityEntity, (charity) => charity.id)
   charity: CharityEntity;

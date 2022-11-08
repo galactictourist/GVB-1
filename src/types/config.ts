@@ -3,6 +3,7 @@ export enum ConfigNamespace {
   AUTH = 'auth',
   HTTP = 'http',
   JWT = 'jwt',
+  BLOCKCHAIN = 'blockchain',
   SWAGGER = 'swagger',
   DATABASE = 'database',
 }

@@ -22,12 +22,12 @@ export async function createCollectionEntity(
 
 export async function createCollectionEntities(
   data: DeepPartial<CollectionEntity> = {},
-  count = 1,
+  count: number,
 ) {
-  const collections: DeepPartial<CollectionEntity>[] = _.range(count).map(() =>
+  const instances: DeepPartial<CollectionEntity>[] = _.range(count).map(() =>
     createCollection(data),
   );
 
-  const entities = await CollectionEntity.save(collections);
+  const entities = await CollectionEntity.save(instances);
   return entities;
 }
