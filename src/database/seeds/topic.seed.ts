@@ -1,7 +1,7 @@
+import { faker } from '@faker-js/faker';
 import _ from 'lodash';
 import { DeepPartial } from 'typeorm';
 import { TopicEntity } from '~/charity/entity/topic.entity';
-import { faker } from '~/lib';
 
 export function createTopic(oriData: DeepPartial<TopicEntity> = {}) {
   const data: DeepPartial<TopicEntity> = { ...oriData };

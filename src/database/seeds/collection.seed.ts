@@ -1,6 +1,6 @@
+import { faker } from '@faker-js/faker';
 import _ from 'lodash';
 import { DeepPartial } from 'typeorm';
-import { faker } from '~/lib';
 import { CollectionEntity } from '~/nft/entity/collection.entity';
 import { CollectionStatus } from '~/nft/types';
 
@@ -8,7 +8,7 @@ export function createCollection(oriData: DeepPartial<CollectionEntity> = {}) {
   const data: DeepPartial<CollectionEntity> = { ...oriData };
   data.id = data.id ?? faker.datatype.uuid();
   data.status =
-    data.status ?? faker.random.arrayElement(Object.values(CollectionStatus));
+    data.status ?? faker.helpers.arrayElement(Object.values(CollectionStatus));
   data.name = data.name ?? faker.commerce.productName();
   return CollectionEntity.create(data);
 }

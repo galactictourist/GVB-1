@@ -1,15 +1,15 @@
+import { faker } from '@faker-js/faker';
 import _ from 'lodash';
 import { DeepPartial } from 'typeorm';
 import { CharityEntity } from '~/charity/entity/charity.entity';
 import { CharityStatus } from '~/charity/types';
-import { faker } from '~/lib';
 
 export function createCharity(oriData: DeepPartial<CharityEntity> = {}) {
   const data: DeepPartial<CharityEntity> = { ...oriData };
   data.id = data.id ?? faker.datatype.uuid();
   data.status =
-    data.status ?? faker.random.arrayElement(Object.values(CharityStatus));
-  data.name = data.name ?? faker.company.companyName();
+    data.status ?? faker.helpers.arrayElement(Object.values(CharityStatus));
+  data.name = data.name ?? faker.company.name();
   return CharityEntity.create(data);
 }
 

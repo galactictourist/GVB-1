@@ -1,10 +1,10 @@
+import { faker } from '@faker-js/faker';
 import _ from 'lodash';
 import { Command, CommandRunner } from 'nest-commander';
 import { NonceRepository } from '~/auth/repository/nonce.repository';
 import { CharityTopicRepository } from '~/charity/repository/charity-topic.repository';
 import { CharityRepository } from '~/charity/repository/charity.repository';
 import { TopicRepository } from '~/charity/repository/topic.repository';
-import { faker } from '~/lib';
 import { CollectionRepository } from '~/nft/repository/collection.repository';
 import { NftRepository } from '~/nft/repository/nft.repository';
 import { BlockchainNetwork } from '~/types/blockchain';
@@ -46,7 +46,7 @@ export class DatabaseSeedCommand extends CommandRunner {
   }
 
   async seed() {
-    faker.seed(7423981289123);
+    faker.seed(2345);
     const userEntities = await createUserEntities(
       { status: UserStatus.ACTIVE },
       100,

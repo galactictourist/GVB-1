@@ -1,6 +1,6 @@
+import { faker } from '@faker-js/faker';
 import _ from 'lodash';
 import { DeepPartial } from 'typeorm';
-import { faker } from '~/lib';
 import { NftEntity } from '~/nft/entity/nft.entity';
 import { NftStatus } from '~/nft/types';
 import { BlockchainNetwork, BLOCKCHAIN_INFO } from '~/types/blockchain';
@@ -9,13 +9,14 @@ export function createNft(oriData: DeepPartial<NftEntity> = {}) {
   const data: DeepPartial<NftEntity> = { ...oriData };
   data.id = data.id ?? faker.datatype.uuid();
   data.network =
-    data.network ?? faker.random.arrayElement(Object.values(BlockchainNetwork));
+    data.network ??
+    faker.helpers.arrayElement(Object.values(BlockchainNetwork));
   data.scAddress =
     data.scAddress ?? BLOCKCHAIN_INFO[data.network].constract.erc721;
   data.tokenId =
     data.tokenId ?? getTokenId(data.network, data.scAddress).toString();
   data.status =
-    data.status ?? faker.random.arrayElement(Object.values(NftStatus));
+    data.status ?? faker.helpers.arrayElement(Object.values(NftStatus));
 
   return NftEntity.create(data);
 }

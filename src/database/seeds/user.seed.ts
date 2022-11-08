@@ -1,7 +1,7 @@
+import { faker } from '@faker-js/faker';
 import { utils, Wallet } from 'ethers';
 import _ from 'lodash';
 import { DeepPartial } from 'typeorm';
-import { faker } from '~/lib';
 import { UserEntity } from '~/user/entity/user.entity';
 
 export function createUser(oriData: DeepPartial<UserEntity> = {}) {
