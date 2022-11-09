@@ -2,13 +2,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DateTime } from 'luxon';
 import * as randomstring from 'randomstring';
-import { DataSource, MoreThan, Repository } from 'typeorm';
+import { DataSource, MoreThan } from 'typeorm';
 import { IAuthConfig } from '~/config/auth.config';
+import { BaseRepository } from '~/lib/database/base-repository';
 import { ConfigNamespace } from '~/types/config';
 import { NonceEntity } from '../entity/nonce.entity';
 
 @Injectable()
-export class NonceRepository extends Repository<NonceEntity> {
+export class NonceRepository extends BaseRepository<NonceEntity> {
   @Inject(ConfigService)
   private readonly configService: ConfigService;
 

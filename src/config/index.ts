@@ -1,5 +1,6 @@
 import { appConfig } from './app.config';
 import { authConfig } from './auth.config';
+import { blockchainConfig } from './blockchain.config';
 import { databaseConfig } from './database.config';
 import { httpConfig } from './http.config';
 import { jwtConfig } from './jwt.config';
@@ -12,4 +13,5 @@ export const configs = [
   databaseConfig,
   jwtConfig,
   authConfig,
+  blockchainConfig,
 ];

@@ -45,6 +45,6 @@ import { Web3Strategy } from './strategy/web3.strategy';
     JwtStrategy,
     SignatureVerifierService,
   ],
-  exports: [],
+  exports: [NonceRepository],
 })
 export class AuthModule {}

@@ -1,21 +1,16 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { BaseElement } from '~/lib/database/base-element';
 import { UserEntity } from '../../user/entity/user.entity';
 import { CollectionStatus } from '../types';
+import { NftEntity } from './nft.entity';
 
 @Entity({ schema: 'nft', name: 'collection' })
-export class CollectionEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @Column({ nullable: false, length: 200 })
+export class CollectionEntity extends BaseElement {
+  @Column({ length: 200 })
   name: string;
+
+  @Column('uuid')
+  ownerId: string;
 
   @ManyToOne(() => UserEntity, (user) => user.id)
   owner: UserEntity;
@@ -27,11 +22,8 @@ export class CollectionEntity {
   })
   status: CollectionStatus;
 
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
+  @OneToMany(() => NftEntity, (nft) => nft.collection)
+  nfts: NftEntity[];
 
   isPublished() {
     return this.status === CollectionStatus.PUBLISHED;

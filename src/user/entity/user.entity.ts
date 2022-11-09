@@ -1,19 +1,11 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity } from 'typeorm';
+import { BaseElement } from '~/lib/database/base-element';
 import { UserStatus } from '../types';
 
 @Entity({ schema: 'user', name: 'user' })
-export class UserEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class UserEntity extends BaseElement {
   @Column({ nullable: true, length: 50 })
-  wallet: string;
+  wallet?: string;
 
   @Column({
     enum: UserStatus,
@@ -21,12 +13,6 @@ export class UserEntity {
     length: 20,
   })
   status: UserStatus;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 
   isActive() {
     return this.status === UserStatus.ACTIVE;

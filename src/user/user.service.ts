@@ -10,6 +10,11 @@ export class UserService {
     return user;
   }
 
+  async findOneByWallet(wallet: string) {
+    const user = await this.userRepository.findOneByWallet(wallet);
+    return user;
+  }
+
   async findOneById(id: string) {
     const user = await this.userRepository.findOneBy({ id });
     return user;

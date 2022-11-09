@@ -1,7 +1,7 @@
 import { Controller, Get, Request } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { UserRequest } from '~/types/request';
-import { ResponseData } from '~/types/response-data';
+import { formatResponse, ResponseData } from '~/types/response-data';
 import { SignedInUserResponse } from './types/responses';
 
 @Controller('user')
@@ -11,6 +11,6 @@ export class UserController {
   async getMe(
     @Request() req: UserRequest,
   ): Promise<ResponseData<SignedInUserResponse>> {
-    return { data: { ...req.user } };
+    return formatResponse({ ...req.user });
   }
 }

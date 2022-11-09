@@ -6,7 +6,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guard/jwt-auth.guard';
+import { CharityModule } from './charity/charity.module';
 import { configs } from './config';
+import { DatabaseSeedCommand } from './database/database-seed.command';
 import { TypeOrmConfigService } from './database/typeorm.service';
 import { NftModule } from './nft/nft.module';
 import { UserModule } from './user/user.module';
@@ -18,6 +20,7 @@ import { UserModule } from './user/user.module';
     UserModule,
     AuthModule,
     NftModule,
+    CharityModule,
   ],
   controllers: [AppController],
   providers: [
@@ -26,6 +29,7 @@ import { UserModule } from './user/user.module';
       useClass: JwtAuthGuard,
     },
     AppService,
+    DatabaseSeedCommand,
   ],
 })
 export class AppModule {}

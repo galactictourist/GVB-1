@@ -13,3 +13,10 @@ export interface ResponseData<T> {
   data: T;
   meta?: MetaData;
 }
+
+export function formatResponse<T>(data: T, meta?: MetaData): ResponseData<T> {
+  return {
+    data,
+    meta,
+  };
+}
