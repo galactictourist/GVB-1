@@ -15,12 +15,13 @@ export class CollectionService {
   async getPublishedCollectionByUserId(userId: string) {
     const user = await this.userService.findOneById(userId);
     if (user) {
-      const collections = await this.collectionRepository.find({
-        where: { ownerId: user.id, status: CollectionStatus.PUBLISHED },
+      const [data, total] = await this.collectionRepository.findAndCountBy({
+        ownerId: user.id,
+        status: CollectionStatus.PUBLISHED,
       });
-      return collections;
+      return { data, total };
     }
-    return [];
+    return { data: [], total: 0 };
   }
 
   async getNftsInCollection(collectionId: string) {
@@ -29,12 +30,12 @@ export class CollectionService {
     });
     if (collection) {
       if (collection.status === CollectionStatus.PUBLISHED) {
-        const nfts = await this.nftRepository.findBy({
+        const [data, total] = await this.nftRepository.findAndCountBy({
           collectionId: collection.id,
         });
-        return nfts;
+        return { data, total };
       }
     }
-    return [];
+    return { data: [], total: 0 };
   }
 }

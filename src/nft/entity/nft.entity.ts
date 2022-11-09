@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToOne } from 'typeorm';
+import { Column, Entity, ManyToOne } from 'typeorm';
 import { CharityEntity } from '~/charity/entity/charity.entity';
 import { TopicEntity } from '~/charity/entity/topic.entity';
 import { BaseElement } from '~/lib/database/base-element';
@@ -28,7 +28,7 @@ export class NftEntity extends BaseElement {
   @Column('uuid', { nullable: true })
   collectionId?: string;
 
-  @ManyToOne(() => CollectionEntity, (collection) => collection.id, {
+  @ManyToOne(() => CollectionEntity, (collection) => collection.nfts, {
     nullable: true,
   })
   collection?: CollectionEntity;
@@ -45,10 +45,10 @@ export class NftEntity extends BaseElement {
   @Column('uuid', { nullable: true })
   topicId?: string;
 
-  @OneToOne(() => CharityEntity, (charity) => charity.id, { nullable: true })
+  @ManyToOne(() => CharityEntity, (charity) => charity.nfts, { nullable: true })
   charity?: CharityEntity;
 
-  @OneToOne(() => TopicEntity, (topic) => topic.id, { nullable: true })
+  @ManyToOne(() => TopicEntity, (topic) => topic.nfts, { nullable: true })
   topic?: TopicEntity;
 
   @Column({

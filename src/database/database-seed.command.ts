@@ -89,7 +89,7 @@ export class DatabaseSeedCommand extends CommandRunner {
 
     const charityEntities = await createCharityEntities({}, 100);
     const charityTopicEntities: CharityTopicEntity[] = [];
-    const charityEntitiesChunk1 = charityEntities.slice(20, 40);
+    const charityEntitiesChunk1 = charityEntities.slice(0, 20);
     charityEntitiesChunk1.forEach((charity) => {
       faker.helpers
         .arrayElements(childrenTopicEntitiesFlat, 5)
@@ -103,7 +103,7 @@ export class DatabaseSeedCommand extends CommandRunner {
           );
         });
     });
-    const charityEntitiesChunk2 = charityEntities.slice(40, 60);
+    const charityEntitiesChunk2 = charityEntities.slice(20, 40);
     charityEntitiesChunk2.forEach((charity) => {
       faker.helpers
         .arrayElements(childrenTopicEntitiesFlat, 10)
@@ -117,7 +117,7 @@ export class DatabaseSeedCommand extends CommandRunner {
           );
         });
     });
-    const charityEntitiesChunk3 = charityEntities.slice(60, 80);
+    const charityEntitiesChunk3 = charityEntities.slice(40, 60);
     charityEntitiesChunk3.forEach((charity) => {
       faker.helpers
         .arrayElements(childrenTopicEntitiesFlat, 15)
@@ -131,7 +131,7 @@ export class DatabaseSeedCommand extends CommandRunner {
           );
         });
     });
-    const charityEntitiesChunk4 = charityEntities.slice(80, 100);
+    const charityEntitiesChunk4 = charityEntities.slice(60, 80);
     charityEntitiesChunk4.forEach((charity) => {
       faker.helpers
         .arrayElements(childrenTopicEntitiesFlat, 25)

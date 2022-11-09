@@ -1,5 +1,6 @@
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { BaseElement } from '~/lib/database/base-element';
+import { NftEntity } from '~/nft/entity/nft.entity';
 import { CharityTopicEntity } from './charity-topic.entity';
 
 @Entity({ schema: 'charity', name: 'topic' })
@@ -16,6 +17,9 @@ export class TopicEntity extends BaseElement {
   @OneToMany(() => TopicEntity, (topic) => topic.parent)
   children: TopicEntity[];
 
-  @OneToMany(() => CharityTopicEntity, (charityTopic) => charityTopic.topicId)
+  @OneToMany(() => CharityTopicEntity, (charityTopic) => charityTopic.topic)
   charityTopics: CharityTopicEntity[];
+
+  @OneToMany(() => NftEntity, (nft) => nft.topic)
+  nfts: NftEntity[];
 }

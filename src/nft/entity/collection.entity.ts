@@ -1,7 +1,8 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { BaseElement } from '~/lib/database/base-element';
 import { UserEntity } from '../../user/entity/user.entity';
 import { CollectionStatus } from '../types';
+import { NftEntity } from './nft.entity';
 
 @Entity({ schema: 'nft', name: 'collection' })
 export class CollectionEntity extends BaseElement {
@@ -20,6 +21,9 @@ export class CollectionEntity extends BaseElement {
     length: 20,
   })
   status: CollectionStatus;
+
+  @OneToMany(() => NftEntity, (nft) => nft.collection)
+  nfts: NftEntity[];
 
   isPublished() {
     return this.status === CollectionStatus.PUBLISHED;

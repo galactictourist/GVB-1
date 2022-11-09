@@ -26,9 +26,9 @@ export class CharityTopicEntity extends BaseElement {
   @Column({ nullable: true })
   wallet?: string;
 
-  @ManyToOne(() => CharityEntity, (charity) => charity.id)
+  @ManyToOne(() => CharityEntity, (charity) => charity.charityTopics)
   charity: CharityEntity;
 
-  @ManyToOne(() => TopicEntity, (topic) => topic.id)
+  @ManyToOne(() => TopicEntity, (topic) => topic.charityTopics)
   topic: TopicEntity;
 }

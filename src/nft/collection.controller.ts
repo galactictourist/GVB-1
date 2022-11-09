@@ -14,7 +14,7 @@ export class CollectionController {
   ): Promise<ResponseData<any[]>> {
     const collections =
       await this.collectionService.getPublishedCollectionByUserId(userId);
-    return formatResponse(collections);
+    return formatResponse(collections.data);
   }
 
   @Public()
@@ -23,6 +23,6 @@ export class CollectionController {
     @Param('id') collectionId: string,
   ): Promise<ResponseData<any[]>> {
     const nfts = await this.collectionService.getNftsInCollection(collectionId);
-    return formatResponse(nfts);
+    return formatResponse(nfts.data);
   }
 }
