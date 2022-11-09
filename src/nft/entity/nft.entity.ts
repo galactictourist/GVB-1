@@ -25,11 +25,13 @@ export class NftEntity extends BaseElement {
   })
   tokenId: string;
 
-  @Column('uuid')
-  collectionId: string;
+  @Column('uuid', { nullable: true })
+  collectionId?: string;
 
-  @ManyToOne(() => CollectionEntity, (collection) => collection.id)
-  collection: CollectionEntity;
+  @ManyToOne(() => CollectionEntity, (collection) => collection.id, {
+    nullable: true,
+  })
+  collection?: CollectionEntity;
 
   @Column('uuid')
   ownerId: string;
