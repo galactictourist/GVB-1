@@ -28,6 +28,7 @@
     "jwt:generate": "sh scripts/jwt_keygen.sh"
   },
   "dependencies": {
+    "@faker-js/faker": "^7.6.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^9.0.0",
@@ -64,7 +65,6 @@
     "winston": "^3.8.2"
   },
   "devDependencies": {
-    "@faker-js/faker": "^7.6.0",
     "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.0.0",
