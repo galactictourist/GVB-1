@@ -45,6 +45,18 @@ export class NftEntity extends BaseElement {
   @Column('uuid', { nullable: true })
   topicId?: string;
 
+  @Column({ length: 50, nullable: true })
+  currency?: string;
+
+  @Column({
+    type: 'decimal',
+    precision: 36,
+    scale: 18,
+    default: '0',
+    nullable: true,
+  })
+  price?: string;
+
   @ManyToOne(() => CharityEntity, (charity) => charity.nfts, { nullable: true })
   charity?: CharityEntity;
 
