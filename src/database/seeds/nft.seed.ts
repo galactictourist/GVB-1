@@ -8,6 +8,7 @@ import { BlockchainNetwork, BLOCKCHAIN_INFO } from '~/types/blockchain';
 export function createNft(oriData: DeepPartial<NftEntity> = {}) {
   const data: DeepPartial<NftEntity> = { ...oriData };
   data.id = data.id ?? faker.datatype.uuid();
+  data.name = data.name ?? faker.music.songName();
   data.network =
     data.network ??
     faker.helpers.arrayElement(Object.values(BlockchainNetwork));

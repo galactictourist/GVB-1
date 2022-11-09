@@ -6,7 +6,7 @@ import { NftEntity } from './nft.entity';
 
 @Entity({ schema: 'nft', name: 'collection' })
 export class CollectionEntity extends BaseElement {
-  @Column({ nullable: false, length: 200 })
+  @Column({ length: 200 })
   name: string;
 
   @Column('uuid')

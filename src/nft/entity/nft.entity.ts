@@ -25,6 +25,9 @@ export class NftEntity extends BaseElement {
   })
   tokenId: string;
 
+  @Column({ length: 200 })
+  name: string;
+
   @Column('uuid', { nullable: true })
   collectionId?: string;
 
