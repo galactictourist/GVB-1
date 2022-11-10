@@ -4,7 +4,7 @@ import { ConfigNamespace } from '~/types/config';
 export interface IHttpConfig {
   host: string;
   port: number;
-  corsOrigins?: string[];
+  corsOrigins: true | string[];
 }
 
 export const httpConfig = registerAs(
@@ -14,6 +14,6 @@ export const httpConfig = registerAs(
     host: process.env.HTTP_HOST || '127.0.0.1',
     corsOrigins: process.env.HTTP_CORS_ORIGINS
       ? process.env.HTTP_CORS_ORIGINS.split(',')
-      : undefined,
+      : true,
   }),
 );
