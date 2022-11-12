@@ -1,6 +1,7 @@
 import { ContextUserInterface } from '~/types/request';
 
-export interface SignedInResponse extends ContextUserInterface {
+export interface SignedInResponse {
+  user: ContextUserInterface;
   accessToken: string;
 }
 

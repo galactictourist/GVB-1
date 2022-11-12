@@ -24,7 +24,7 @@ export class AuthService {
     };
     const token = this.jwtService.sign(payload);
     return {
-      ...user,
+      user,
       accessToken: token,
     };
   }
@@ -47,7 +47,7 @@ export class AuthService {
         const user = await this.userService.findOrCreateOneByWallet(wallet);
         if (user) {
           nonce.expiredAt = new Date();
-          await this.nonceRepository.save(nonce);
+          await this.nonceRepository.delete({ id: nonce.id });
           return user;
         } else {
           throw new UnauthorizedException('Wallet is not registered');

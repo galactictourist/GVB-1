@@ -24,13 +24,23 @@ export class NonceRepository extends BaseRepository<NonceEntity> {
     const code = `auth:signin:${wallet}`;
     const otp = randomstring.generate({ length: 12 });
     const message = `Verification code: ${otp}\nClick SIGN to sign-in`;
-    const nonce = this.create({
-      code,
-      data: message,
-      expiredAt: DateTime.now()
-        .plus({ seconds: authConfig.signIn.nonceTtl })
-        .toJSDate(),
-    });
+    let nonce = await this.findOneBy({ code });
+    if (nonce) {
+      this.merge(nonce, {
+        data: message,
+        expiredAt: DateTime.now()
+          .plus({ seconds: authConfig.signIn.nonceTtl })
+          .toJSDate(),
+      });
+    } else {
+      nonce = this.create({
+        code,
+        data: message,
+        expiredAt: DateTime.now()
+          .plus({ seconds: authConfig.signIn.nonceTtl })
+          .toJSDate(),
+      });
+    }
     await this.save(nonce);
     return nonce;
   }
