@@ -1,4 +1,6 @@
-export interface SignedInResponse {
+import { ContextUserInterface } from '~/types/request';
+
+export interface SignedInResponse extends ContextUserInterface {
   accessToken: string;
 }
 
