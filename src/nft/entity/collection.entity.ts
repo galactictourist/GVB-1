@@ -9,6 +9,11 @@ export class CollectionEntity extends BaseElement {
   @Column({ length: 200 })
   name: string;
 
+  @Column({
+    nullable: true,
+  })
+  description: string;
+
   @Column('uuid')
   ownerId: string;
 
