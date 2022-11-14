@@ -4,7 +4,7 @@ import { BlockchainNetwork } from '~/types/blockchain';
 import { formatResponse } from '~/types/response-data';
 import { NftService } from './nft.service';
 
-@Controller('nft')
+@Controller('nfts')
 export class NftController {
   constructor(private readonly nftService: NftService) {}
 

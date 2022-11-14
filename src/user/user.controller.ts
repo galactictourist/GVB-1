@@ -4,7 +4,7 @@ import { UserRequest } from '~/types/request';
 import { formatResponse, ResponseData } from '~/types/response-data';
 import { SignedInUserResponse } from './types/responses';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
   @Get('/me')
   @ApiBearerAuth()

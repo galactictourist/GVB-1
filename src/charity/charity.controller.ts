@@ -3,7 +3,7 @@ import { Public } from '~/auth/decorator/public.decorator';
 import { formatResponse } from '~/types/response-data';
 import { CharityService } from './charity.service';
 
-@Controller('charity')
+@Controller('charities')
 export class CharityController {
   constructor(private readonly charityService: CharityService) {}
 

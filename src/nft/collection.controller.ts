@@ -3,7 +3,7 @@ import { Public } from '~/auth/decorator/public.decorator';
 import { formatResponse, ResponseData } from '~/types/response-data';
 import { CollectionService } from './collection.service';
 
-@Controller('collection')
+@Controller('collections')
 export class CollectionController {
   constructor(private readonly collectionService: CollectionService) {}
 
