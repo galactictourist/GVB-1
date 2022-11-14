@@ -9,6 +9,7 @@ import { JwtAuthGuard } from './auth/guard/jwt-auth.guard';
 import { CharityModule } from './charity/charity.module';
 import { configs } from './config';
 import { DatabaseSeedCommand } from './database/database-seed.command';
+import { DatabaseSchemaSeedCommand } from './database/schema-seed.command';
 import { TypeOrmConfigService } from './database/typeorm.service';
 import { NftModule } from './nft/nft.module';
 import { UserModule } from './user/user.module';
@@ -30,6 +31,7 @@ import { UserModule } from './user/user.module';
     },
     AppService,
     DatabaseSeedCommand,
+    DatabaseSchemaSeedCommand,
   ],
 })
 export class AppModule {}

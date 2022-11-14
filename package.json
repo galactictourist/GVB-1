@@ -7,6 +7,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "prebuild": "rimraf dist",
+    "external:start": "docker-compose up -d",
+    "db:setup": "yarn cli db:schema-seed && yarn migration:run && yarn cli db:seed",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
