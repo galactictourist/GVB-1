@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Param, Post, Request } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { Public } from '~/auth/decorator/public.decorator';
 import { UserRequest } from '~/types/request';
 import { formatResponse, ResponseData } from '~/types/response-data';
@@ -37,6 +38,7 @@ export class CollectionController {
   }
 
   @Post('')
+  @ApiBearerAuth()
   async createCollection(
     @Request() request: UserRequest,
     @Body() createCollectionDto: CreateCollectionDto,
