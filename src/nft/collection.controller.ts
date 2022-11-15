@@ -1,7 +1,10 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Request } from '@nestjs/common';
 import { Public } from '~/auth/decorator/public.decorator';
+import { UserRequest } from '~/types/request';
 import { formatResponse, ResponseData } from '~/types/response-data';
 import { CollectionService } from './collection.service';
+import { CreateCollectionDto } from './dto/create-collection.dto';
+import { CollectionStatus } from './types';
 
 @Controller('collections')
 export class CollectionController {
@@ -24,5 +27,17 @@ export class CollectionController {
   ): Promise<ResponseData<any[]>> {
     const nfts = await this.collectionService.getNftsInCollection(collectionId);
     return formatResponse(nfts.data);
+  }
+
+  @Post('')
+  async createCollection(
+    @Request() request: UserRequest,
+    @Body() createCollectionDto: CreateCollectionDto,
+  ): Promise<ResponseData<any>> {
+    const collection = await this.collectionService.createCollection(
+      createCollectionDto,
+      { ownerId: request.user.id, status: CollectionStatus.PUBLISHED },
+    );
+    return formatResponse(collection);
   }
 }

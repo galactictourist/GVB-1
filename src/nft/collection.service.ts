@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { DeepPartial } from 'typeorm';
 import { UserService } from '~/user/user.service';
+import { CreateCollectionDto } from './dto/create-collection.dto';
+import { CollectionEntity } from './entity/collection.entity';
 import { CollectionRepository } from './repository/collection.repository';
 import { NftRepository } from './repository/nft.repository';
 import { CollectionStatus } from './types';
@@ -11,6 +14,21 @@ export class CollectionService {
     private readonly userService: UserService,
     private readonly nftRepository: NftRepository,
   ) {}
+
+  async createCollection(
+    createCollectionDto: CreateCollectionDto,
+    additions: DeepPartial<CollectionEntity>,
+  ) {
+    const collectionEntity = this.collectionRepository.create({
+      ...additions,
+      name: createCollectionDto.name,
+      description: createCollectionDto.description,
+    });
+
+    await collectionEntity.save();
+    console.log('collectionEntity', collectionEntity);
+    return collectionEntity;
+  }
 
   async getPublishedCollectionByUserId(userId: string) {
     const user = await this.userService.findOneById(userId);
