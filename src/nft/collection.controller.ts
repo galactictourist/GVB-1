@@ -4,6 +4,7 @@ import { UserRequest } from '~/types/request';
 import { formatResponse, ResponseData } from '~/types/response-data';
 import { CollectionService } from './collection.service';
 import { CreateCollectionDto } from './dto/create-collection.dto';
+import { FilterCollectionDto } from './dto/filter-collection.dto';
 import { CollectionStatus } from './types';
 
 @Controller('collections')
@@ -11,13 +12,19 @@ export class CollectionController {
   constructor(private readonly collectionService: CollectionService) {}
 
   @Public()
-  @Get('user/:userId')
-  async getPublishedCollectionByWallet(
-    @Param('userId') userId: string,
+  @Post('_search')
+  async search(
+    @Body() searchCollectionDto: FilterCollectionDto,
   ): Promise<ResponseData<any[]>> {
-    const collections =
-      await this.collectionService.getPublishedCollectionByUserId(userId);
-    return formatResponse(collections.data);
+    const collections = await this.collectionService.search(
+      searchCollectionDto,
+      { status: CollectionStatus.PUBLISHED },
+    );
+    return formatResponse(collections.data, {
+      pagination: {
+        total: collections.total,
+      },
+    });
   }
 
   @Public()

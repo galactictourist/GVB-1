@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { DeepPartial } from 'typeorm';
+import { DeepPartial, FindOptionsWhere, In } from 'typeorm';
 import { UserService } from '~/user/user.service';
 import { CreateCollectionDto } from './dto/create-collection.dto';
+import { FilterCollectionDto } from './dto/filter-collection.dto';
 import { CollectionEntity } from './entity/collection.entity';
 import { CollectionRepository } from './repository/collection.repository';
 import { NftRepository } from './repository/nft.repository';
@@ -17,10 +18,10 @@ export class CollectionService {
 
   async createCollection(
     createCollectionDto: CreateCollectionDto,
-    additions: DeepPartial<CollectionEntity>,
+    defaults: DeepPartial<CollectionEntity>,
   ) {
     const collectionEntity = this.collectionRepository.create({
-      ...additions,
+      ...defaults,
       name: createCollectionDto.name,
       description: createCollectionDto.description,
     });
@@ -30,16 +31,20 @@ export class CollectionService {
     return collectionEntity;
   }
 
-  async getPublishedCollectionByUserId(userId: string) {
-    const user = await this.userService.findOneById(userId);
-    if (user) {
-      const [data, total] = await this.collectionRepository.findAndCountBy({
-        ownerId: user.id,
-        status: CollectionStatus.PUBLISHED,
-      });
-      return { data, total };
+  async search(
+    searchCollectionDto: FilterCollectionDto,
+    defaults: FindOptionsWhere<CollectionEntity>,
+  ) {
+    const where: FindOptionsWhere<CollectionEntity> = {
+      ...defaults,
+    };
+    if (searchCollectionDto.ownerIds && searchCollectionDto.ownerIds.length) {
+      where.ownerId = In(searchCollectionDto.ownerIds);
     }
-    return { data: [], total: 0 };
+    console.log('where', where);
+
+    const [data, total] = await this.collectionRepository.findAndCountBy(where);
+    return { data, total };
   }
 
   async getNftsInCollection(collectionId: string) {

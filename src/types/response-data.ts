@@ -3,9 +3,9 @@ interface MetaData {
 }
 
 interface Pagination {
-  limit: number;
+  limit?: number;
   total?: number;
-  page: number;
+  page?: number;
   maxPage?: number;
 }
 
