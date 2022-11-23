@@ -12,5 +12,6 @@ export class DatabaseSchemaSeedCommand extends CommandRunner {
     await this.entityManager.query(`CREATE SCHEMA IF NOT EXISTS "user"`);
     await this.entityManager.query(`CREATE SCHEMA IF NOT EXISTS "nft"`);
     await this.entityManager.query(`CREATE SCHEMA IF NOT EXISTS "charity"`);
+    await this.entityManager.query(`CREATE SCHEMA IF NOT EXISTS "marketplace"`);
   }
 }
