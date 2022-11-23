@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany } from 'typeorm';
 import { BaseElement } from '~/lib/database/base-element';
+import { SaleEntity } from '~/marketplace/entity/sale.entity';
 import { NftEntity } from '~/nft/entity/nft.entity';
 import { CharityStatus } from '../types';
 import { CharityTopicEntity } from './charity-topic.entity';
@@ -23,6 +24,9 @@ export class CharityEntity extends BaseElement {
 
   @OneToMany(() => NftEntity, (nft) => nft.charity)
   nfts: NftEntity[];
+
+  @OneToMany(() => SaleEntity, (nft) => nft.charity)
+  sales: SaleEntity[];
 
   isActive() {
     return this.status === CharityStatus.ACTIVE;
