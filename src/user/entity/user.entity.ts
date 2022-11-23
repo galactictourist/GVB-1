@@ -7,6 +7,9 @@ export class UserEntity extends BaseElement {
   @Column({ nullable: true, length: 50 })
   wallet?: string;
 
+  @Column({ nullable: true, length: 100 })
+  name?: string;
+
   @Column({
     enum: UserStatus,
     default: UserStatus.ACTIVE,
