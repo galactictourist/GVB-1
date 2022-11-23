@@ -28,6 +28,18 @@ export class NftEntity extends BaseElement {
   @Column({ length: 200 })
   name: string;
 
+  @Column({ length: 200, nullable: true })
+  imageUri?: string;
+
+  @Column({ nullable: true })
+  description?: string;
+
+  @Column('jsonb', { nullable: true })
+  attributes?: { [key: string]: any };
+
+  @Column({ length: 200, nullable: true })
+  metadataUri?: string;
+
   @Column('uuid', { nullable: true })
   collectionId?: string;
 
