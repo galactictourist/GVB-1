@@ -4,11 +4,12 @@ import { TopicEntity } from '~/charity/entity/topic.entity';
 import { BaseElement } from '~/lib/database/base-element';
 import { NftEntity } from '~/nft/entity/nft.entity';
 import { BlockchainNetwork } from '~/types/blockchain';
+import { CountryCode } from '~/types/country';
 import { UserEntity } from '../../user/entity/user.entity';
 import { OrderStatus } from '../types';
 import { SaleEntity } from './sale.entity';
 
-@Entity({ schema: 'marketplace', name: 'order' })
+@Entity({ name: 'order' })
 export class OrderEntity extends BaseElement {
   @Column('uuid')
   sellerId: string;
@@ -51,7 +52,6 @@ export class OrderEntity extends BaseElement {
     precision: 36,
     scale: 18,
     default: '0',
-    nullable: true,
   })
   price: string;
 
@@ -60,7 +60,6 @@ export class OrderEntity extends BaseElement {
     precision: 36,
     scale: 18,
     default: '0',
-    nullable: true,
   })
   total: string;
 
@@ -85,9 +84,15 @@ export class OrderEntity extends BaseElement {
   @ManyToOne(() => TopicEntity, (topic) => topic.sales, { nullable: true })
   topic?: TopicEntity;
 
-  @Column({ length: 100, nullable: true })
+  @Column({ enum: CountryCode, length: 2, nullable: true })
+  countryCode?: CountryCode;
+
+  @Column('int', { nullable: true })
+  charityShare?: number;
+
+  @Column({ length: 50, nullable: true })
   charityWallet?: string;
 
-  @Column({ length: 100, nullable: true })
+  @Column({ length: 66, nullable: true })
   txId?: string;
 }

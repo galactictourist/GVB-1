@@ -4,7 +4,7 @@ import { UserEntity } from '../../user/entity/user.entity';
 import { CollectionStatus } from '../types';
 import { NftEntity } from './nft.entity';
 
-@Entity({ schema: 'nft', name: 'collection' })
+@Entity({ name: 'collection' })
 export class CollectionEntity extends BaseElement {
   @Column({ length: 200 })
   name: string;
@@ -19,6 +19,9 @@ export class CollectionEntity extends BaseElement {
 
   @ManyToOne(() => UserEntity, (user) => user.id)
   owner: UserEntity;
+
+  @Column({ length: 200, nullable: true })
+  imageUrl?: string;
 
   @Column({
     enum: CollectionStatus,

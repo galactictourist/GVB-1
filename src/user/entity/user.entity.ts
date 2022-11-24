@@ -3,10 +3,13 @@ import { BaseElement } from '~/lib/database/base-element';
 import { CountryCode } from '~/types/country';
 import { UserStatus } from '../types';
 
-@Entity({ schema: 'user', name: 'user' })
+@Entity({ name: 'user' })
 export class UserEntity extends BaseElement {
   @Column({ nullable: true, length: 50 })
   wallet?: string;
+
+  @Column({ length: 200, nullable: true })
+  imageUrl?: string;
 
   @Column({ nullable: true, length: 100 })
   name?: string;

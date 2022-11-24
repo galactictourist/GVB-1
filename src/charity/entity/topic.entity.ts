@@ -1,10 +1,9 @@
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { BaseElement } from '~/lib/database/base-element';
 import { SaleEntity } from '~/marketplace/entity/sale.entity';
-import { NftEntity } from '~/nft/entity/nft.entity';
 import { CharityTopicEntity } from './charity-topic.entity';
 
-@Entity({ schema: 'charity', name: 'topic' })
+@Entity({ name: 'topic' })
 export class TopicEntity extends BaseElement {
   @Column({ length: 200 })
   name: string;
@@ -20,9 +19,6 @@ export class TopicEntity extends BaseElement {
 
   @OneToMany(() => CharityTopicEntity, (charityTopic) => charityTopic.topic)
   charityTopics: CharityTopicEntity[];
-
-  @OneToMany(() => NftEntity, (nft) => nft.topic)
-  nfts: NftEntity[];
 
   @OneToMany(() => SaleEntity, (sale) => sale.topic)
   sales: SaleEntity[];

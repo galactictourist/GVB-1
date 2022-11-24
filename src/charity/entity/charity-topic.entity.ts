@@ -5,7 +5,7 @@ import { BlockchainNetwork } from '../../types/blockchain';
 import { CharityEntity } from './charity.entity';
 import { TopicEntity } from './topic.entity';
 
-@Entity({ schema: 'charity', name: 'charity_topic' })
+@Entity({ name: 'charity_topic' })
 export class CharityTopicEntity extends BaseElement {
   @Column('uuid')
   charityId: string;
@@ -13,7 +13,7 @@ export class CharityTopicEntity extends BaseElement {
   @Column('uuid')
   topicId: string;
 
-  @Column({ enum: CountryCode })
+  @Column({ enum: CountryCode, length: 2 })
   countryCode: CountryCode;
 
   @Column({
@@ -23,7 +23,7 @@ export class CharityTopicEntity extends BaseElement {
   })
   network?: BlockchainNetwork;
 
-  @Column({ nullable: true })
+  @Column({ length: 50, nullable: true })
   wallet?: string;
 
   @ManyToOne(() => CharityEntity, (charity) => charity.charityTopics)

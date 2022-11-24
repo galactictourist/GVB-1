@@ -1,35 +1,40 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
-import { CharityEntity } from '~/charity/entity/charity.entity';
-import { TopicEntity } from '~/charity/entity/topic.entity';
+import { Column, Entity, ManyToOne, Unique } from 'typeorm';
 import { BaseElement } from '~/lib/database/base-element';
 import { BlockchainNetwork } from '../../types/blockchain';
 import { UserEntity } from '../../user/entity/user.entity';
 import { NftStatus } from '../types';
 import { CollectionEntity } from './collection.entity';
 
-@Entity({ schema: 'nft', name: 'nft' })
+@Entity({ name: 'nft' })
+@Unique('nft_uq', ['network', 'scAddress', 'tokenId'])
 export class NftEntity extends BaseElement {
   @Column({
     enum: BlockchainNetwork,
     length: 20,
+    nullable: true,
   })
-  network: BlockchainNetwork;
+  network?: BlockchainNetwork;
 
   @Column({
     length: 50,
+    nullable: true,
   })
-  scAddress: string;
+  scAddress?: string;
 
   @Column({
     length: 200,
+    nullable: true,
   })
-  tokenId: string;
+  tokenId?: string;
 
   @Column({ length: 200 })
   name: string;
 
   @Column({ length: 200, nullable: true })
-  imageUri?: string;
+  imageUrl?: string;
+
+  @Column({ length: 200, nullable: true })
+  imageIpfsUrl?: string;
 
   @Column({ nullable: true })
   description?: string;
@@ -38,7 +43,7 @@ export class NftEntity extends BaseElement {
   attributes?: { [key: string]: any };
 
   @Column({ length: 200, nullable: true })
-  metadataUri?: string;
+  metadataIpfsUrl?: string;
 
   @Column('uuid', { nullable: true })
   collectionId?: string;
@@ -54,36 +59,18 @@ export class NftEntity extends BaseElement {
   @ManyToOne(() => UserEntity, (user) => user.id)
   owner: UserEntity;
 
-  @Column('uuid', { nullable: true })
-  charityId?: string;
-
-  @Column('uuid', { nullable: true })
-  topicId?: string;
-
-  @Column({ length: 50, nullable: true })
-  currency?: string;
-
-  @Column({
-    type: 'decimal',
-    precision: 36,
-    scale: 18,
-    default: '0',
-    nullable: true,
-  })
-  price?: string;
-
-  @ManyToOne(() => CharityEntity, (charity) => charity.nfts, { nullable: true })
-  charity?: CharityEntity;
-
-  @ManyToOne(() => TopicEntity, (topic) => topic.nfts, { nullable: true })
-  topic?: TopicEntity;
-
   @Column({
     enum: NftStatus,
     default: NftStatus.ACTIVE,
     length: 20,
   })
   status: NftStatus;
+
+  @Column({ length: 50, nullable: true })
+  creatorWallet?: string;
+
+  @Column('int', { nullable: true })
+  royalty?: number;
 
   isActive() {
     return this.status === NftStatus.ACTIVE;

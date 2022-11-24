@@ -8,7 +8,7 @@ import { BlockchainNetwork } from '../../types/blockchain';
 import { UserEntity } from '../../user/entity/user.entity';
 import { SaleStatus } from '../types';
 
-@Entity({ schema: 'marketplace', name: 'sale' })
+@Entity({ name: 'sale' })
 export class SaleEntity extends BaseElement {
   @Column('uuid')
   userId: string;
@@ -30,9 +30,8 @@ export class SaleEntity extends BaseElement {
     precision: 36,
     scale: 18,
     default: '0',
-    nullable: true,
   })
-  price?: string;
+  price: string;
 
   @Column('uuid')
   nftId: string;
@@ -54,8 +53,11 @@ export class SaleEntity extends BaseElement {
   @ManyToOne(() => TopicEntity, (topic) => topic.sales, { nullable: true })
   topic?: TopicEntity;
 
-  @Column({ enum: CountryCode, nullable: true })
+  @Column({ enum: CountryCode, length: 2, nullable: true })
   countryCode?: CountryCode;
+
+  @Column('int', { nullable: true })
+  charityShare?: number;
 
   @Column({
     enum: SaleStatus,
