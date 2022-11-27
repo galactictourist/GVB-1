@@ -5,7 +5,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { IJwtConfig } from '~/config/jwt.config';
 import { JwtAuthPayload } from '~/types';
 import { ConfigNamespace } from '~/types/config';
-import { ContextUser } from '~/types/request';
+import { ContextUser } from '~/types/user-request';
 import { UserService } from '~/user/user.service';
 
 @Injectable()

@@ -1,7 +1,13 @@
-import { ContextUserInterface } from '~/types/request';
+import { ContextAdminInterface } from '~/types/admin-request';
+import { ContextUserInterface } from '~/types/user-request';
 
 export interface SignedInResponse {
   user: ContextUserInterface;
+  accessToken: string;
+}
+
+export interface AdminSignedInResponse {
+  user: ContextAdminInterface;
   accessToken: string;
 }
 

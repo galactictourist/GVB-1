@@ -10,8 +10,10 @@ import { TopicRepository } from '~/charity/repository/topic.repository';
 import { CollectionRepository } from '~/nft/repository/collection.repository';
 import { NftRepository } from '~/nft/repository/nft.repository';
 import { BlockchainNetwork } from '~/types/blockchain';
-import { UserStatus } from '~/user/types';
+import { AdminRepository } from '~/user/repository/admin.repository';
+import { AdminRole, AdminStatus, UserStatus } from '~/user/types';
 import { UserRepository } from '../user/repository/user.repository';
+import { createAdminEntities, createAdminEntity } from './seeds/admin.seed';
 import { createCharityTopic } from './seeds/charity-topic.seed';
 import { createCharityEntities } from './seeds/charity.seed';
 import { createCollectionEntities } from './seeds/collection.seed';
@@ -22,6 +24,7 @@ import { createUserEntities } from './seeds/user.seed';
 @Command({ name: 'db:seed', description: 'Seed database' })
 export class DatabaseSeedCommand extends CommandRunner {
   constructor(
+    private readonly adminRepository: AdminRepository,
     private readonly userRepository: UserRepository,
     private readonly collectionRepository: CollectionRepository,
     private readonly nftRepository: NftRepository,
@@ -39,6 +42,7 @@ export class DatabaseSeedCommand extends CommandRunner {
   }
 
   async clear() {
+    await this.adminRepository.deleteAll();
     await this.charityTopicRepository.deleteAll();
     await this.topicRepository.deleteAll();
     await this.charityRepository.deleteAll();
@@ -146,5 +150,19 @@ export class DatabaseSeedCommand extends CommandRunner {
         });
     });
     await CharityTopicEntity.save(charityTopicEntities);
+
+    await createAdminEntity({
+      username: 'sadmin',
+      password: '$2a$12$2AQML.1jOi1sG58ZbpMrSus6cGgIi/aWGo663QwMU82Jz4HquiQTW',
+      role: AdminRole.SUPER_ADMIN,
+      status: AdminStatus.ACTIVE,
+    });
+    await createAdminEntity({
+      username: 'admin',
+      password: '$2a$12$2AQML.1jOi1sG58ZbpMrSus6cGgIi/aWGo663QwMU82Jz4HquiQTW',
+      role: AdminRole.ADMIN,
+      status: AdminStatus.ACTIVE,
+    });
+    await createAdminEntities({}, 20);
   }
 }

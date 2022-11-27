@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Param, Post, Request } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { Public } from '~/auth/decorator/public.decorator';
-import { UserRequest } from '~/types/request';
 import { formatResponse, ResponseData } from '~/types/response-data';
+import { UserRequest } from '~/types/user-request';
 import { CollectionService } from './collection.service';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { FilterCollectionDto } from './dto/filter-collection.dto';
