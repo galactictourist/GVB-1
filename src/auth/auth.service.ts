@@ -8,6 +8,7 @@ import { UserService } from '~/user/user.service';
 import { CreateNonceDto } from './dto/create-nonce.dto';
 import { NonceRepository } from './repository/nonce.repository';
 import { SignatureVerifierService } from './signature-verifier.service';
+import { JwtPurpose } from './types';
 
 @Injectable()
 export class AuthService {
@@ -40,7 +41,7 @@ export class AuthService {
 
   async adminSignIn(admin: ContextAdmin) {
     const payload = {
-      purpose: 'admin',
+      purpose: JwtPurpose.ADMIN,
       username: admin.username,
       role: admin.role,
       sub: admin.id,

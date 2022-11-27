@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserRepository } from './repository/user.repository';
 
 @Injectable()
@@ -10,13 +10,14 @@ export class UserService {
     return user;
   }
 
-  async findOneByWallet(wallet: string) {
-    const user = await this.userRepository.findOneByWallet(wallet);
-    return user;
-  }
-
-  async findOneById(id: string) {
+  async validateUser(id: string) {
     const user = await this.userRepository.findOneBy({ id });
+    if (!user) {
+      throw new UnauthorizedException('User is not found');
+    }
+    if (!user.isActive()) {
+      throw new UnauthorizedException('User is not active');
+    }
     return user;
   }
 }

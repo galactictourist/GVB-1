@@ -11,6 +11,7 @@ import { AuthService } from './auth.service';
 import { NonceEntity } from './entity/nonce.entity';
 import { NonceRepository } from './repository/nonce.repository';
 import { SignatureVerifierService } from './signature-verifier.service';
+import { JwtAdminStrategy } from './strategy/jwt-admin.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { LocalAdminStrategy } from './strategy/local-admin.strategy';
 import { Web3Strategy } from './strategy/web3.strategy';
@@ -46,6 +47,7 @@ import { Web3Strategy } from './strategy/web3.strategy';
     NonceRepository,
     Web3Strategy,
     JwtStrategy,
+    JwtAdminStrategy,
     LocalAdminStrategy,
     SignatureVerifierService,
   ],

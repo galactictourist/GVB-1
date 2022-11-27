@@ -3,16 +3,17 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { IJwtConfig } from '~/config/jwt.config';
-import { JwtAuthPayload } from '~/types';
+import { JwtAdminAuthPayload } from '~/types';
+import { ContextAdmin } from '~/types/admin-request';
 import { ConfigNamespace } from '~/types/config';
-import { ContextUser } from '~/types/user-request';
-import { UserService } from '~/user/user.service';
+import { AdminService } from '~/user/admin.service';
+import { JwtPurpose } from '../types';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtAdminStrategy extends PassportStrategy(Strategy, 'jwt-admin') {
   constructor(
     private readonly configService: ConfigService,
-    private readonly userService: UserService,
+    private readonly adminService: AdminService,
   ) {
     const jwtConfig = configService.getOrThrow<IJwtConfig>(ConfigNamespace.JWT);
     super({
@@ -23,11 +24,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: JwtAuthPayload) {
-    const user = await this.userService.validateUser(payload.sub);
-    if (!user) {
+  async validate(payload: JwtAdminAuthPayload) {
+    if (payload.purpose !== JwtPurpose.ADMIN) {
       throw new UnauthorizedException();
     }
-    return ContextUser.fromEntity(user);
+    const admin = await this.adminService.validateAdminById(payload.sub);
+    if (!admin) {
+      throw new UnauthorizedException();
+    }
+    return ContextAdmin.fromEntity(admin);
   }
 }
