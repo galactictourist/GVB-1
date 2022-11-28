@@ -1,7 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import { FindOptionsWhere, In } from 'typeorm';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { DeepPartial, FindOptionsWhere, In } from 'typeorm';
 import { BlockchainNetwork } from '~/types/blockchain';
+import { ContextUser } from '~/types/user-request';
+import { CreateNftDto } from './dto/create-nft.dto';
 import { FilterNftDto } from './dto/filter-nft.dto';
+import { UpdateNftDto } from './dto/update-nft.dto';
 import { NftEntity } from './entity/nft.entity';
 import { NftRepository } from './repository/nft.repository';
 
@@ -35,6 +42,40 @@ export class NftService {
       scAddress,
       tokenId,
     });
+    if (!nft) {
+      throw new NotFoundException('Nft not found');
+    }
     return nft;
+  }
+
+  async createNft(
+    createNftDto: CreateNftDto,
+    defaults: DeepPartial<NftEntity>,
+  ) {
+    const nftEntity = this.nftRepository.create({
+      ...defaults,
+      name: createNftDto.name,
+      description: createNftDto.description,
+    });
+
+    await nftEntity.save();
+    return nftEntity;
+  }
+
+  async updateNft(id: string, updateNftDto: UpdateNftDto, user: ContextUser) {
+    const nftEntity = await this.nftRepository.findOneBy({
+      id,
+    });
+    if (!nftEntity) {
+      throw new NotFoundException('Nft not found');
+    }
+    if (nftEntity.ownerId !== user.id) {
+      throw new BadRequestException('Nft owner mismatch');
+    }
+    nftEntity.name = updateNftDto.name;
+    nftEntity.description = updateNftDto.description;
+
+    await nftEntity.save();
+    return nftEntity;
   }
 }

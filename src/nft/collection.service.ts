@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { DeepPartial, FindOptionsWhere, In } from 'typeorm';
+import { ContextUser } from '~/types/user-request';
 import { UserService } from '~/user/user.service';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { FilterCollectionDto } from './dto/filter-collection.dto';
@@ -39,7 +40,7 @@ export class CollectionService {
   async updateCollection(
     id: string,
     updateCollectionDto: UpdateCollectionDto,
-    userId: string,
+    user: ContextUser,
   ) {
     const collectionEntity = await this.collectionRepository.findOneBy({
       id,
@@ -47,7 +48,7 @@ export class CollectionService {
     if (!collectionEntity) {
       throw new NotFoundException('Collection not found');
     }
-    if (collectionEntity.ownerId !== userId) {
+    if (collectionEntity.ownerId !== user.id) {
       throw new BadRequestException('Collection owner mismatch');
     }
     collectionEntity.name = updateCollectionDto.name;

@@ -69,7 +69,7 @@ export class CollectionController {
     const collection = await this.collectionService.updateCollection(
       collectionId,
       updateCollectionDto,
-      request.user.id,
+      request.user,
     );
     return formatResponse(collection);
   }
