@@ -1,8 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { DeepPartial, FindOptionsWhere, In } from 'typeorm';
 import { UserService } from '~/user/user.service';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { FilterCollectionDto } from './dto/filter-collection.dto';
+import { UpdateCollectionDto } from './dto/update-collection.dto';
 import { CollectionEntity } from './entity/collection.entity';
 import { CollectionRepository } from './repository/collection.repository';
 import { NftRepository } from './repository/nft.repository';
@@ -28,6 +33,27 @@ export class CollectionService {
 
     await collectionEntity.save();
     console.log('collectionEntity', collectionEntity);
+    return collectionEntity;
+  }
+
+  async updateCollection(
+    id: string,
+    updateCollectionDto: UpdateCollectionDto,
+    userId: string,
+  ) {
+    const collectionEntity = await this.collectionRepository.findOneBy({
+      id,
+    });
+    if (!collectionEntity) {
+      throw new NotFoundException('Collection not found');
+    }
+    if (collectionEntity.ownerId !== userId) {
+      throw new BadRequestException('Collection owner mismatch');
+    }
+    collectionEntity.name = updateCollectionDto.name;
+    collectionEntity.description = updateCollectionDto.description;
+
+    await collectionEntity.save();
     return collectionEntity;
   }
 
