@@ -152,7 +152,7 @@ export class DatabaseSeedCommand extends CommandRunner {
     await CharityTopicEntity.save(charityTopicEntities);
 
     await createAdminEntity({
-      username: 'sadmin',
+      username: 'root',
       password: '$2a$12$2AQML.1jOi1sG58ZbpMrSus6cGgIi/aWGo663QwMU82Jz4HquiQTW',
       role: AdminRole.SUPER_ADMIN,
       status: AdminStatus.ACTIVE,
