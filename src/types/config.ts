@@ -6,4 +6,5 @@ export enum ConfigNamespace {
   BLOCKCHAIN = 'blockchain',
   SWAGGER = 'swagger',
   DATABASE = 'database',
+  SERVICE = 'service',
 }

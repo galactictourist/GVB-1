@@ -4,6 +4,7 @@ import { blockchainConfig } from './blockchain.config';
 import { databaseConfig } from './database.config';
 import { httpConfig } from './http.config';
 import { jwtConfig } from './jwt.config';
+import { serviceConfig } from './service.config';
 import { swaggerConfig } from './swagger.config';
 
 export const configs = [
@@ -14,4 +15,5 @@ export const configs = [
   jwtConfig,
   authConfig,
   blockchainConfig,
+  serviceConfig,
 ];
