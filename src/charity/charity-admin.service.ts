@@ -8,7 +8,7 @@ import { CharityRepository } from './repository/charity.repository';
 export class CharityAdminService {
   constructor(
     private readonly charityRepository: CharityRepository,
-    private readonly charityToppicRepository: CharityTopicRepository,
+    private readonly charityTopicRepository: CharityTopicRepository,
   ) {}
 
   async createCharity(createCharityDto: CreateCharityAdminDto) {
@@ -20,12 +20,9 @@ export class CharityAdminService {
   }
 
   async updateCharity(id: string, updateCharityDto: UpdateCharityAdminDto) {
-    const updateResult = await this.charityRepository.update(
-      { id },
-      {
-        name: updateCharityDto.name,
-      },
-    );
-    return updateResult;
+    const charity = await this.charityRepository.findOneByOrFail({ id });
+    charity.name = updateCharityDto.name;
+    await charity.save();
+    return charity;
   }
 }

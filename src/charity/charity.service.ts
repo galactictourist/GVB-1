@@ -7,7 +7,7 @@ import { CharityStatus } from './types';
 export class CharityService {
   constructor(
     private readonly charityRepository: CharityRepository,
-    private readonly charityToppicRepository: CharityTopicRepository,
+    private readonly charityTopicRepository: CharityTopicRepository,
   ) {}
 
   async getActiveCharities() {
@@ -25,7 +25,7 @@ export class CharityService {
   }
 
   async getCharityTopics(charityId: string) {
-    const [data, total] = await this.charityToppicRepository.findAndCount({
+    const [data, total] = await this.charityTopicRepository.findAndCount({
       relationLoadStrategy: 'query',
       relations: {
         topic: true,
