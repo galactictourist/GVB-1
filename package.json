@@ -56,6 +56,7 @@
     "luxon": "^3.0.4",
     "nest-commander": "^3.3.0",
     "nest-winston": "^1.8.0",
+    "nft.storage": "^7.0.0",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
