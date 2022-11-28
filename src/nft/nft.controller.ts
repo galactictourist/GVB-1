@@ -65,11 +65,7 @@ export class NftController {
     @Request() request: UserRequest,
     @Body() updateNftDto: UpdateNftDto,
   ): Promise<ResponseData<NftEntity>> {
-    const nft = await this.nftService.updateNft(
-      id,
-      updateNftDto,
-      request.user.id,
-    );
+    const nft = await this.nftService.updateNft(id, updateNftDto, request.user);
     return formatResponse(nft);
   }
 }
