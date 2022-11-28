@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { IJwtConfig } from '~/config/jwt.config';
 import { ConfigNamespace } from '~/types/config';
 import { UserModule } from '~/user/user.module';
+import { AuthAdminController } from './auth-admin.controller';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { NonceEntity } from './entity/nonce.entity';
@@ -41,7 +42,7 @@ import { Web3Strategy } from './strategy/web3.strategy';
     TypeOrmModule.forFeature([NonceEntity]),
     forwardRef(() => UserModule),
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, AuthAdminController],
   providers: [
     AuthService,
     NonceRepository,
