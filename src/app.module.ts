@@ -9,11 +9,10 @@ import { JwtAuthGuard } from './auth/guard/jwt-auth.guard';
 import { CharityModule } from './charity/charity.module';
 import { configs } from './config';
 import { DatabaseSeedCommand } from './database/database-seed.command';
-import { DatabaseSchemaSeedCommand } from './database/schema-seed.command';
 import { TypeOrmConfigService } from './database/typeorm.service';
+import { MarketplaceModule } from './marketplace/marketplace.module';
 import { NftModule } from './nft/nft.module';
 import { UserModule } from './user/user.module';
-import { MarketplaceModule } from './marketplace/marketplace.module';
 
 @Module({
   imports: [
@@ -33,7 +32,6 @@ import { MarketplaceModule } from './marketplace/marketplace.module';
     },
     AppService,
     DatabaseSeedCommand,
-    DatabaseSchemaSeedCommand,
   ],
 })
 export class AppModule {}
