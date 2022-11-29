@@ -1,9 +1,11 @@
 import { Controller, Get, Param } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Public } from '~/auth/decorator/public.decorator';
 import { formatResponse } from '~/types/response-data';
 import { CharityService } from './charity.service';
 
 @Controller('charities')
+@ApiTags('charity')
 export class CharityController {
   constructor(private readonly charityService: CharityService) {}
 

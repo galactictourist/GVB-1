@@ -1,9 +1,11 @@
 import { Controller, Get, Param } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Public } from '~/auth/decorator/public.decorator';
 import { formatResponse } from '~/types/response-data';
 import { TopicService } from './topic.service';
 
 @Controller('topics')
+@ApiTags('topic')
 export class TopicController {
   constructor(private readonly topicService: TopicService) {}
 

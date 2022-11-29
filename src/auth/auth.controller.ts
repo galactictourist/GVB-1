@@ -1,5 +1,5 @@
 import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
-import { ApiBody } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { Wallet } from 'ethers';
 import { formatResponse, ResponseData } from '~/types/response-data';
 import { UserRequest } from '~/types/user-request';
@@ -17,6 +17,7 @@ import {
 } from './types/responses';
 
 @Controller('auth')
+@ApiTags('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 

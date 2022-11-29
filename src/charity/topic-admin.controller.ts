@@ -1,5 +1,5 @@
 import { Body, Controller, Param, Post, Put, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from '~/auth/decorator/public.decorator';
 import { Roles } from '~/auth/decorator/roles.decorator';
 import { JwtAdminAuthGuard } from '~/auth/guard/jwt-admin-auth.guard';
@@ -15,6 +15,7 @@ import { TopicAdminService } from './topic-admin.service';
 @UseGuards(JwtAdminAuthGuard, RolesGuard)
 @Roles(Object.values(AdminRole))
 @ApiBearerAuth()
+@ApiTags('topic', 'admin', 'admin/topic')
 export class TopicAdminController {
   constructor(private readonly topicService: TopicAdminService) {}
 

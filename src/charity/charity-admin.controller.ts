@@ -1,5 +1,5 @@
 import { Body, Controller, Param, Post, Put, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from '~/auth/decorator/public.decorator';
 import { Roles } from '~/auth/decorator/roles.decorator';
 import { JwtAdminAuthGuard } from '~/auth/guard/jwt-admin-auth.guard';
@@ -15,6 +15,7 @@ import { UpdateCharityAdminDto } from './dto/update-charity-admin.dto';
 @UseGuards(JwtAdminAuthGuard, RolesGuard)
 @Roles(Object.values(AdminRole))
 @ApiBearerAuth()
+@ApiTags('charity', 'admin', 'admin/charity')
 export class CharityAdminController {
   constructor(private readonly charityAdminService: CharityAdminService) {}
 

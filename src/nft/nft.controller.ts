@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Post, Request } from '@nestjs/common';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from '~/auth/decorator/public.decorator';
 import { BlockchainNetwork } from '~/types/blockchain';
 import { formatResponse, ResponseData } from '~/types/response-data';
@@ -12,6 +12,7 @@ import { NftService } from './nft.service';
 import { NftStatus } from './types';
 
 @Controller('nfts')
+@ApiTags('nft')
 export class NftController {
   constructor(private readonly nftService: NftService) {}
 

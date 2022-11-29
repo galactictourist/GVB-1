@@ -7,7 +7,7 @@ import {
   Put,
   Request,
 } from '@nestjs/common';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from '~/auth/decorator/public.decorator';
 import { formatResponse, ResponseData } from '~/types/response-data';
 import { UserRequest } from '~/types/user-request';
@@ -18,6 +18,7 @@ import { UpdateCollectionDto } from './dto/update-collection.dto';
 import { CollectionStatus } from './types';
 
 @Controller('collections')
+@ApiTags('collection')
 export class CollectionController {
   constructor(private readonly collectionService: CollectionService) {}
 

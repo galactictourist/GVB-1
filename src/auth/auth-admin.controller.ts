@@ -1,5 +1,5 @@
 import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
-import { ApiBody } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { AdminRequest } from '~/types/admin-request';
 import { formatResponse, ResponseData } from '~/types/response-data';
 import { AuthService } from './auth.service';
@@ -9,6 +9,7 @@ import { LocalAdminAuthGuard } from './guard/local-admin-auth.guard';
 import { AdminSignedInResponse } from './types/responses';
 
 @Controller('admin/auth')
+@ApiTags('auth', 'admin', 'admin/auth')
 export class AuthAdminController {
   constructor(private authService: AuthService) {}
 
