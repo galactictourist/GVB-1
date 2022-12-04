@@ -68,7 +68,6 @@ export class CollectionService {
     if (searchCollectionDto.ownerIds && searchCollectionDto.ownerIds.length) {
       where.ownerId = In(searchCollectionDto.ownerIds);
     }
-    console.log('where', where);
 
     const [data, total] = await this.collectionRepository.findAndCountBy(where);
     return { data, total };

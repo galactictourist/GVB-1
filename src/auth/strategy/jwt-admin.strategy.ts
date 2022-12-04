@@ -19,8 +19,8 @@ export class JwtAdminStrategy extends PassportStrategy(Strategy, 'jwt-admin') {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: jwtConfig.privateKey,
-      algorithms: [jwtConfig.algo],
+      secretOrKey: jwtConfig.admin.privateKey,
+      algorithms: [jwtConfig.admin.algo],
     });
   }
 

@@ -26,7 +26,6 @@ export class NftService {
     if (searchNftDto.ownerIds && searchNftDto.ownerIds.length) {
       where.ownerId = In(searchNftDto.ownerIds);
     }
-    console.log('where', where);
 
     const [data, total] = await this.nftRepository.findAndCountBy(where);
     return { data, total };

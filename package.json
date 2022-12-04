@@ -27,7 +27,9 @@
     "migration:revert": "yarn typeorm -d ./src/database/typeorm.config.ts migration:revert",
     "migration:generate": "sh scripts/migration_generate.sh",
     "migration:create": "sh scripts/migration_create.sh",
-    "jwt:generate": "sh scripts/jwt_keygen.sh"
+    "jwt:generate": "sh scripts/jwt_keygen.sh",
+    "jwt-admin:generate": "sh scripts/jwt-admin_keygen.sh",
+    "https-cert:generate": "sh scripts/https-cert_generate.sh"
   },
   "dependencies": {
     "@faker-js/faker": "^7.6.0",

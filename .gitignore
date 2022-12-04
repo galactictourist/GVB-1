@@ -40,6 +40,7 @@ lerna-debug.log*
 # keys
 /*.key
 /*.pub
+/secrets
 
 # docker data
 /data

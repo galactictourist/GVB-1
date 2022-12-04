@@ -1,6 +1,9 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { IJwtConfig } from '~/config/jwt.config';
 import { ContextAdmin } from '~/types/admin-request';
+import { ConfigNamespace } from '~/types/config';
 import { ContextUser } from '~/types/user-request';
 import { AdminService } from '~/user/admin.service';
 import { UserEntity } from '~/user/entity/user.entity';
@@ -13,6 +16,7 @@ import { JwtPurpose } from './types';
 @Injectable()
 export class AuthService {
   constructor(
+    private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
     private readonly nonceRepository: NonceRepository,
     private readonly userService: UserService,
@@ -46,7 +50,14 @@ export class AuthService {
       role: admin.role,
       sub: admin.id,
     };
-    const token = this.jwtService.sign(payload);
+
+    const jwtConfig = this.configService.getOrThrow<IJwtConfig>(
+      ConfigNamespace.JWT,
+    );
+    const token = this.jwtService.sign(payload, {
+      algorithm: jwtConfig.admin.algo,
+      privateKey: jwtConfig.admin.privateKey,
+    });
     return {
       user: admin,
       accessToken: token,
