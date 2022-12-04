@@ -63,9 +63,12 @@ async function bootstrap() {
     http.createServer(server).listen(httpConfig.port, httpConfig.host);
   }
 
-  console.log(`URL: http://localhost:${httpConfig.port}`);
+  const schema = httpConfig.https.enabled ? 'https' : 'http';
+  console.log(`URL: ${schema}://localhost:${httpConfig.port}`);
   if (swaggerEnabled) {
-    console.log(`Swagger: http://localhost:${httpConfig.port}/${swaggerPath}`);
+    console.log(
+      `Swagger: ${schema}://localhost:${httpConfig.port}/${swaggerPath}`,
+    );
   }
 }
 bootstrap();
