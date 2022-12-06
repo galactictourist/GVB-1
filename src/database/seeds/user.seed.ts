@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { utils, Wallet } from 'ethers';
-import _ from 'lodash';
+import { range } from 'lodash';
 import { DeepPartial } from 'typeorm';
 import { UserEntity } from '~/user/entity/user.entity';
 
@@ -37,7 +37,7 @@ export async function createUserEntities(
   data: DeepPartial<UserEntity> = {},
   count: number,
 ) {
-  const instances: DeepPartial<UserEntity>[] = _.range(count).map(() =>
+  const instances: DeepPartial<UserEntity>[] = range(count).map(() =>
     createUser(data),
   );
 

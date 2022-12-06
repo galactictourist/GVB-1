@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import _ from 'lodash';
+import { range } from 'lodash';
 import { DeepPartial } from 'typeorm';
 import { TopicEntity } from '~/charity/entity/topic.entity';
 
@@ -19,7 +19,7 @@ export async function createTopicEntities(
   data: DeepPartial<TopicEntity> = {},
   count: number,
 ) {
-  const instances: DeepPartial<TopicEntity>[] = _.range(count).map(() =>
+  const instances: DeepPartial<TopicEntity>[] = range(count).map(() =>
     createTopic(data),
   );
 

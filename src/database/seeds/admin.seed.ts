@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import bcrypt from 'bcrypt';
-import _ from 'lodash';
+import { range } from 'lodash';
 import { DeepPartial } from 'typeorm';
 import { AdminEntity } from '~/user/entity/admin.entity';
 import { AdminRole, AdminStatus } from '~/user/types';
@@ -27,7 +27,7 @@ export async function createAdminEntities(
   data: DeepPartial<AdminEntity> = {},
   count: number,
 ) {
-  const instances: DeepPartial<AdminEntity>[] = _.range(count).map(() =>
+  const instances: DeepPartial<AdminEntity>[] = range(count).map(() =>
     createAdmin(data),
   );
 

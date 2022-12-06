@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import _ from 'lodash';
+import { range } from 'lodash';
 import { DeepPartial } from 'typeorm';
 import { CollectionEntity } from '~/nft/entity/collection.entity';
 import { CollectionStatus } from '~/nft/types';
@@ -24,7 +24,7 @@ export async function createCollectionEntities(
   data: DeepPartial<CollectionEntity> = {},
   count: number,
 ) {
-  const instances: DeepPartial<CollectionEntity>[] = _.range(count).map(() =>
+  const instances: DeepPartial<CollectionEntity>[] = range(count).map(() =>
     createCollection(data),
   );
 

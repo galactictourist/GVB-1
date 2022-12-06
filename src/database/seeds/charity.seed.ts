@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import _ from 'lodash';
+import { range } from 'lodash';
 import { DeepPartial } from 'typeorm';
 import { CharityEntity } from '~/charity/entity/charity.entity';
 import { CharityStatus } from '~/charity/types';
@@ -24,7 +24,7 @@ export async function createCharityEntities(
   data: DeepPartial<CharityEntity> = {},
   count: number,
 ) {
-  const instances: DeepPartial<CharityEntity>[] = _.range(count).map(() =>
+  const instances: DeepPartial<CharityEntity>[] = range(count).map(() =>
     createCharity(data),
   );
 

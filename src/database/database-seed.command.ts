@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import _ from 'lodash';
+import { slice } from 'lodash';
 import { Command, CommandRunner } from 'nest-commander';
 import { NonceRepository } from '~/auth/repository/nonce.repository';
 import { CharityTopicEntity } from '~/charity/entity/charity-topic.entity';
@@ -58,7 +58,7 @@ export class DatabaseSeedCommand extends CommandRunner {
       { status: UserStatus.ACTIVE },
       100,
     );
-    const userList1 = _.slice(userEntities, 0, 20);
+    const userList1 = slice(userEntities, 0, 20);
     await Promise.all(
       userList1.map(async (user) => {
         const collectionEntities = await createCollectionEntities(

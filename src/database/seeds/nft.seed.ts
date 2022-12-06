@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import _ from 'lodash';
+import { range } from 'lodash';
 import { DeepPartial } from 'typeorm';
 import { NftEntity } from '~/nft/entity/nft.entity';
 import { NftStatus } from '~/nft/types';
@@ -47,7 +47,7 @@ export async function createNftEntities(
   data: DeepPartial<NftEntity> = {},
   count: number,
 ) {
-  const instances: DeepPartial<NftEntity>[] = _.range(count).map(() =>
+  const instances: DeepPartial<NftEntity>[] = range(count).map(() =>
     createNft(data),
   );
 
