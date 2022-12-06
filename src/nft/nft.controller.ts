@@ -5,7 +5,7 @@ import { BlockchainNetwork } from '~/types/blockchain';
 import { formatResponse, ResponseData } from '~/types/response-data';
 import { UserRequest } from '~/types/user-request';
 import { CreateNftDto } from './dto/create-nft.dto';
-import { FilterNftDto } from './dto/filter-nft.dto';
+import { SearchNftDto } from './dto/search-nft.dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
 import { NftEntity } from './entity/nft.entity';
 import { NftService } from './nft.service';
@@ -19,14 +19,34 @@ export class NftController {
   @Public()
   @Post('_search')
   async search(
-    @Body() searchNftDto: FilterNftDto,
-  ): Promise<ResponseData<any[]>> {
-    const nfts = await this.nftService.search(searchNftDto, {
+    @Body() searchNftDto: SearchNftDto,
+  ): Promise<ResponseData<NftEntity[]>> {
+    const result = await this.nftService.search(searchNftDto, {
       status: NftStatus.ACTIVE,
     });
-    return formatResponse(nfts.data, {
+    return formatResponse(result.data, {
       pagination: {
-        total: nfts.total,
+        total: result.total,
+        limit: result.limit,
+        page: result.page,
+      },
+    });
+  }
+
+  @Post('_search/mine')
+  @ApiBearerAuth()
+  async searchMine(
+    @Request() request: UserRequest,
+    @Body() searchNftDto: SearchNftDto,
+  ): Promise<ResponseData<NftEntity[]>> {
+    const result = await this.nftService.search(searchNftDto, {
+      ownerId: request.user.id,
+    });
+    return formatResponse(result.data, {
+      pagination: {
+        total: result.total,
+        limit: result.limit,
+        page: result.page,
       },
     });
   }

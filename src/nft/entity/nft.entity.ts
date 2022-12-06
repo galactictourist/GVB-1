@@ -2,7 +2,7 @@ import { Column, Entity, ManyToOne, Unique } from 'typeorm';
 import { BaseElement } from '~/lib/database/base-element';
 import { BlockchainNetwork } from '../../types/blockchain';
 import { UserEntity } from '../../user/entity/user.entity';
-import { NftStatus } from '../types';
+import { MetadataAttribute, NftStatus } from '../types';
 import { CollectionEntity } from './collection.entity';
 
 @Entity({ name: 'nft' })
@@ -40,7 +40,13 @@ export class NftEntity extends BaseElement {
   description?: string;
 
   @Column('jsonb', { nullable: true })
-  attributes?: { [key: string]: any };
+  attributes?: MetadataAttribute[];
+
+  // @Column('jsonb', { nullable: true })
+  // rawMetadata?: object;
+
+  // @Column('jsonb', { nullable: true })
+  // properties?: object;
 
   @Column({ length: 200, nullable: true })
   metadataIpfsUrl?: string;

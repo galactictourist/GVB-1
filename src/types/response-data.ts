@@ -6,7 +6,6 @@ interface Pagination {
   limit?: number;
   total?: number;
   page?: number;
-  maxPage?: number;
 }
 
 export interface ResponseData<T> {

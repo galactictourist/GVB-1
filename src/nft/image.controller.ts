@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Post,
   UploadedFile,
@@ -35,13 +36,18 @@ export class ImageController {
   @ApiBody({
     type: UploadImageDto,
   })
-  @UseInterceptors(FileInterceptor('file', multerOptions))
-  async uploadedFile(@UploadedFile() file: Express.Multer.File) {
-    await this.imageService.upload(file.originalname, file.buffer);
-    const response = {
-      originalname: file.originalname,
-      filename: file.filename,
-    };
-    return response;
+  @UseInterceptors(FileInterceptor('file'))
+  uploadFile(
+    @Body() data: UploadImageDto,
+    @UploadedFile() file: Express.Multer.File,
+  ): void {
+    data.file = file;
+    console.log({ data, file });
+    // await this.imageService.upload(file.originalname, file.buffer);
+    // const response = {
+    //   originalname: file.originalname,
+    //   filename: file.filename,
+    // };
+    // return response;
   }
 }

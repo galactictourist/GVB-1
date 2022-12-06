@@ -12,6 +12,7 @@ import { DatabaseSeedCommand } from './database/database-seed.command';
 import { TypeOrmConfigService } from './database/typeorm.service';
 import { MarketplaceModule } from './marketplace/marketplace.module';
 import { NftModule } from './nft/nft.module';
+import { SharedModule } from './shared/shared.module';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -23,6 +24,7 @@ import { UserModule } from './user/user.module';
     NftModule,
     CharityModule,
     MarketplaceModule,
+    SharedModule,
   ],
   controllers: [AppController],
   providers: [

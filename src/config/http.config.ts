@@ -6,33 +6,34 @@ import { ConfigNamespace } from '~/types/config';
 export interface IHttpConfig {
   host: string;
   port: number;
-  https: {
+  ssl: {
     enabled: boolean;
     key: string;
     cert: string;
   };
-  corsOrigins: true | string[];
+  corsOrigins: string[];
 }
 
 export const httpConfig = registerAs(ConfigNamespace.HTTP, (): IHttpConfig => {
   const httpsEnabled =
-    process.env.HTTPS_ENABLED === '1' || process.env.HTTPS_ENABLED === 'true'
+    process.env.HTTP_SSL_ENABLED === '1' ||
+    process.env.HTTP_SSL_ENABLED === 'true'
       ? true
       : false;
   return {
     host: process.env.HTTP_HOST || '127.0.0.1',
     port: process.env.PORT ? +process.env.PORT : 3000,
-    https: {
+    ssl: {
       enabled: httpsEnabled,
       key: httpsEnabled
-        ? process.env.HTTPS_SSL_KEY ||
+        ? process.env.HTTP_SSL_KEY ||
           readFileSync(
             join(__dirname, '/../../secrets/https-cert/private-key.pem'),
             'utf8',
           )
         : '',
       cert: httpsEnabled
-        ? process.env.HTTPS_SSL_CERT ||
+        ? process.env.HTTP_SSL_CERT ||
           readFileSync(
             join(__dirname, '/../../secrets/https-cert/public-cert.pem'),
             'utf8',
@@ -41,6 +42,6 @@ export const httpConfig = registerAs(ConfigNamespace.HTTP, (): IHttpConfig => {
     },
     corsOrigins: process.env.HTTP_CORS_ORIGINS
       ? process.env.HTTP_CORS_ORIGINS.split(',')
-      : true,
+      : ['*'],
   };
 });

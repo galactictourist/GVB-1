@@ -1,0 +1,3 @@
+export enum S3Provider {
+  DIGITALOCEAN_SPACES = 'DIGITALOCEAN_SPACES',
+}
