@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guard/jwt-auth.guard';
+import { BlockchainModule } from './blockchain/blockchain.module';
 import { CharityModule } from './charity/charity.module';
 import { configs } from './config';
 import { DatabaseSeedCommand } from './database/database-seed.command';
@@ -25,6 +26,7 @@ import { UserModule } from './user/user.module';
     CharityModule,
     MarketplaceModule,
     SharedModule,
+    BlockchainModule,
   ],
   controllers: [AppController],
   providers: [

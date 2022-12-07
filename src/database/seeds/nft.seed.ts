@@ -13,7 +13,7 @@ export function createNft(oriData: DeepPartial<NftEntity> = {}) {
     data.network ??
     faker.helpers.arrayElement(Object.values(BlockchainNetwork));
   data.scAddress =
-    data.scAddress ?? BLOCKCHAIN_INFO[data.network].constract.erc721;
+    data.scAddress ?? BLOCKCHAIN_INFO[data.network].constract.erc721.address;
   data.tokenId =
     data.tokenId ?? getTokenId(data.network, data.scAddress).toString();
   data.status =
