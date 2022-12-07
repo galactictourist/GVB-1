@@ -44,14 +44,11 @@ export class NftService {
     scAddress: string,
     tokenId: string,
   ) {
-    const nft = await this.nftRepository.findOneBy({
+    const nft = await this.nftRepository.findOneByOrFail({
       network,
       scAddress,
       tokenId,
     });
-    if (!nft) {
-      throw new NotFoundException('Nft not found');
-    }
     return nft;
   }
 
@@ -70,12 +67,9 @@ export class NftService {
   }
 
   async updateNft(id: string, updateNftDto: UpdateNftDto, user: ContextUser) {
-    const nftEntity = await this.nftRepository.findOneBy({
+    const nftEntity = await this.nftRepository.findOneByOrFail({
       id,
     });
-    if (!nftEntity) {
-      throw new NotFoundException('Nft not found');
-    }
     if (nftEntity.ownerId !== user.id) {
       throw new BadRequestException('Nft owner mismatch');
     }

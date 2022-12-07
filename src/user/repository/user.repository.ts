@@ -10,18 +10,20 @@ export class UserRepository extends BaseRepository<UserEntity> {
   }
 
   async findOneByWallet(wallet: string) {
-    const user = await this.findOneBy({
+    const user = await this.findOneByOrFail({
       wallet: Raw((alias) => `LOWER(${alias}) = LOWER(:wallet)`, { wallet }),
     });
     return user;
   }
 
   async findOrCreateOneByWallet(wallet: string) {
-    let user = await this.findOneByWallet(wallet);
-    if (!user) {
-      user = this.create({ wallet });
+    try {
+      const user = await this.findOneByWallet(wallet);
+      return user;
+    } catch (error) {
+      const user = this.create({ wallet });
       await this.save(user);
+      return user;
     }
-    return user;
   }
 }

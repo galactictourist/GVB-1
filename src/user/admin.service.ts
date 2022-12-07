@@ -7,7 +7,7 @@ export class AdminService {
   constructor(private readonly adminRepository: AdminRepository) {}
 
   async validateAdminById(id: string): Promise<AdminEntity> {
-    const admin = await this.adminRepository.findOneBy({ id });
+    const admin = await this.adminRepository.findOneByOrFail({ id });
     return this._validateAdmin(admin);
   }
 
@@ -22,12 +22,7 @@ export class AdminService {
     return this._validateAdmin(admin);
   }
 
-  private async _validateAdmin(
-    admin: AdminEntity | null,
-  ): Promise<AdminEntity> {
-    if (!admin) {
-      throw new UnauthorizedException('Admin is not found');
-    }
+  private async _validateAdmin(admin: AdminEntity): Promise<AdminEntity> {
     if (!admin.isActive()) {
       throw new UnauthorizedException('Admin is not active');
     }

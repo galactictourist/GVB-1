@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { DeepPartial, FindOptionsWhere, In } from 'typeorm';
 import { ContextUser } from '~/types/user-request';
 import { UserService } from '~/user/user.service';
@@ -42,12 +38,9 @@ export class CollectionService {
     updateCollectionDto: UpdateCollectionDto,
     user: ContextUser,
   ) {
-    const collectionEntity = await this.collectionRepository.findOneBy({
+    const collectionEntity = await this.collectionRepository.findOneByOrFail({
       id,
     });
-    if (!collectionEntity) {
-      throw new NotFoundException('Collection not found');
-    }
     if (collectionEntity.ownerId !== user.id) {
       throw new BadRequestException('Collection owner mismatch');
     }
@@ -74,16 +67,14 @@ export class CollectionService {
   }
 
   async getNftsInCollection(collectionId: string) {
-    const collection = await this.collectionRepository.findOneBy({
+    const collection = await this.collectionRepository.findOneByOrFail({
       id: collectionId,
     });
-    if (collection) {
-      if (collection.status === CollectionStatus.PUBLISHED) {
-        const [data, total] = await this.nftRepository.findAndCountBy({
-          collectionId: collection.id,
-        });
-        return { data, total };
-      }
+    if (collection.status === CollectionStatus.PUBLISHED) {
+      const [data, total] = await this.nftRepository.findAndCountBy({
+        collectionId: collection.id,
+      });
+      return { data, total };
     }
     return { data: [], total: 0 };
   }

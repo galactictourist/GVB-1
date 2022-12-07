@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { DeepPartial, FindOptionsWhere, In } from 'typeorm';
 import { ContextUser } from '~/types/user-request';
 import { CreateSaleDto } from './dto/create-sale.dto';
@@ -47,12 +43,9 @@ export class SaleService {
   }
 
   async updateNft(id: string, updateSaleDto: UpdateSaleDto, user: ContextUser) {
-    const saleEntity = await this.saleRepository.findOneBy({
+    const saleEntity = await this.saleRepository.findOneByOrFail({
       id,
     });
-    if (!saleEntity) {
-      throw new NotFoundException('Sale not found');
-    }
     if (saleEntity.userId !== user.id) {
       throw new BadRequestException('Sale owner mismatch');
     }

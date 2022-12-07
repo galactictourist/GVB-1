@@ -32,12 +32,9 @@ export class TopicAdminService {
 
   private async validateParent(parentId?: string) {
     if (parentId) {
-      const parentTopic = await this.topicRepository.findOneBy({
+      const parentTopic = await this.topicRepository.findOneByOrFail({
         id: parentId,
       });
-      if (!parentTopic) {
-        throw new BadRequestException('Parent topic is not found');
-      }
       if (parentTopic.parentId) {
         throw new BadRequestException('Parent topic is invalid');
       }

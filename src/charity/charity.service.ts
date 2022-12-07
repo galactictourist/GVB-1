@@ -18,7 +18,7 @@ export class CharityService {
   }
 
   async getCharity(charityId: string) {
-    const charity = await this.charityRepository.findOneBy({
+    const charity = await this.charityRepository.findOneByOrFail({
       id: charityId,
     });
     return charity;

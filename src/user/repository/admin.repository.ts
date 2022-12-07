@@ -10,7 +10,7 @@ export class AdminRepository extends BaseRepository<AdminEntity> {
   }
 
   async findOneByUsername(username: string) {
-    const user = await this.findOneBy({
+    const user = await this.findOneByOrFail({
       username: Raw((alias) => `LOWER(${alias}) = LOWER(:username)`, {
         username,
       }),

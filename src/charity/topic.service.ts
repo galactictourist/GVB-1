@@ -15,7 +15,7 @@ export class TopicService {
   }
 
   async getTopic(topicId: string) {
-    const topic = await this.topicRepository.findOneBy({
+    const topic = await this.topicRepository.findOneByOrFail({
       id: topicId,
     });
     return topic;

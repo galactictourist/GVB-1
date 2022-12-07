@@ -11,10 +11,7 @@ export class UserService {
   }
 
   async validateUser(id: string) {
-    const user = await this.userRepository.findOneBy({ id });
-    if (!user) {
-      throw new UnauthorizedException('User is not found');
-    }
+    const user = await this.userRepository.findOneByOrFail({ id });
     if (!user.isActive()) {
       throw new UnauthorizedException('User is not active');
     }
