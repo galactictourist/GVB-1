@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, Request } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Request,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from '~/auth/decorator/public.decorator';
 import { BlockchainNetwork } from '~/types/blockchain';
@@ -79,7 +87,23 @@ export class NftController {
     return formatResponse(nft);
   }
 
-  @Post(':id')
+  @Post(':id/signature')
+  @ApiBearerAuth()
+  async generateSignature(
+    @Param('id') id: string,
+    @Request() request: UserRequest,
+  ): Promise<ResponseData<object>> {
+    const result = await this.nftService.generateMintSignature(
+      id,
+      request.user,
+    );
+    return formatResponse({
+      signature: result.signature,
+      signer: result.address,
+    });
+  }
+
+  @Put(':id')
   @ApiBearerAuth()
   async updateNft(
     @Param('id') id: string,

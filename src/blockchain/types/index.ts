@@ -7,6 +7,7 @@ export interface AddSingleItem {
   royaltyFee: BigNumberish;
   tokenURI: string;
   deadline: BigNumberish;
+  nonce: BigNumberish;
 }
 
 export interface BuyItem {
@@ -19,4 +20,5 @@ export interface BuyItem {
   charityAddress: string;
   charityFee: BigNumberish;
   deadline: BigNumberish;
+  nonce: BigNumberish;
 }

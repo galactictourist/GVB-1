@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { TypedDataDomain, Wallet } from 'ethers';
+import { TypedDataDomain, TypedDataField, Wallet } from 'ethers';
 import { IBlockchainConfig } from '~/config/blockchain.config';
 import { BlockchainNetwork, BLOCKCHAIN_INFO } from '~/types/blockchain';
 import { ConfigNamespace } from '~/types/config';
@@ -12,6 +12,7 @@ export class SignerService {
 
   private async signMarket(
     network: BlockchainNetwork,
+    types: Record<string, Array<TypedDataField>>,
     data: Record<string, any>,
   ) {
     const blockchainConfig = this.configService.getOrThrow<IBlockchainConfig>(
@@ -26,19 +27,33 @@ export class SignerService {
       verifyingContract: BLOCKCHAIN_INFO[network].constract.erc721.address,
     };
 
-    const signature = await wallet._signTypedData(
-      domain,
-      BLOCKCHAIN_INFO[network].constract.marketplace.types || {},
-      data,
-    );
-    return signature;
+    const signature = await wallet._signTypedData(domain, types, data);
+    return {
+      signature,
+      address: wallet.address,
+    };
   }
 
   async signForMinting(network: BlockchainNetwork, data: AddSingleItem) {
-    return this.signMarket(network, data);
+    return this.signMarket(
+      network,
+      {
+        AddSingleItem:
+          BLOCKCHAIN_INFO[network].constract.marketplace.types?.AddSingleItem ||
+          [],
+      },
+      data,
+    );
   }
 
   async signForBuying(network: BlockchainNetwork, data: BuyItem) {
-    return this.signMarket(network, data);
+    return this.signMarket(
+      network,
+      {
+        BuyItem:
+          BLOCKCHAIN_INFO[network].constract.marketplace.types?.BuyItem || [],
+      },
+      data,
+    );
   }
 }

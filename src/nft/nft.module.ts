@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { BlockchainModule } from '~/blockchain/blockchain.module';
 import { SharedModule } from '~/shared/shared.module';
 import { UserModule } from '~/user/user.module';
 import { CollectionController } from './collection.controller';
@@ -18,6 +19,7 @@ import { NftRepository } from './repository/nft.repository';
     TypeOrmModule.forFeature([CollectionEntity, NftEntity]),
     SharedModule,
     UserModule,
+    BlockchainModule,
   ],
   controllers: [ImageController, NftController, CollectionController],
   providers: [
