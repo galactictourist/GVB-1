@@ -15,14 +15,11 @@ export class NftStorageService {
     this.client = new NFTStorage({ token: serviceConfig.nftStorage.key });
   }
 
-  async upload(name: string, buffer: Buffer) {
-    const metadata = await this.client.store({
-      name,
-      description: 'Pin is not delicious beef!',
-
-      image: new File([buffer], name, { type: 'image/jpg' }),
-    });
-    console.log(metadata.url, metadata);
-    // TODO
+  async upload(metadata: object) {
+    const { cid, car } = await NFTStorage.encodeDirectory([
+      new File([JSON.stringify(metadata, null, 2)], 'metadata.json'),
+    ]);
+    await this.client.storeCar(car);
+    return cid;
   }
 }

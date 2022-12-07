@@ -18,6 +18,7 @@ export function createNft(oriData: DeepPartial<NftEntity> = {}) {
     data.tokenId ?? getTokenId(data.network, data.scAddress).toString();
   data.status =
     data.status ?? faker.helpers.arrayElement(Object.values(NftStatus));
+  data.royalty = data.royalty ?? faker.datatype.number({ min: 0, max: 5000 });
 
   return NftEntity.create<NftEntity>(data);
 }

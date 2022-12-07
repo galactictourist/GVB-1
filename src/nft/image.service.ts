@@ -13,7 +13,7 @@ export class ImageService {
 
   async upload(name: string, buffer: Buffer) {
     // const url = await this.s3Service.upload(name, buffer);
-    return this.nftStorageService.upload(name, buffer);
+    // return this.nftStorageService.upload(name, buffer);
     // TODO
   }
 }

@@ -13,6 +13,7 @@ import { BlockchainNetwork } from '~/types/blockchain';
 import { formatResponse, ResponseData } from '~/types/response-data';
 import { UserRequest } from '~/types/user-request';
 import { CreateNftDto } from './dto/create-nft.dto';
+import { GenerateTokenIdDto } from './dto/generate-token-id.dto';
 import { SearchNftDto } from './dto/search-nft.dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
 import { NftEntity } from './entity/nft.entity';
@@ -74,6 +75,21 @@ export class NftController {
     return formatResponse(nft);
   }
 
+  @Public()
+  @Get(':network/:scAddress/:tokenId/metadata.json')
+  async getMetadata(
+    @Param('network') network: BlockchainNetwork,
+    @Param('scAddress') scAddress: string,
+    @Param('tokenId') tokenId: string,
+  ): Promise<object> {
+    const nft = await this.nftService.getNftByNetworkAddressTokenId(
+      network,
+      scAddress,
+      tokenId,
+    );
+    return nft.generateMetadata();
+  }
+
   @Post('')
   @ApiBearerAuth()
   async createNft(
@@ -87,7 +103,7 @@ export class NftController {
     return formatResponse(nft);
   }
 
-  @Post(':id/signature')
+  @Get(':id/signature')
   @ApiBearerAuth()
   async generateSignature(
     @Param('id') id: string,
@@ -101,6 +117,31 @@ export class NftController {
       signature: result.signature,
       signer: result.address,
     });
+  }
+
+  @Post(':id/pre-mint')
+  @ApiBearerAuth()
+  async preMint(
+    @Param('id') id: string,
+    @Body() generateTokenIdDto: GenerateTokenIdDto,
+    @Request() request: UserRequest,
+  ): Promise<ResponseData<object>> {
+    const result = await this.nftService.preMint(
+      id,
+      generateTokenIdDto,
+      request.user,
+    );
+    return formatResponse(result);
+  }
+
+  @Put(':id/immutable')
+  @ApiBearerAuth()
+  async setImmutable(
+    @Param('id') id: string,
+    @Request() request: UserRequest,
+  ): Promise<ResponseData<object>> {
+    const result = await this.nftService.setImmutable(id, request.user);
+    return formatResponse(result);
   }
 
   @Put(':id')

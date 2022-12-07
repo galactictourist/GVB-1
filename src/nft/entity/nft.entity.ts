@@ -99,4 +99,23 @@ export class NftEntity extends BaseElement {
   isImmutable() {
     return this.immutable === NftImmutable.YES;
   }
+
+  async generateMetadata() {
+    return {
+      name: this.name,
+      description: this.description,
+    };
+  }
+
+  getMetadataIpfsPath(cid: string) {
+    return `ipfs://${cid}/metadata.json`;
+  }
+
+  getMetadataPath() {
+    if (this.metadataIpfsUrl) {
+      return this.metadataIpfsUrl;
+    } else {
+      return `http://localhost/nft/${this.network}/${this.scAddress}/${this.tokenId}/metadata.json`;
+    }
+  }
 }

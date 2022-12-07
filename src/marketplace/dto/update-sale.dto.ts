@@ -28,7 +28,7 @@ export class UpdateSaleDto {
 
   @ApiProperty()
   @IsEnum(BlockchainNetwork)
-  networCode?: BlockchainNetwork;
+  network?: BlockchainNetwork;
 
   @ApiProperty({ nullable: true })
   @IsOptional()

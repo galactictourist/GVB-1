@@ -1,24 +1,31 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { DeepPartial, FindOptionsWhere, In } from 'typeorm';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { DeepPartial, FindOptionsWhere, In, IsNull } from 'typeorm';
+import { MarketSmartContractService } from '~/blockchain/market-smart-contracts.service';
 import { SignerService } from '~/blockchain/signer.service';
+import { randomTokenId } from '~/lib';
+import { NftStorageService } from '~/shared/nft-storage.service';
 import { BlockchainNetwork, BLOCKCHAIN_INFO } from '~/types/blockchain';
 import { ContextUser } from '~/types/user-request';
 import { CreateNftDto } from './dto/create-nft.dto';
+import { GenerateTokenIdDto } from './dto/generate-token-id.dto';
 import { SearchNftDto } from './dto/search-nft.dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
 import { NftEntity } from './entity/nft.entity';
 import { NftRepository } from './repository/nft.repository';
+import { NftImmutable } from './types';
 
 @Injectable()
 export class NftService {
   constructor(
     private readonly nftRepository: NftRepository,
     private readonly signerService: SignerService,
+    private readonly nftStorageService: NftStorageService,
+    private readonly marketSmartContractService: MarketSmartContractService,
   ) {}
+
+  private getSmartContractAddress(network: BlockchainNetwork) {
+    return BLOCKCHAIN_INFO[network].constract.erc721.address;
+  }
 
   async search(
     searchNftDto: SearchNftDto,
@@ -71,7 +78,10 @@ export class NftService {
       id,
     });
     if (nftEntity.ownerId !== user.id) {
-      throw new BadRequestException('Nft owner mismatch');
+      throw new BadRequestException('NFT owner mismatch');
+    }
+    if (nftEntity.isImmutable()) {
+      throw new BadRequestException('NFT is immutable');
     }
     nftEntity.name = updateNftDto.name;
     nftEntity.description = updateNftDto.description;
@@ -80,33 +90,81 @@ export class NftService {
     return nftEntity;
   }
 
+  async setImmutable(id: string, user: ContextUser) {
+    const nftEntity = await this.nftRepository.findOneByOrFail({
+      id,
+    });
+    if (nftEntity.ownerId !== user.id) {
+      throw new BadRequestException('NFT owner mismatch');
+    }
+    if (!nftEntity.isImmutable()) {
+      const metadata = await nftEntity.generateMetadata();
+      const cid = await this.nftStorageService.upload(metadata);
+      nftEntity.immutable = NftImmutable.YES;
+      nftEntity.metadataIpfsUrl = nftEntity.getMetadataIpfsPath(cid.toString());
+      await nftEntity.save();
+    }
+
+    return nftEntity;
+  }
+
+  async preMint(
+    id: string,
+    generateTokenIdDto: GenerateTokenIdDto,
+    user: ContextUser,
+  ) {
+    const nftEntity = await this.nftRepository.findOneByOrFail({
+      id,
+      tokenId: IsNull(),
+    });
+    if (nftEntity.ownerId !== user.id) {
+      throw new BadRequestException('NFT owner mismatch');
+    }
+
+    nftEntity.network = generateTokenIdDto.network;
+    nftEntity.scAddress = this.getSmartContractAddress(
+      generateTokenIdDto.network,
+    );
+    nftEntity.tokenId = randomTokenId();
+
+    await nftEntity.save();
+    return nftEntity;
+  }
+
   async generateMintSignature(id: string, user: ContextUser) {
-    const nftEntity = await this.nftRepository.findOne({
+    const nftEntity = await this.nftRepository.findOneOrFail({
       where: {
         id,
       },
       relations: ['owner'],
     });
-    if (!nftEntity) {
-      throw new NotFoundException('Nft not found');
+    if (!nftEntity.owner.wallet) {
+      throw new BadRequestException('Missing user wallet');
     }
     if (nftEntity.ownerId !== user.id) {
-      throw new BadRequestException('Nft owner mismatch');
+      throw new BadRequestException('NFT owner mismatch');
     }
-    if (!nftEntity.network) {
-      throw new BadRequestException('Missing network');
+    if (!nftEntity.network || !nftEntity.scAddress || !nftEntity.tokenId) {
+      throw new BadRequestException('Missing information');
+    }
+    if (!nftEntity.isImmutable() || !nftEntity.metadataIpfsUrl) {
+      throw new BadRequestException('NFT information must be uploaded to IPFS');
     }
 
+    const nonce = await this.marketSmartContractService.getNonce(
+      nftEntity.network,
+      nftEntity.owner.wallet,
+    );
     const signature = await this.signerService.signForMinting(
       nftEntity.network,
       {
         account: nftEntity.owner.wallet || '',
-        collection: BLOCKCHAIN_INFO[nftEntity.network].constract.erc721.address,
-        tokenId: '2',
-        royaltyFee: '200',
-        tokenURI: 'https',
+        collection: nftEntity.scAddress,
+        tokenId: nftEntity.tokenId,
+        royaltyFee: nftEntity.royalty || 0,
+        tokenURI: nftEntity.metadataIpfsUrl,
         deadline: Math.round(new Date().getTime() / 1000) + 6000,
-        nonce: 1,
+        nonce,
       },
     );
 

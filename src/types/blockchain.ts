@@ -98,11 +98,11 @@ export const BLOCKCHAIN_INFO: {
         address: null,
       },
       [CryptoCurrency.ETH]: {
-        enabled: false,
+        enabled: true,
         name: 'Ethereum',
         symbol: 'ETH',
         decimals: 18,
-        address: '0xabc',
+        address: '0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa',
       },
       [CryptoCurrency.BNB]: {
         enabled: false,
