@@ -2,7 +2,7 @@ import { Column, Entity, ManyToOne, Unique } from 'typeorm';
 import { BaseElement } from '~/lib/database/base-element';
 import { BlockchainNetwork } from '../../types/blockchain';
 import { UserEntity } from '../../user/entity/user.entity';
-import { MetadataAttribute, NftStatus } from '../types';
+import { MetadataAttribute, NftImmutable, NftStatus } from '../types';
 import { CollectionEntity } from './collection.entity';
 
 @Entity({ name: 'nft' })
@@ -42,11 +42,11 @@ export class NftEntity extends BaseElement {
   @Column('jsonb', { nullable: true })
   attributes?: MetadataAttribute[];
 
-  // @Column('jsonb', { nullable: true })
-  // rawMetadata?: object;
+  @Column('jsonb', { nullable: true })
+  rawMetadata?: object;
 
-  // @Column('jsonb', { nullable: true })
-  // properties?: object;
+  @Column('jsonb', { nullable: true })
+  properties?: object;
 
   @Column({ length: 200, nullable: true })
   metadataIpfsUrl?: string;
@@ -72,6 +72,16 @@ export class NftEntity extends BaseElement {
   })
   status: NftStatus;
 
+  @Column({
+    enum: NftImmutable,
+    default: NftImmutable.NO,
+    length: 10,
+  })
+  immutable: NftImmutable;
+
+  @Column({ length: 66, nullable: true })
+  mintedTxId?: string;
+
   @Column({ length: 50, nullable: true })
   creatorWallet?: string;
 
@@ -80,5 +90,13 @@ export class NftEntity extends BaseElement {
 
   isActive() {
     return this.status === NftStatus.ACTIVE;
+  }
+
+  isMinted() {
+    return !!this.mintedTxId;
+  }
+
+  isImmutable() {
+    return this.immutable === NftImmutable.YES;
   }
 }

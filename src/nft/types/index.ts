@@ -8,6 +8,11 @@ export enum NftStatus {
   INACTIVE = 'INACTIVE',
 }
 
+export enum NftImmutable {
+  NO = 'NO',
+  YES = 'YES',
+}
+
 export enum DisplayType {
   BOOST_NUMBER = 'boost_number',
   BOOST_PERCENTAGE = 'boost_percentage',
