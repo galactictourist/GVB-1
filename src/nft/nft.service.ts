@@ -1,10 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { DeepPartial, FindOptionsWhere, In, IsNull } from 'typeorm';
+import { DeepPartial, FindOptionsWhere, In } from 'typeorm';
 import { MarketSmartContractService } from '~/blockchain/market-smart-contracts.service';
 import { SignerService } from '~/blockchain/signer.service';
 import { randomTokenId } from '~/lib';
+import { deadlineIn } from '~/lib/web3';
 import { NftStorageService } from '~/shared/nft-storage.service';
-import { BlockchainNetwork, BLOCKCHAIN_INFO } from '~/types/blockchain';
+import { BlockchainNetwork, getErc721SmartContract } from '~/types/blockchain';
 import { ContextUser } from '~/types/user-request';
 import { CreateNftDto } from './dto/create-nft.dto';
 import { SearchNftDto } from './dto/search-nft.dto';
@@ -21,10 +22,6 @@ export class NftService {
     private readonly nftStorageService: NftStorageService,
     private readonly marketSmartContractService: MarketSmartContractService,
   ) {}
-
-  private getSmartContractAddress(network: BlockchainNetwork) {
-    return BLOCKCHAIN_INFO[network].constract.erc721.address;
-  }
 
   async search(
     searchNftDto: SearchNftDto,
@@ -111,66 +108,62 @@ export class NftService {
     return nftEntity;
   }
 
-  async preMint(id: string, user: ContextUser) {
-    const nftEntity = await this.nftRepository.findOneByOrFail({
-      id,
-      tokenId: IsNull(),
-    });
-    if (nftEntity.ownerId !== user.id) {
-      throw new BadRequestException('NFT owner mismatch');
-    }
+  private async generateTokenId(nftEntity: NftEntity) {
     if (!nftEntity.network) {
-      throw new BadRequestException('Net work is not set');
+      throw new BadRequestException('Network is not set');
     }
-
-    nftEntity.scAddress = this.getSmartContractAddress(nftEntity.network);
-    nftEntity.tokenId = randomTokenId();
-
-    await nftEntity.save();
-    return nftEntity;
+    if (!nftEntity.scAddress || !nftEntity.tokenId) {
+      await this.nftRepository.update(nftEntity.id, {
+        network: nftEntity.network,
+        scAddress: getErc721SmartContract(nftEntity.network).address,
+        tokenId: randomTokenId(),
+      });
+      await nftEntity.reload();
+    }
   }
 
-  async generateMintSignature(id: string, user: ContextUser) {
+  async mint(id: string, user: ContextUser) {
     const nftEntity = await this.nftRepository.findOneOrFail({
       where: {
         id,
       },
       relations: ['owner'],
     });
+    if (nftEntity.ownerId !== user.id) {
+      throw new BadRequestException('NFT owner mismatch');
+    }
     if (!nftEntity.owner.wallet) {
       throw new BadRequestException('Missing user wallet');
+    }
+
+    await this.generateTokenId(nftEntity);
+    if (!nftEntity.network || !nftEntity.scAddress || !nftEntity.tokenId) {
+      throw new BadRequestException('Missing information');
     }
     if (!nftEntity.royalty) {
       throw new BadRequestException('Royalty is not set');
     }
-    if (nftEntity.ownerId !== user.id) {
-      throw new BadRequestException('NFT owner mismatch');
-    }
-    if (!nftEntity.network || !nftEntity.scAddress || !nftEntity.tokenId) {
-      throw new BadRequestException('Missing information');
-    }
-    if (!nftEntity.isImmutable() || !nftEntity.metadataIpfsUrl) {
-      throw new BadRequestException('NFT information must be uploaded to IPFS');
-    }
-    nftEntity.validateBeforeMint();
 
     const nonce = await this.marketSmartContractService.getNonce(
       nftEntity.network,
       nftEntity.owner.wallet,
     );
+
+    const data = {
+      account: nftEntity.owner.wallet,
+      collection: nftEntity.scAddress,
+      tokenId: nftEntity.tokenId,
+      royaltyFee: nftEntity.royalty,
+      tokenURI: nftEntity.getMetadataUrl(),
+      deadline: deadlineIn(600),
+      nonce,
+    };
+
     const signature = await this.signerService.signForMinting(
       nftEntity.network,
-      {
-        account: nftEntity.owner.wallet,
-        collection: nftEntity.scAddress,
-        tokenId: nftEntity.tokenId,
-        royaltyFee: nftEntity.royalty,
-        tokenURI: nftEntity.metadataIpfsUrl,
-        deadline: Math.round(new Date().getTime() / 1000) + 6000,
-        nonce,
-      },
+      data,
     );
 
-    return signature;
+    return { ...signature, data };
   }
 }

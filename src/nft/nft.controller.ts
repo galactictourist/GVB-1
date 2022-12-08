@@ -102,30 +102,18 @@ export class NftController {
     return formatResponse(nft);
   }
 
-  @Get(':id/signature')
+  @Post(':id/mint')
   @ApiBearerAuth()
   async generateSignature(
     @Param('id') id: string,
     @Request() request: UserRequest,
   ): Promise<ResponseData<object>> {
-    const result = await this.nftService.generateMintSignature(
-      id,
-      request.user,
-    );
+    const result = await this.nftService.mint(id, request.user);
     return formatResponse({
       signature: result.signature,
       signer: result.address,
+      data: result.data,
     });
-  }
-
-  @Post(':id/pre-mint')
-  @ApiBearerAuth()
-  async preMint(
-    @Param('id') id: string,
-    @Request() request: UserRequest,
-  ): Promise<ResponseData<object>> {
-    const result = await this.nftService.preMint(id, request.user);
-    return formatResponse(result);
   }
 
   @Put(':id/immutable')

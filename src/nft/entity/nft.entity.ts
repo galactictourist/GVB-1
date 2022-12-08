@@ -1,4 +1,3 @@
-import { BadRequestException } from '@nestjs/common';
 import { Column, Entity, ManyToOne, Unique } from 'typeorm';
 import { BaseElement } from '~/lib/database/base-element';
 import { BlockchainNetwork } from '../../types/blockchain';
@@ -112,22 +111,7 @@ export class NftEntity extends BaseElement {
     return `ipfs://${cid}/metadata.json`;
   }
 
-  validateBeforeMint() {
-    if (!this.royalty) {
-      throw new BadRequestException('Missing royalty');
-    }
-    if (!this.owner.wallet) {
-      throw new BadRequestException('Missing user wallet');
-    }
-    if (!this.network || !this.scAddress || !this.tokenId) {
-      throw new BadRequestException('Missing information');
-    }
-    if (!this.isImmutable() || !this.metadataIpfsUrl) {
-      throw new BadRequestException('NFT information must be uploaded to IPFS');
-    }
-  }
-
-  getMetadataPath() {
+  getMetadataUrl() {
     if (this.metadataIpfsUrl) {
       return this.metadataIpfsUrl;
     } else {

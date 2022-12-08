@@ -114,3 +114,7 @@ export const BLOCKCHAIN_INFO: {
     },
   },
 } as const;
+
+export function getErc721SmartContract(network: BlockchainNetwork) {
+  return BLOCKCHAIN_INFO[network].constract.erc721;
+}

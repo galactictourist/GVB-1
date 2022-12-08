@@ -9,3 +9,7 @@ export function generateWallets(mnemonic: string, count: number) {
   }
   return wallets;
 }
+
+export function deadlineIn(seconds: number) {
+  return Math.round(new Date().getTime() / 1000) + seconds;
+}
