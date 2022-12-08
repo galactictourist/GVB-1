@@ -13,6 +13,7 @@ import { BlockchainNetwork } from '~/types/blockchain';
 import { formatResponse, ResponseData } from '~/types/response-data';
 import { UserRequest } from '~/types/user-request';
 import { CreateNftDto } from './dto/create-nft.dto';
+import { MintNftDto } from './dto/mint-nft.dto';
 import { SearchNftDto } from './dto/search-nft.dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
 import { NftEntity } from './entity/nft.entity';
@@ -106,9 +107,10 @@ export class NftController {
   @ApiBearerAuth()
   async generateSignature(
     @Param('id') id: string,
+    @Body() mintNftDto: MintNftDto,
     @Request() request: UserRequest,
   ): Promise<ResponseData<object>> {
-    const result = await this.nftService.mint(id, request.user);
+    const result = await this.nftService.mint(id, mintNftDto, request.user);
     return formatResponse({
       signature: result.signature,
       signer: result.address,

@@ -8,6 +8,7 @@ import { NftStorageService } from '~/shared/nft-storage.service';
 import { BlockchainNetwork, getErc721SmartContract } from '~/types/blockchain';
 import { ContextUser } from '~/types/user-request';
 import { CreateNftDto } from './dto/create-nft.dto';
+import { MintNftDto } from './dto/mint-nft.dto';
 import { SearchNftDto } from './dto/search-nft.dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
 import { NftEntity } from './entity/nft.entity';
@@ -122,7 +123,7 @@ export class NftService {
     }
   }
 
-  async mint(id: string, user: ContextUser) {
+  async mint(id: string, mintNftDto: MintNftDto, user: ContextUser) {
     const nftEntity = await this.nftRepository.findOneOrFail({
       where: {
         id,
@@ -144,10 +145,14 @@ export class NftService {
       throw new BadRequestException('Royalty is not set');
     }
 
-    const nonce = await this.marketSmartContractService.getNonce(
-      nftEntity.network,
-      nftEntity.owner.wallet,
-    );
+    const nonce =
+      mintNftDto.nonce ||
+      (
+        await this.marketSmartContractService.getNonce(
+          nftEntity.network,
+          nftEntity.owner.wallet,
+        )
+      ).toString();
 
     const data = {
       account: nftEntity.owner.wallet,
