@@ -11,7 +11,7 @@ export interface IHttpConfig {
     key: string;
     cert: string;
   };
-  corsOrigins: string[];
+  corsOrigins: string | string[];
 }
 
 export const httpConfig = registerAs(ConfigNamespace.HTTP, (): IHttpConfig => {
@@ -42,6 +42,6 @@ export const httpConfig = registerAs(ConfigNamespace.HTTP, (): IHttpConfig => {
     },
     corsOrigins: process.env.HTTP_CORS_ORIGINS
       ? process.env.HTTP_CORS_ORIGINS.split(',')
-      : ['*'],
+      : '*',
   };
 });
