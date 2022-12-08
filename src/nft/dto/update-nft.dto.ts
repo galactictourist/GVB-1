@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsString, Max } from 'class-validator';
+import { BlockchainNetwork } from '~/types/blockchain';
 
 export class UpdateNftDto {
   @ApiProperty()
@@ -10,4 +11,15 @@ export class UpdateNftDto {
   @IsOptional()
   @IsString()
   description?: string;
+
+  @ApiProperty({ nullable: true, required: false })
+  @IsOptional()
+  @IsNumber()
+  @Max(8000)
+  royalty?: number;
+
+  @ApiProperty({ nullable: true, required: false })
+  @IsOptional()
+  @IsEnum(BlockchainNetwork)
+  network?: BlockchainNetwork;
 }

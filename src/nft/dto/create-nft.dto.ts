@@ -8,8 +8,10 @@ import {
   IsString,
   Length,
   Matches,
+  Max,
   ValidateNested,
 } from 'class-validator';
+import { BlockchainNetwork } from '~/types/blockchain';
 import { DisplayType, MetadataAttribute } from '../types';
 
 class MetadataAttributeDto implements MetadataAttribute {
@@ -78,6 +80,17 @@ export class CreateNftDto {
   @IsOptional()
   @IsString()
   description?: string;
+
+  @ApiProperty({ nullable: true, required: false })
+  @IsOptional()
+  @IsNumber()
+  @Max(8000)
+  royalty?: number;
+
+  @ApiProperty({ nullable: true, required: false })
+  @IsOptional()
+  @IsEnum(BlockchainNetwork)
+  network?: BlockchainNetwork;
 
   @ApiProperty({ nullable: true, required: false })
   @IsOptional()

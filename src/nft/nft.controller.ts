@@ -13,7 +13,6 @@ import { BlockchainNetwork } from '~/types/blockchain';
 import { formatResponse, ResponseData } from '~/types/response-data';
 import { UserRequest } from '~/types/user-request';
 import { CreateNftDto } from './dto/create-nft.dto';
-import { GenerateTokenIdDto } from './dto/generate-token-id.dto';
 import { SearchNftDto } from './dto/search-nft.dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
 import { NftEntity } from './entity/nft.entity';
@@ -123,14 +122,9 @@ export class NftController {
   @ApiBearerAuth()
   async preMint(
     @Param('id') id: string,
-    @Body() generateTokenIdDto: GenerateTokenIdDto,
     @Request() request: UserRequest,
   ): Promise<ResponseData<object>> {
-    const result = await this.nftService.preMint(
-      id,
-      generateTokenIdDto,
-      request.user,
-    );
+    const result = await this.nftService.preMint(id, request.user);
     return formatResponse(result);
   }
 

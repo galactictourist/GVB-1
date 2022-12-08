@@ -7,7 +7,6 @@ import { NftStorageService } from '~/shared/nft-storage.service';
 import { BlockchainNetwork, BLOCKCHAIN_INFO } from '~/types/blockchain';
 import { ContextUser } from '~/types/user-request';
 import { CreateNftDto } from './dto/create-nft.dto';
-import { GenerateTokenIdDto } from './dto/generate-token-id.dto';
 import { SearchNftDto } from './dto/search-nft.dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
 import { NftEntity } from './entity/nft.entity';
@@ -67,6 +66,8 @@ export class NftService {
       ...defaults,
       name: createNftDto.name,
       description: createNftDto.description,
+      royalty: createNftDto.royalty,
+      network: createNftDto.network,
     });
 
     await nftEntity.save();
@@ -83,8 +84,10 @@ export class NftService {
     if (nftEntity.isImmutable()) {
       throw new BadRequestException('NFT is immutable');
     }
-    nftEntity.name = updateNftDto.name;
-    nftEntity.description = updateNftDto.description;
+    nftEntity.name = updateNftDto.name || nftEntity.name;
+    nftEntity.description = updateNftDto.description || nftEntity.description;
+    nftEntity.royalty = updateNftDto.royalty || nftEntity.royalty;
+    nftEntity.network = updateNftDto.network || nftEntity.network;
 
     await nftEntity.save();
     return nftEntity;
@@ -108,11 +111,7 @@ export class NftService {
     return nftEntity;
   }
 
-  async preMint(
-    id: string,
-    generateTokenIdDto: GenerateTokenIdDto,
-    user: ContextUser,
-  ) {
+  async preMint(id: string, user: ContextUser) {
     const nftEntity = await this.nftRepository.findOneByOrFail({
       id,
       tokenId: IsNull(),
@@ -120,11 +119,11 @@ export class NftService {
     if (nftEntity.ownerId !== user.id) {
       throw new BadRequestException('NFT owner mismatch');
     }
+    if (!nftEntity.network) {
+      throw new BadRequestException('Net work is not set');
+    }
 
-    nftEntity.network = generateTokenIdDto.network;
-    nftEntity.scAddress = this.getSmartContractAddress(
-      generateTokenIdDto.network,
-    );
+    nftEntity.scAddress = this.getSmartContractAddress(nftEntity.network);
     nftEntity.tokenId = randomTokenId();
 
     await nftEntity.save();
@@ -141,6 +140,9 @@ export class NftService {
     if (!nftEntity.owner.wallet) {
       throw new BadRequestException('Missing user wallet');
     }
+    if (!nftEntity.royalty) {
+      throw new BadRequestException('Royalty is not set');
+    }
     if (nftEntity.ownerId !== user.id) {
       throw new BadRequestException('NFT owner mismatch');
     }
@@ -150,6 +152,7 @@ export class NftService {
     if (!nftEntity.isImmutable() || !nftEntity.metadataIpfsUrl) {
       throw new BadRequestException('NFT information must be uploaded to IPFS');
     }
+    nftEntity.validateBeforeMint();
 
     const nonce = await this.marketSmartContractService.getNonce(
       nftEntity.network,
@@ -158,10 +161,10 @@ export class NftService {
     const signature = await this.signerService.signForMinting(
       nftEntity.network,
       {
-        account: nftEntity.owner.wallet || '',
+        account: nftEntity.owner.wallet,
         collection: nftEntity.scAddress,
         tokenId: nftEntity.tokenId,
-        royaltyFee: nftEntity.royalty || 0,
+        royaltyFee: nftEntity.royalty,
         tokenURI: nftEntity.metadataIpfsUrl,
         deadline: Math.round(new Date().getTime() / 1000) + 6000,
         nonce,
