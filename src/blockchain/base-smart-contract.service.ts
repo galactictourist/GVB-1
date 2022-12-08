@@ -50,7 +50,6 @@ export abstract class BaseSmartContractService {
     args: any[],
     options: Overrides = {},
   ) {
-    console.log('contract[method]', contract[method]);
     const result = (await contract[method](...args, options)) as any;
     return result;
   }
