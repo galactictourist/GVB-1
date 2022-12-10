@@ -19,6 +19,27 @@ export class SaleService {
     if (searchSaleDto.filter?.userIds && searchSaleDto.filter.userIds.length) {
       where.userId = In(searchSaleDto.filter.userIds);
     }
+    if (searchSaleDto.filter?.nftIds && searchSaleDto.filter.nftIds.length) {
+      where.nftId = In(searchSaleDto.filter.nftIds);
+    }
+    if (
+      searchSaleDto.filter?.charityIds &&
+      searchSaleDto.filter.charityIds.length
+    ) {
+      where.charityId = In(searchSaleDto.filter.charityIds);
+    }
+    if (
+      searchSaleDto.filter?.countryCodes &&
+      searchSaleDto.filter.countryCodes.length
+    ) {
+      where.countryCode = In(searchSaleDto.filter.countryCodes);
+    }
+    if (
+      searchSaleDto.filter?.networks &&
+      searchSaleDto.filter.networks.length
+    ) {
+      where.network = In(searchSaleDto.filter.networks);
+    }
 
     const result = await this.saleRepository.simplePaginate(
       {
