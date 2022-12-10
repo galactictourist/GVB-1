@@ -10,6 +10,12 @@ class FilterNftDto {
   @IsArray()
   @IsUUID('4', { each: true })
   ownerIds?: string[];
+
+  @ApiProperty({ nullable: true, required: false })
+  @IsOptional()
+  @IsArray()
+  @IsUUID('4', { each: true })
+  collectionIds?: string[];
 }
 
 export class SearchNftDto {

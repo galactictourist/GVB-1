@@ -32,6 +32,12 @@ export class NftService {
     if (searchNftDto.filter?.ownerIds && searchNftDto.filter.ownerIds.length) {
       where.ownerId = In(searchNftDto.filter.ownerIds);
     }
+    if (
+      searchNftDto.filter?.collectionIds &&
+      searchNftDto.filter.collectionIds.length
+    ) {
+      where.collectionId = In(searchNftDto.filter.collectionIds);
+    }
 
     const result = await this.nftRepository.simplePaginate(
       {
