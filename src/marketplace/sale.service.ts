@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { DateTime } from 'luxon';
 import { DeepPartial, FindManyOptions, FindOptionsWhere, In } from 'typeorm';
-import { uuid } from '~/lib';
 import { NftService } from '~/nft/nft.service';
 import { NftStatus } from '~/nft/types';
 import { isCryptoCurrencyEnabled } from '~/types/blockchain';
@@ -9,7 +8,6 @@ import { ContextUser } from '~/types/user-request';
 import { CreateMultiSaleDto, CreateSaleDto } from './dto/create-sale.dto';
 import { FilterSaleParam } from './dto/filter-sale.param';
 import { SearchSaleDto } from './dto/search-sale.dto';
-import { UpdateSaleDto } from './dto/update-sale.dto';
 import { SaleEntity } from './entity/sale.entity';
 import { SaleRepository } from './repository/sale.repository';
 import { SaleStatus } from './types';
@@ -108,7 +106,13 @@ export class SaleService {
     defaults: DeepPartial<SaleEntity>,
     user: ContextUser,
   ) {
-    return [];
+    const { sales } = createMultiSaleDto;
+    const result = await Promise.allSettled(
+      sales.map((sale) => {
+        return this.createSale(sale, defaults, user);
+      }),
+    );
+    return result;
   }
 
   async createSale(
@@ -152,13 +156,11 @@ export class SaleService {
       throw new BadRequestException('NFT is invalid');
     }
 
-    const requestId = uuid();
     const expiredAt = DateTime.now().plus({
       minutes: createSaleDto.expiryInMinutes,
     });
     const saleEntity = this.saleRepository.create({
       nftId: createSaleDto.nftId,
-      requestId,
       network: createSaleDto.network,
       price: createSaleDto.price.toString(),
       currency: createSaleDto.currency,
@@ -169,25 +171,6 @@ export class SaleService {
       ...defaults,
     });
     await saleEntity.save();
-    return { requestId, sale: saleEntity };
-  }
-
-  // TODO update sale
-  async updateSale(
-    id: string,
-    updateSaleDto: UpdateSaleDto,
-    user: ContextUser,
-  ) {
-    const saleEntity = await this.saleRepository.findOneByOrFail({
-      id,
-    });
-    if (saleEntity.userId !== user.id) {
-      throw new BadRequestException('Sale owner mismatch');
-    }
-    saleEntity.price = updateSaleDto.price.toString();
-    saleEntity.charityId = updateSaleDto.charityId;
-
-    await saleEntity.save();
-    return saleEntity;
+    return { sale: saleEntity };
   }
 }

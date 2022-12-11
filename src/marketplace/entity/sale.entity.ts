@@ -13,9 +13,6 @@ export class SaleEntity extends BaseElement {
   @Column('uuid')
   userId: string;
 
-  @Column('uuid')
-  requestId: string;
-
   @ManyToOne(() => UserEntity, (user) => user.id)
   user: UserEntity;
 
