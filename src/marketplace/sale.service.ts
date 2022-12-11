@@ -5,7 +5,7 @@ import { NftService } from '~/nft/nft.service';
 import { NftStatus } from '~/nft/types';
 import { isCryptoCurrencyEnabled } from '~/types/blockchain';
 import { ContextUser } from '~/types/user-request';
-import { CreateMultiSaleDto, CreateSaleDto } from './dto/create-sale.dto';
+import { CreateSaleDto } from './dto/create-sale.dto';
 import { FilterSaleParam } from './dto/filter-sale.param';
 import { SearchSaleDto } from './dto/search-sale.dto';
 import { SaleEntity } from './entity/sale.entity';
@@ -99,20 +99,6 @@ export class SaleService {
       ...defaults,
       where,
     });
-  }
-
-  async createMultiSale(
-    createMultiSaleDto: CreateMultiSaleDto,
-    defaults: DeepPartial<SaleEntity>,
-    user: ContextUser,
-  ) {
-    const { sales } = createMultiSaleDto;
-    const result = await Promise.allSettled(
-      sales.map((sale) => {
-        return this.createSale(sale, defaults, user);
-      }),
-    );
-    return result;
   }
 
   async createSale(
