@@ -7,8 +7,8 @@ import { OrderEntity } from './entity/order.entity';
 import { OrderService } from './order.service';
 import { OrderStatus } from './types';
 
-@Controller('marketplace/orders')
-@ApiTags('marketplace')
+@Controller('orders')
+@ApiTags('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
