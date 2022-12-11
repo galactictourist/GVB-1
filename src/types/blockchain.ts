@@ -50,11 +50,11 @@ export const BLOCKCHAIN_INFO: {
     explorer: 'https://mumbai.polygonscan.com',
     constract: {
       erc721: {
-        address: '0x1E27094694596C80B4168E5ed2148669978279E0', // '0x57baA35a806bDa26B4c3DDc0329804017689d2E7',
+        address: '0x91d4Ad404E2363ae7FFDf7C8909dFEB24B1727f9', // '0x57baA35a806bDa26B4c3DDc0329804017689d2E7',
         name: 'GBCollection',
       } as const,
       marketplace: {
-        address: '0x219495D9aF748FB11227A4A69141c01Fea844218', // '0x2978606902693E7114e45e65CE25504611D5E24C',
+        address: '0xC540ae1D4c0013034B42720172e19c7803e94826', // '0x2978606902693E7114e45e65CE25504611D5E24C',
         name: 'GBMarketplace',
         types: {
           AddSingleItem: [
@@ -117,4 +117,11 @@ export const BLOCKCHAIN_INFO: {
 
 export function getErc721SmartContract(network: BlockchainNetwork) {
   return BLOCKCHAIN_INFO[network].constract.erc721;
+}
+
+export function isCryptoCurrencyEnabled(
+  network: BlockchainNetwork,
+  currency: CryptoCurrency,
+) {
+  return BLOCKCHAIN_INFO[network].currency[currency].enabled;
 }

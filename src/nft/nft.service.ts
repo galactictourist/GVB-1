@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { DeepPartial, FindOptionsWhere, In } from 'typeorm';
+import { DeepPartial, FindManyOptions, FindOptionsWhere, In } from 'typeorm';
 import { MarketSmartContractService } from '~/blockchain/market-smart-contracts.service';
 import { SignerService } from '~/blockchain/signer.service';
 import { randomTokenId } from '~/lib';
@@ -74,16 +74,23 @@ export class NftService {
     return where;
   }
 
-  async query(filterParam: FilterNftParam) {
+  async query(
+    filterParam: FilterNftParam,
+    defaults: FindManyOptions<NftEntity> = {},
+  ) {
     const where = this._generateFindOptions(filterParam);
 
-    return this.nftRepository.findAndCount({ where });
+    return this.nftRepository.findAndCount({ ...defaults, where });
   }
 
-  async count(filterParam: FilterNftParam) {
+  async count(
+    filterParam: FilterNftParam,
+    defaults: FindManyOptions<NftEntity> = {},
+  ) {
     const where = this._generateFindOptions(filterParam);
 
     return this.nftRepository.count({
+      ...defaults,
       where,
     });
   }

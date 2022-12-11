@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { DateTime } from 'luxon';
-import { DeepPartial, FindOptionsWhere, In } from 'typeorm';
+import { DeepPartial, FindManyOptions, FindOptionsWhere, In } from 'typeorm';
 import { uuid } from '~/lib';
 import { NftService } from '~/nft/nft.service';
 import { NftStatus } from '~/nft/types';
@@ -82,16 +82,23 @@ export class SaleService {
     return where;
   }
 
-  async query(filterParam: FilterSaleParam) {
+  async query(
+    filterParam: FilterSaleParam,
+    defaults: FindManyOptions<SaleEntity> = {},
+  ) {
     const where = this._generateFindOptions(filterParam);
 
-    return this.saleRepository.findAndCount({ where });
+    return this.saleRepository.findAndCount({ ...defaults, where });
   }
 
-  async count(filterParam: FilterSaleParam) {
+  async count(
+    filterParam: FilterSaleParam,
+    defaults: FindManyOptions<SaleEntity> = {},
+  ) {
     const where = this._generateFindOptions(filterParam);
 
     return this.saleRepository.count({
+      ...defaults,
       where,
     });
   }
@@ -113,29 +120,36 @@ export class SaleService {
     if (
       !isCryptoCurrencyEnabled(createSaleDto.network, createSaleDto.currency)
     ) {
-      throw new BadRequestException('Curencty is not supported');
+      throw new BadRequestException('Currency is not supported');
     }
     // TODO validate charity and country and topic
 
     // count existing active sale
-    const countExistingSale = await this.count({
-      userIds: [user.id],
-      nftIds: [createSaleDto.nftId],
-      networks: [createSaleDto.network],
-      statuses: [SaleStatus.ACTIVE],
-    });
+    const countExistingSale = await this.count(
+      {
+        userIds: [user.id],
+        nftIds: [createSaleDto.nftId],
+        networks: [createSaleDto.network],
+        statuses: [SaleStatus.ACTIVE],
+      },
+      { take: 1 },
+    );
     if (countExistingSale > 0) {
-      throw new BadRequestException('Invalid NFTs');
+      throw new BadRequestException('NFT is on sale');
     }
 
-    const count = await this.nftService.count({
-      ids: [createSaleDto.nftId],
-      ownerIds: [user.id],
-      networks: [createSaleDto.network],
-      statuses: [NftStatus.ACTIVE],
-    });
+    // checking NFT
+    const count = await this.nftService.count(
+      {
+        ids: [createSaleDto.nftId],
+        ownerIds: [user.id],
+        networks: [createSaleDto.network],
+        statuses: [NftStatus.ACTIVE],
+      },
+      { take: 1 },
+    );
     if (count !== 1) {
-      throw new BadRequestException('NFT is on sale');
+      throw new BadRequestException('NFT is invalid');
     }
 
     const requestId = uuid();
@@ -158,7 +172,12 @@ export class SaleService {
     return { requestId, sale: saleEntity };
   }
 
-  async updateNft(id: string, updateSaleDto: UpdateSaleDto, user: ContextUser) {
+  // TODO update sale
+  async updateSale(
+    id: string,
+    updateSaleDto: UpdateSaleDto,
+    user: ContextUser,
+  ) {
     const saleEntity = await this.saleRepository.findOneByOrFail({
       id,
     });
