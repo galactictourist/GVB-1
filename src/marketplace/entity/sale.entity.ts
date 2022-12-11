@@ -13,6 +13,9 @@ export class SaleEntity extends BaseElement {
   @Column('uuid')
   userId: string;
 
+  @Column('uuid')
+  requestId: string;
+
   @ManyToOne(() => UserEntity, (user) => user.id)
   user: UserEntity;
 
@@ -58,6 +61,9 @@ export class SaleEntity extends BaseElement {
 
   @Column('int', { nullable: true })
   charityShare?: number;
+
+  @Column('timestamp', { nullable: true })
+  expiredAt?: Date;
 
   @Column({
     enum: SaleStatus,

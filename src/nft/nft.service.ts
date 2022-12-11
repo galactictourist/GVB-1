@@ -8,6 +8,7 @@ import { NftStorageService } from '~/shared/nft-storage.service';
 import { BlockchainNetwork, getErc721SmartContract } from '~/types/blockchain';
 import { ContextUser } from '~/types/user-request';
 import { CreateNftDto } from './dto/create-nft.dto';
+import { FilterNftParam } from './dto/filter-nft.param';
 import { MintNftDto } from './dto/mint-nft.dto';
 import { SearchNftDto } from './dto/search-nft.dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
@@ -25,10 +26,13 @@ export class NftService {
   ) {}
 
   async search(
-    searchNftDto: SearchNftDto,
-    defaults: FindOptionsWhere<NftEntity>,
+    searchNftDto: SearchNftDto = {},
+    defaults: FindOptionsWhere<NftEntity> = {},
   ) {
     const where: FindOptionsWhere<NftEntity> = {};
+    if (searchNftDto.filter?.ids && searchNftDto.filter.ids.length) {
+      where.id = In(searchNftDto.filter.ids);
+    }
     if (searchNftDto.filter?.ownerIds && searchNftDto.filter.ownerIds.length) {
       where.ownerId = In(searchNftDto.filter.ownerIds);
     }
@@ -37,6 +41,9 @@ export class NftService {
       searchNftDto.filter.collectionIds.length
     ) {
       where.collectionId = In(searchNftDto.filter.collectionIds);
+    }
+    if (searchNftDto.filter?.networks && searchNftDto.filter.networks.length) {
+      where.network = In(searchNftDto.filter.networks);
     }
 
     const result = await this.nftRepository.simplePaginate(
@@ -47,6 +54,38 @@ export class NftService {
       searchNftDto.pagination,
     );
     return result;
+  }
+
+  private _generateFindOptions(filterParam: FilterNftParam = {}) {
+    const where: FindOptionsWhere<NftEntity> = {};
+    if (filterParam.ids && filterParam.ids.length) {
+      where.id = In(filterParam.ids);
+    }
+    if (filterParam?.ownerIds && filterParam.ownerIds.length) {
+      where.ownerId = In(filterParam.ownerIds);
+    }
+    if (filterParam?.collectionIds && filterParam.collectionIds.length) {
+      where.collectionId = In(filterParam.collectionIds);
+    }
+    if (filterParam?.networks && filterParam.networks.length) {
+      where.network = In(filterParam.networks);
+    }
+
+    return where;
+  }
+
+  async query(filterParam: FilterNftParam) {
+    const where = this._generateFindOptions(filterParam);
+
+    return this.nftRepository.findAndCount({ where });
+  }
+
+  async count(filterParam: FilterNftParam) {
+    const where = this._generateFindOptions(filterParam);
+
+    return this.nftRepository.count({
+      where,
+    });
   }
 
   async getNftByNetworkAddressTokenId(

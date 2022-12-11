@@ -1,10 +1,23 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsArray, IsOptional, IsUUID, ValidateNested } from 'class-validator';
+import {
+  IsArray,
+  IsEnum,
+  IsOptional,
+  IsUUID,
+  ValidateNested,
+} from 'class-validator';
+import { BlockchainNetwork } from '~/types/blockchain';
 import { SimplePaginationDto } from '~/types/dto/simple-pagination.dto';
 import { SimpleSortDto } from '~/types/dto/simple-sort.dto';
 
 class FilterNftDto {
+  @ApiProperty({ nullable: true, required: false })
+  @IsOptional()
+  @IsArray()
+  @IsUUID('4', { each: true })
+  ids?: string[];
+
   @ApiProperty({ nullable: true, required: false })
   @IsOptional()
   @IsArray()
@@ -16,6 +29,12 @@ class FilterNftDto {
   @IsArray()
   @IsUUID('4', { each: true })
   collectionIds?: string[];
+
+  @ApiProperty({ nullable: true, required: false })
+  @IsOptional()
+  @IsArray()
+  @IsEnum(BlockchainNetwork, { each: true })
+  networks?: BlockchainNetwork[];
 }
 
 export class SearchNftDto {

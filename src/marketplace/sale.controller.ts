@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from '~/auth/decorator/public.decorator';
 import { formatResponse, ResponseData } from '~/types/response-data';
 import { UserRequest } from '~/types/user-request';
-import { CreateSaleDto } from './dto/create-sale.dto';
+import { CreateMultiSaleDto, CreateSaleDto } from './dto/create-sale.dto';
 import { SearchSaleDto } from './dto/search-sale.dto';
 import { SaleEntity } from './entity/sale.entity';
 import { SaleService } from './sale.service';
@@ -36,11 +36,32 @@ export class SaleController {
   async createSale(
     @Request() request: UserRequest,
     @Body() createSaleDto: CreateSaleDto,
-  ): Promise<ResponseData<SaleEntity>> {
-    const sale = await this.saleService.createSale(createSaleDto, {
-      userId: request.user.id,
-      status: SaleStatus.ACTIVE,
-    });
-    return formatResponse(sale);
+  ): Promise<ResponseData<any>> {
+    const result = await this.saleService.createSale(
+      createSaleDto,
+      {
+        userId: request.user.id,
+        status: SaleStatus.ACTIVE,
+      },
+      request.user,
+    );
+    return formatResponse({ requestId: result.requestId, sale: result.sale });
+  }
+
+  @Post('multi')
+  @ApiBearerAuth()
+  async createMultiSale(
+    @Request() request: UserRequest,
+    @Body() createMultiSaleDto: CreateMultiSaleDto,
+  ): Promise<ResponseData<any>> {
+    const result = await this.saleService.createMultiSale(
+      createMultiSaleDto,
+      {
+        userId: request.user.id,
+        status: SaleStatus.ACTIVE,
+      },
+      request.user,
+    );
+    return formatResponse({ result });
   }
 }

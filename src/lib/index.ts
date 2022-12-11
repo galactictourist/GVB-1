@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { promises as fs } from 'fs';
+import { v4 } from 'uuid';
 
 export async function readFile(path: string) {
   const buffer64 = await fs.readFile(path, { encoding: 'base64' });
@@ -25,3 +26,5 @@ export function randomTokenId() {
 
   return heads[Math.floor(Math.random() * heads.length)] + randomStr; // total length = 77
 }
+
+export const uuid = v4;
