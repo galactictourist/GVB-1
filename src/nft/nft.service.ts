@@ -13,6 +13,7 @@ import { MintNftDto } from './dto/mint-nft.dto';
 import { SearchNftDto } from './dto/search-nft.dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
 import { NftEntity } from './entity/nft.entity';
+import { ImageService } from './image.service';
 import { NftRepository } from './repository/nft.repository';
 import { NftImmutable } from './types';
 
@@ -21,6 +22,7 @@ export class NftService {
   constructor(
     private readonly nftRepository: NftRepository,
     private readonly signerService: SignerService,
+    private readonly imageService: ImageService,
     private readonly nftStorageService: NftStorageService,
     private readonly marketSmartContractService: MarketSmartContractService,
   ) {}
@@ -119,6 +121,10 @@ export class NftService {
       royalty: createNftDto.royalty,
       network: createNftDto.network,
     });
+
+    // TODO update uploading image
+    // const publicUrl = await this.imageService.upload('abc6.json');
+    // console.log('publicUrl', publicUrl);
 
     await nftEntity.save();
     return nftEntity;

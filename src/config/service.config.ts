@@ -10,8 +10,11 @@ export interface IServiceConfig {
     provider: S3Provider;
     endpoint: string;
     bucket: string;
+    publicUrlPrefix: string;
+    region: string;
     accessKey: string;
     secretKey: string;
+    pathPrefix: string;
   };
 }
 
@@ -24,9 +27,12 @@ export const serviceConfig = registerAs(
     s3: {
       provider: S3Provider.DIGITALOCEAN_SPACES,
       endpoint: process.env.AWS_S3_ENDPOINT || '',
+      publicUrlPrefix: process.env.AWS_S3_PUBLIC_URL_PREFIX || '',
       bucket: process.env.AWS_S3_BUCKET || '',
+      region: process.env.AWS_S3_REGION || '',
       accessKey: process.env.AWS_S3_ACCESS_KEY || '',
       secretKey: process.env.AWS_S3_SECRET_KEY || '',
+      pathPrefix: process.env.AWS_S3_PATH_PREFIX || '',
     },
   }),
 );

@@ -11,8 +11,9 @@ export class ImageService {
     private readonly s3Service: S3Service,
   ) {}
 
-  async upload(name: string, buffer: Buffer) {
-    // const url = await this.s3Service.upload(name, buffer);
+  async upload(name: string) {
+    const url = await this.s3Service.uploadPublicRead(name, 'Hello world3');
+    return url;
     // return this.nftStorageService.upload(name, buffer);
     // TODO
   }
