@@ -7,6 +7,7 @@ import { CountryCode } from '~/types/country';
 import { BlockchainNetwork } from '../../types/blockchain';
 import { UserEntity } from '../../user/entity/user.entity';
 import { SaleStatus } from '../types';
+import { SignedData } from '../types/signed-data';
 
 @Entity({ name: 'sale' })
 export class SaleEntity extends BaseElement {
@@ -68,6 +69,15 @@ export class SaleEntity extends BaseElement {
     length: 20,
   })
   status: SaleStatus;
+
+  @Column({ unique: true, length: 100, nullable: true })
+  hash: string;
+
+  @Column('jsonb', { nullable: true })
+  signedData: SignedData;
+
+  @Column({ length: 200, nullable: true })
+  signature: string;
 
   isActive() {
     return this.status === SaleStatus.ACTIVE;
