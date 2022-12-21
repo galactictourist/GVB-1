@@ -1,6 +1,7 @@
 import { registerAs } from '@nestjs/config';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { baseDir } from '~/base';
 import { ConfigNamespace } from '~/types/config';
 
 export interface IJwtConfig {
@@ -26,13 +27,13 @@ export const jwtConfig = registerAs(
     publicKey:
       process.env.JWT_PUBLIC_KEY ||
       readFileSync(
-        join(__dirname, '/../../../secrets/jwt/jwt-rs256.pub.key'),
+        join(baseDir, '/../../../secrets/jwt/jwt-rs256.pub.key'),
         'utf8',
       ),
     privateKey:
       process.env.JWT_PRIVATE_KEY ||
       readFileSync(
-        join(__dirname, '/../../../secrets/jwt/jwt-rs256.key'),
+        join(baseDir, '/../../../secrets/jwt/jwt-rs256.key'),
         'utf8',
       ),
     admin: {
@@ -41,13 +42,13 @@ export const jwtConfig = registerAs(
       publicKey:
         process.env.JWT_ADMIN_PUBLIC_KEY ||
         readFileSync(
-          join(__dirname, '/../../../secrets/jwt-admin/jwt-rs256.pub.key'),
+          join(baseDir, '/../../../secrets/jwt-admin/jwt-rs256.pub.key'),
           'utf8',
         ),
       privateKey:
         process.env.JWT_ADMIN_PRIVATE_KEY ||
         readFileSync(
-          join(__dirname, '/../../../secrets/jwt-admin/jwt-rs256.key'),
+          join(baseDir, '/../../../secrets/jwt-admin/jwt-rs256.key'),
           'utf8',
         ),
     },
