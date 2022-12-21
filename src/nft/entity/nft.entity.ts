@@ -1,5 +1,6 @@
 import { Column, Entity, ManyToOne, Unique } from 'typeorm';
 import { BaseElement } from '~/lib/database/base-element';
+import { StorageEntity } from '~/storage/entity/storage.entity';
 import { BlockchainNetwork } from '../../types/blockchain';
 import { UserEntity } from '../../user/entity/user.entity';
 import { MetadataAttribute, NftImmutable, NftStatus } from '../types';
@@ -29,6 +30,12 @@ export class NftEntity extends BaseElement {
 
   @Column({ length: 200 })
   name: string;
+
+  @Column('uuid', { nullable: true })
+  imageStorageId: string | null;
+
+  @ManyToOne(() => StorageEntity, (storage) => storage.id, { nullable: true })
+  imageStorage: StorageEntity | null;
 
   @Column({ length: 200, nullable: true })
   imageUrl?: string;
