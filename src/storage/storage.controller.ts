@@ -41,7 +41,6 @@ export class StorageController {
     file: Express.Multer.File,
     @Request() request: UserRequest,
   ): Promise<ResponseData<StorageEntity>> {
-    console.log({ file });
     const storage = await this.storageService.storePublicReadFile(file, {
       ownerId: request.user.id,
       label: StorageLabel.NFT_IMAGE,
