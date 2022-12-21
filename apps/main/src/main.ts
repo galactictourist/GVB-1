@@ -10,10 +10,10 @@ import { ConfigNamespace } from './types/config';
 
 async function bootstrap() {
   const httpConfig = getHttpConfig();
-  const appOptions: any = httpConfig.ssl.enabled
+  const httpsOptions: any = httpConfig.ssl.enabled
     ? { key: httpConfig.ssl.key, cert: httpConfig.ssl.cert }
-    : {};
-  const app = await NestFactory.create(AppModule, appOptions);
+    : undefined;
+  const app = await NestFactory.create(AppModule, { httpsOptions });
 
   const configService = app.get(ConfigService);
   const appConfig = configService.getOrThrow<IAppConfig>(ConfigNamespace.APP);
