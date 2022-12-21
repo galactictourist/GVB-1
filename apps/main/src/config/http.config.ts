@@ -29,14 +29,14 @@ export const httpConfig = registerAs(ConfigNamespace.HTTP, (): IHttpConfig => {
       key: httpsEnabled
         ? process.env.HTTP_SSL_KEY ||
           readFileSync(
-            join(baseDir, '/../../secrets/https-cert/private-key.pem'),
+            join(baseDir, '/../../../secrets/https-cert/private-key.pem'),
             'utf8',
           )
         : '',
       cert: httpsEnabled
         ? process.env.HTTP_SSL_CERT ||
           readFileSync(
-            join(baseDir, '/../../secrets/https-cert/public-cert.pem'),
+            join(baseDir, '/../../../secrets/https-cert/public-cert.pem'),
             'utf8',
           )
         : '',
