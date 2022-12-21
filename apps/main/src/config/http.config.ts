@@ -2,6 +2,7 @@ import { registerAs } from '@nestjs/config';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { ConfigNamespace } from '~/main/types/config';
+import { baseDir } from '../base';
 
 export interface IHttpConfig {
   host: string;
@@ -28,14 +29,14 @@ export const httpConfig = registerAs(ConfigNamespace.HTTP, (): IHttpConfig => {
       key: httpsEnabled
         ? process.env.HTTP_SSL_KEY ||
           readFileSync(
-            join(__dirname, '/../../secrets/https-cert/private-key.pem'),
+            join(baseDir, '/../../secrets/https-cert/private-key.pem'),
             'utf8',
           )
         : '',
       cert: httpsEnabled
         ? process.env.HTTP_SSL_CERT ||
           readFileSync(
-            join(__dirname, '/../../secrets/https-cert/public-cert.pem'),
+            join(baseDir, '/../../secrets/https-cert/public-cert.pem'),
             'utf8',
           )
         : '',
