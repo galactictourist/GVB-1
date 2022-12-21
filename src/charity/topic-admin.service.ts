@@ -11,6 +11,11 @@ export class TopicAdminService {
     private readonly charityTopicRepository: CharityTopicRepository,
   ) {}
 
+  async getTopics() {
+    const [data, total] = await this.topicRepository.findAndCountBy({});
+    return { data, total };
+  }
+
   async createTopic(createTopicDto: CreateTopicAdminDto) {
     await this.validateParent(createTopicDto.parentId);
     const topic = this.topicRepository.create({

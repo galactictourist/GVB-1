@@ -1,4 +1,12 @@
-import { Body, Controller, Param, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from '~/auth/decorator/public.decorator';
 import { Roles } from '~/auth/decorator/roles.decorator';
@@ -17,11 +25,17 @@ import { TopicAdminService } from './topic-admin.service';
 @ApiBearerAuth()
 @ApiTags('topic', 'admin', 'admin/topic')
 export class TopicAdminController {
-  constructor(private readonly topicService: TopicAdminService) {}
+  constructor(private readonly topicAdminService: TopicAdminService) {}
+
+  @Get('')
+  async getTopicList() {
+    const topics = await this.topicAdminService.getTopics();
+    return formatResponse(topics.data);
+  }
 
   @Post('')
   async createTopic(@Body() createTopicAdminDto: CreateTopicAdminDto) {
-    const topic = await this.topicService.createTopic(createTopicAdminDto);
+    const topic = await this.topicAdminService.createTopic(createTopicAdminDto);
     return formatResponse(topic);
   }
 
@@ -30,7 +44,7 @@ export class TopicAdminController {
     @Param('topicId') topicId: string,
     @Body() updateTopicAdminDto: UpdateTopicAdminDto,
   ) {
-    const topic = await this.topicService.updateTopic(
+    const topic = await this.topicAdminService.updateTopic(
       topicId,
       updateTopicAdminDto,
     );
