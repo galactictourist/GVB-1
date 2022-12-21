@@ -15,6 +15,7 @@ export class IsStorageIdValidator implements ValidatorConstraintInterface {
   constructor(private storageRepository: StorageRepository) {}
 
   async validate(storageId: string, args?: ValidationArguments) {
+    return true; // TODO implement
     console.log('storageId', storageId);
     console.log('args', args);
     const userId = uuid(); // TODO args?.object?.context.user.id;
@@ -34,7 +35,7 @@ export class IsStorageIdValidator implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'The comment does not belong to the user';
+    return 'The storage does not belong to the user';
   }
 }
 
