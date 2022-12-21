@@ -11,7 +11,8 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
-      "~/*": ["src/*"]
+      "~/main/*": ["apps/main/src/*"],
+      "~/worker/*": ["apps/worker/src/*"]
     },
     "incremental": true,
     "skipLibCheck": true,

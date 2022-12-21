@@ -5,4 +5,4 @@ if [[ $# -eq 0 ]] ; then
     exit 1
 fi
 
-yarn typeorm migration:create "./src/database/migrations/${1:-Migration}"
+yarn typeorm migration:create "./apps/main/src/database/migrations/${1:-Migration}"
