@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsDefined, IsEnum, IsUUID } from 'class-validator';
-import { IsEip55Address } from '~/shared/validator/is-eip55-address.validator';
-import { CountryCode } from '~/types/country';
+import { IsEip55Address } from '~/main/shared/validator/is-eip55-address.validator';
+import { CountryCode } from '~/main/types/country';
 
 export class CreateCharityTopicAdminDto {
   @ApiProperty()

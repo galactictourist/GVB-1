@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { NftModule } from '~/nft/nft.module';
+import { NftModule } from '~/main/nft/nft.module';
 import { OrderEntity } from './entity/order.entity';
 import { SaleEntity } from './entity/sale.entity';
 import { MarketplaceService } from './marketplace.service';

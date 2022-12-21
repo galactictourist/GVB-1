@@ -1,14 +1,17 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { DeepPartial, FindManyOptions, FindOptionsWhere, In } from 'typeorm';
-import { MarketSmartContractService } from '~/blockchain/market-smart-contracts.service';
-import { SignerService } from '~/blockchain/signer.service';
-import { randomTokenId } from '~/lib';
-import { deadlineIn } from '~/lib/web3';
-import { NftStorageService } from '~/shared/nft-storage.service';
-import { StorageService } from '~/storage/storage.service';
-import { StorageLabel } from '~/storage/types';
-import { BlockchainNetwork, getErc721SmartContract } from '~/types/blockchain';
-import { ContextUser } from '~/types/user-request';
+import { MarketSmartContractService } from '~/main/blockchain/market-smart-contracts.service';
+import { SignerService } from '~/main/blockchain/signer.service';
+import { randomTokenId } from '~/main/lib';
+import { deadlineIn } from '~/main/lib/web3';
+import { NftStorageService } from '~/main/shared/nft-storage.service';
+import { StorageService } from '~/main/storage/storage.service';
+import { StorageLabel } from '~/main/storage/types';
+import {
+  BlockchainNetwork,
+  getErc721SmartContract,
+} from '~/main/types/blockchain';
+import { ContextUser } from '~/main/types/user-request';
 import { CreateNftDto } from './dto/create-nft.dto';
 import { FilterNftParam } from './dto/filter-nft.param';
 import { MintNftDto } from './dto/mint-nft.dto';

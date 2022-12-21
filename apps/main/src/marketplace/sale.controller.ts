@@ -1,8 +1,8 @@
 import { Body, Controller, Post, Request } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Public } from '~/auth/decorator/public.decorator';
-import { formatResponse, ResponseData } from '~/types/response-data';
-import { UserRequest } from '~/types/user-request';
+import { Public } from '~/main/auth/decorator/public.decorator';
+import { formatResponse, ResponseData } from '~/main/types/response-data';
+import { UserRequest } from '~/main/types/user-request';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { SearchSaleDto } from './dto/search-sale.dto';
 import { SaleEntity } from './entity/sale.entity';

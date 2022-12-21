@@ -1,5 +1,5 @@
 import { Column, Entity, Index, ManyToOne } from 'typeorm';
-import { BaseElement } from '~/lib/database/base-element';
+import { BaseElement } from '~/main/lib/database/base-element';
 import { UserEntity } from '../../user/entity/user.entity';
 import { StorageLabel, StorageLocation } from '../types';
 

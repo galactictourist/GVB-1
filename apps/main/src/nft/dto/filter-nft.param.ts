@@ -1,4 +1,4 @@
-import { BlockchainNetwork } from '~/types/blockchain';
+import { BlockchainNetwork } from '~/main/types/blockchain';
 import { NftStatus } from '../types';
 
 export interface FilterNftParam {

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { BaseRepository } from '~/lib/database/base-repository';
-import { CountryCode } from '~/types/country';
+import { BaseRepository } from '~/main/lib/database/base-repository';
+import { CountryCode } from '~/main/types/country';
 import { CharityTopicEntity } from '../entity/charity-topic.entity';
 
 @Injectable()

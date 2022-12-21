@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker';
 import { range } from 'lodash';
 import { DeepPartial } from 'typeorm';
-import { CollectionEntity } from '~/nft/entity/collection.entity';
-import { CollectionStatus } from '~/nft/types';
+import { CollectionEntity } from '~/main/nft/entity/collection.entity';
+import { CollectionStatus } from '~/main/nft/types';
 
 export function createCollection(oriData: DeepPartial<CollectionEntity> = {}) {
   const data: DeepPartial<CollectionEntity> = { ...oriData };

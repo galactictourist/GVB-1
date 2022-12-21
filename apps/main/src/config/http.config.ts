@@ -1,7 +1,7 @@
 import { registerAs } from '@nestjs/config';
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { ConfigNamespace } from '~/types/config';
+import { ConfigNamespace } from '~/main/types/config';
 
 export interface IHttpConfig {
   host: string;

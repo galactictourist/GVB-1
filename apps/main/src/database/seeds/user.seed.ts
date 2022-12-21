@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { utils, Wallet } from 'ethers';
 import { range } from 'lodash';
 import { DeepPartial } from 'typeorm';
-import { UserEntity } from '~/user/entity/user.entity';
+import { UserEntity } from '~/main/user/entity/user.entity';
 
 export function createUser(oriData: DeepPartial<UserEntity> = {}) {
   const data: DeepPartial<UserEntity> = { ...oriData };

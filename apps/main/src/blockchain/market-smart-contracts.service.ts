@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { BigNumber } from 'ethers';
-import { BlockchainNetwork, BLOCKCHAIN_INFO } from '~/types/blockchain';
+import { BlockchainNetwork, BLOCKCHAIN_INFO } from '~/main/types/blockchain';
 import MarketAbi from './abi/market.json';
 import { BaseSmartContractService } from './base-smart-contract.service';
 

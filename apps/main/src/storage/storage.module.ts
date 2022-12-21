@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { SharedModule } from '~/shared/shared.module';
+import { SharedModule } from '~/main/shared/shared.module';
 import { StorageEntity } from './entity/storage.entity';
 import { StorageRepository } from './repository/storage.repository';
 import { StorageController } from './storage.controller';

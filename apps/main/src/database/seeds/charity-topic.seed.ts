@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker';
 import { range } from 'lodash';
 import { DeepPartial } from 'typeorm';
-import { CharityTopicEntity } from '~/charity/entity/charity-topic.entity';
-import { CountryCode } from '~/types/country';
+import { CharityTopicEntity } from '~/main/charity/entity/charity-topic.entity';
+import { CountryCode } from '~/main/types/country';
 import { generateWallet } from './user.seed';
 
 export function createCharityTopic(

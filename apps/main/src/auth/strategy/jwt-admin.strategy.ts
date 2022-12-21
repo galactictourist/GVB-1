@@ -2,11 +2,11 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { IJwtConfig } from '~/config/jwt.config';
-import { JwtAdminAuthPayload } from '~/types';
-import { ContextAdmin } from '~/types/admin-request';
-import { ConfigNamespace } from '~/types/config';
-import { AdminService } from '~/user/admin.service';
+import { IJwtConfig } from '~/main/config/jwt.config';
+import { JwtAdminAuthPayload } from '~/main/types';
+import { ContextAdmin } from '~/main/types/admin-request';
+import { ConfigNamespace } from '~/main/types/config';
+import { AdminService } from '~/main/user/admin.service';
 import { JwtPurpose } from '../types';
 
 @Injectable()

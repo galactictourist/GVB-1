@@ -1,5 +1,5 @@
 import { getCodes } from 'country-list';
-import { JwtPurpose } from '~/auth/types';
+import { JwtPurpose } from '~/main/auth/types';
 export interface JwtAdminAuthPayload {
   purpose: JwtPurpose;
   sub: string;

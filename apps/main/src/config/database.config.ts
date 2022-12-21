@@ -1,5 +1,5 @@
 import { registerAs } from '@nestjs/config';
-import { ConfigNamespace } from '~/types/config';
+import { ConfigNamespace } from '~/main/types/config';
 
 type Logging = 'file' | 'debug';
 

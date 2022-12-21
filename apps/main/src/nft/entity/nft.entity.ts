@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne, Unique } from 'typeorm';
-import { BaseElement } from '~/lib/database/base-element';
-import { StorageEntity } from '~/storage/entity/storage.entity';
+import { BaseElement } from '~/main/lib/database/base-element';
+import { StorageEntity } from '~/main/storage/entity/storage.entity';
 import { BlockchainNetwork } from '../../types/blockchain';
 import { UserEntity } from '../../user/entity/user.entity';
 import { MetadataAttribute, NftImmutable, NftStatus } from '../types';

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { File, NFTStorage } from 'nft.storage';
-import { IServiceConfig } from '~/config/service.config';
-import { ConfigNamespace } from '~/types/config';
+import { IServiceConfig } from '~/main/config/service.config';
+import { ConfigNamespace } from '~/main/types/config';
 
 @Injectable()
 export class NftStorageService {

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNumber, IsOptional, IsString, Max } from 'class-validator';
-import { BlockchainNetwork } from '~/types/blockchain';
+import { BlockchainNetwork } from '~/main/types/blockchain';
 
 export class UpdateNftDto {
   @ApiProperty()

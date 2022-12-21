@@ -1,6 +1,6 @@
 import { Expose, plainToClass } from 'class-transformer';
 import { Request } from 'express';
-import { UserEntity } from '~/user/entity/user.entity';
+import { UserEntity } from '~/main/user/entity/user.entity';
 
 export interface UserRequest extends Request {
   user: ContextUser;

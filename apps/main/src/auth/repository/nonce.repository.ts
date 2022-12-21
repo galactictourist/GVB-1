@@ -3,9 +3,9 @@ import { ConfigService } from '@nestjs/config';
 import { DateTime } from 'luxon';
 import * as randomstring from 'randomstring';
 import { DataSource, MoreThan } from 'typeorm';
-import { IAuthConfig } from '~/config/auth.config';
-import { BaseRepository } from '~/lib/database/base-repository';
-import { ConfigNamespace } from '~/types/config';
+import { IAuthConfig } from '~/main/config/auth.config';
+import { BaseRepository } from '~/main/lib/database/base-repository';
+import { ConfigNamespace } from '~/main/types/config';
 import { NonceEntity } from '../entity/nonce.entity';
 
 @Injectable()

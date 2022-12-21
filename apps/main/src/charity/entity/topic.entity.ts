@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
-import { BaseElement } from '~/lib/database/base-element';
-import { SaleEntity } from '~/marketplace/entity/sale.entity';
+import { BaseElement } from '~/main/lib/database/base-element';
+import { SaleEntity } from '~/main/marketplace/entity/sale.entity';
 import { CharityTopicEntity } from './charity-topic.entity';
 
 @Entity({ name: 'topic' })

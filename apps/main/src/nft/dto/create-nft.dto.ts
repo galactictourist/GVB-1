@@ -13,7 +13,7 @@ import {
   Max,
   ValidateNested,
 } from 'class-validator';
-import { BlockchainNetwork } from '~/types/blockchain';
+import { BlockchainNetwork } from '~/main/types/blockchain';
 import { DisplayType, MetadataAttribute } from '../types';
 
 class MetadataAttributeDto implements MetadataAttribute {

@@ -1,6 +1,6 @@
 import { Column, Entity } from 'typeorm';
-import { BaseElement } from '~/lib/database/base-element';
-import { CountryCode } from '~/types/country';
+import { BaseElement } from '~/main/lib/database/base-element';
+import { CountryCode } from '~/main/types/country';
 import { UserStatus } from '../types';
 
 @Entity({ name: 'user' })

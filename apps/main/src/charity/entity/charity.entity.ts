@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany } from 'typeorm';
-import { BaseElement } from '~/lib/database/base-element';
-import { SaleEntity } from '~/marketplace/entity/sale.entity';
+import { BaseElement } from '~/main/lib/database/base-element';
+import { SaleEntity } from '~/main/marketplace/entity/sale.entity';
 import { CharityStatus } from '../types';
 import { CharityTopicEntity } from './charity-topic.entity';
 

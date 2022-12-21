@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNumber, IsPositive, IsUUID, Min } from 'class-validator';
-import { BlockchainNetwork, CryptoCurrency } from '~/types/blockchain';
-import { CountryCode } from '~/types/country';
+import { BlockchainNetwork, CryptoCurrency } from '~/main/types/blockchain';
+import { CountryCode } from '~/main/types/country';
 
 export class CreateSaleDto {
   @ApiProperty()

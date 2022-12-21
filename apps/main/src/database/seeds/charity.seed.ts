@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker';
 import { range } from 'lodash';
 import { DeepPartial } from 'typeorm';
-import { CharityEntity } from '~/charity/entity/charity.entity';
-import { CharityStatus } from '~/charity/types';
+import { CharityEntity } from '~/main/charity/entity/charity.entity';
+import { CharityStatus } from '~/main/charity/types';
 
 export function createCharity(oriData: DeepPartial<CharityEntity> = {}) {
   const data: DeepPartial<CharityEntity> = { ...oriData };

@@ -1,7 +1,7 @@
 import { Expose, plainToClass } from 'class-transformer';
 import { Request } from 'express';
-import { AdminEntity } from '~/user/entity/admin.entity';
-import { AdminRole, AdminStatus } from '~/user/types';
+import { AdminEntity } from '~/main/user/entity/admin.entity';
+import { AdminRole, AdminStatus } from '~/main/user/types';
 
 export interface AdminRequest extends Request {
   user: ContextAdmin;

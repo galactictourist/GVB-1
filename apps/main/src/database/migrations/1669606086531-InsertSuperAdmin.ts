@@ -1,5 +1,5 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
-import { AdminRole, AdminStatus } from '~/user/types';
+import { AdminRole, AdminStatus } from '~/main/user/types';
 
 export class InsertSuperAdmin1669606086531 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {

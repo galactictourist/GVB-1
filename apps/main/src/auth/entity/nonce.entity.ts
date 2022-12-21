@@ -1,5 +1,5 @@
 import { Column, Entity } from 'typeorm';
-import { BaseElement } from '~/lib/database/base-element';
+import { BaseElement } from '~/main/lib/database/base-element';
 
 @Entity({ name: 'nonce' })
 export class NonceEntity extends BaseElement {

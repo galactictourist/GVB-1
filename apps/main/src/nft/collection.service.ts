@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { DeepPartial, FindOptionsWhere, In } from 'typeorm';
-import { ContextUser } from '~/types/user-request';
-import { UserService } from '~/user/user.service';
+import { ContextUser } from '~/main/types/user-request';
+import { UserService } from '~/main/user/user.service';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { FilterCollectionDto } from './dto/filter-collection.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';

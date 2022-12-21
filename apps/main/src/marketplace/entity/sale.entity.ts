@@ -1,9 +1,9 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
-import { CharityEntity } from '~/charity/entity/charity.entity';
-import { TopicEntity } from '~/charity/entity/topic.entity';
-import { BaseElement } from '~/lib/database/base-element';
-import { NftEntity } from '~/nft/entity/nft.entity';
-import { CountryCode } from '~/types/country';
+import { CharityEntity } from '~/main/charity/entity/charity.entity';
+import { TopicEntity } from '~/main/charity/entity/topic.entity';
+import { BaseElement } from '~/main/lib/database/base-element';
+import { NftEntity } from '~/main/nft/entity/nft.entity';
+import { CountryCode } from '~/main/types/country';
 import { BlockchainNetwork } from '../../types/blockchain';
 import { UserEntity } from '../../user/entity/user.entity';
 import { SaleStatus } from '../types';

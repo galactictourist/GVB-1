@@ -5,7 +5,7 @@ import {
   providers,
   Wallet,
 } from 'ethers';
-import { BlockchainNetwork, BLOCKCHAIN_INFO } from '~/types/blockchain';
+import { BlockchainNetwork, BLOCKCHAIN_INFO } from '~/main/types/blockchain';
 
 interface Overrides {
   from?: string;

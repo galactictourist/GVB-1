@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { BlockchainModule } from '~/blockchain/blockchain.module';
-import { SharedModule } from '~/shared/shared.module';
-import { StorageModule } from '~/storage/storage.module';
-import { UserModule } from '~/user/user.module';
+import { BlockchainModule } from '~/main/blockchain/blockchain.module';
+import { SharedModule } from '~/main/shared/shared.module';
+import { StorageModule } from '~/main/storage/storage.module';
+import { UserModule } from '~/main/user/user.module';
 import { CollectionController } from './collection.controller';
 import { CollectionService } from './collection.service';
 import { CollectionEntity } from './entity/collection.entity';

@@ -1,4 +1,4 @@
-import { BlockchainNetwork } from '~/types/blockchain';
+import { BlockchainNetwork } from '~/main/types/blockchain';
 import { SaleStatus } from '../types';
 
 export interface FilterSaleParam {

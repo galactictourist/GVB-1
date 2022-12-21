@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypedDataDomain, TypedDataField, Wallet } from 'ethers';
-import { IBlockchainConfig } from '~/config/blockchain.config';
-import { BlockchainNetwork, BLOCKCHAIN_INFO } from '~/types/blockchain';
-import { ConfigNamespace } from '~/types/config';
+import { IBlockchainConfig } from '~/main/config/blockchain.config';
+import { BlockchainNetwork, BLOCKCHAIN_INFO } from '~/main/types/blockchain';
+import { ConfigNamespace } from '~/main/types/config';
 import { AddSingleItem, BuyItem } from './types';
 
 @Injectable()

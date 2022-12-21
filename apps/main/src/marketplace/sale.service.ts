@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { DateTime } from 'luxon';
 import { DeepPartial, FindManyOptions, FindOptionsWhere, In } from 'typeorm';
-import { NftService } from '~/nft/nft.service';
-import { NftStatus } from '~/nft/types';
-import { isCryptoCurrencyEnabled } from '~/types/blockchain';
-import { ContextUser } from '~/types/user-request';
+import { NftService } from '~/main/nft/nft.service';
+import { NftStatus } from '~/main/nft/types';
+import { isCryptoCurrencyEnabled } from '~/main/types/blockchain';
+import { ContextUser } from '~/main/types/user-request';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { FilterSaleParam } from './dto/filter-sale.param';
 import { SearchSaleDto } from './dto/search-sale.dto';

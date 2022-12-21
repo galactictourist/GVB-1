@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
-import { BaseElement } from '~/lib/database/base-element';
+import { BaseElement } from '~/main/lib/database/base-element';
 import { UserEntity } from '../../user/entity/user.entity';
 import { CollectionStatus } from '../types';
 import { NftEntity } from './nft.entity';

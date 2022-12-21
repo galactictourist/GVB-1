@@ -1,6 +1,6 @@
 import { registerAs } from '@nestjs/config';
-import { ConfigNamespace } from '~/types/config';
-import { S3Provider } from '~/types/s3-provider';
+import { ConfigNamespace } from '~/main/types/config';
+import { S3Provider } from '~/main/types/s3-provider';
 
 export interface IServiceConfig {
   nftStorage: {

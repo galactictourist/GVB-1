@@ -8,10 +8,10 @@ import {
   Request,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Public } from '~/auth/decorator/public.decorator';
-import { BlockchainNetwork } from '~/types/blockchain';
-import { formatResponse, ResponseData } from '~/types/response-data';
-import { UserRequest } from '~/types/user-request';
+import { Public } from '~/main/auth/decorator/public.decorator';
+import { BlockchainNetwork } from '~/main/types/blockchain';
+import { formatResponse, ResponseData } from '~/main/types/response-data';
+import { UserRequest } from '~/main/types/user-request';
 import { CreateNftDto } from './dto/create-nft.dto';
 import { MintNftDto } from './dto/mint-nft.dto';
 import { SearchNftDto } from './dto/search-nft.dto';

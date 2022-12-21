@@ -1,5 +1,5 @@
-import { ContextAdminInterface } from '~/types/admin-request';
-import { ContextUserInterface } from '~/types/user-request';
+import { ContextAdminInterface } from '~/main/types/admin-request';
+import { ContextUserInterface } from '~/main/types/user-request';
 
 export interface SignedInResponse {
   user: ContextUserInterface;

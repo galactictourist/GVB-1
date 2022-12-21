@@ -1,7 +1,7 @@
 import { Body, Controller, Post, Request } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { formatResponse, ResponseData } from '~/types/response-data';
-import { UserRequest } from '~/types/user-request';
+import { formatResponse, ResponseData } from '~/main/types/response-data';
+import { UserRequest } from '~/main/types/user-request';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderEntity } from './entity/order.entity';
 import { OrderService } from './order.service';

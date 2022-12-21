@@ -8,9 +8,9 @@ import {
   Request,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Public } from '~/auth/decorator/public.decorator';
-import { formatResponse, ResponseData } from '~/types/response-data';
-import { UserRequest } from '~/types/user-request';
+import { Public } from '~/main/auth/decorator/public.decorator';
+import { formatResponse, ResponseData } from '~/main/types/response-data';
+import { UserRequest } from '~/main/types/user-request';
 import { CollectionService } from './collection.service';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { FilterCollectionDto } from './dto/filter-collection.dto';

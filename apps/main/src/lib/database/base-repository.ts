@@ -1,5 +1,5 @@
 import { FindOptionsWhere, ObjectLiteral, Repository } from 'typeorm';
-import { SimplePaginationDto } from '~/types/dto/simple-pagination.dto';
+import { SimplePaginationDto } from '~/main/types/dto/simple-pagination.dto';
 
 export class BaseRepository<T extends ObjectLiteral> extends Repository<T> {
   async deleteAll() {

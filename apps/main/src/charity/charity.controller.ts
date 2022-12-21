@@ -1,7 +1,7 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { Public } from '~/auth/decorator/public.decorator';
-import { formatResponse } from '~/types/response-data';
+import { Public } from '~/main/auth/decorator/public.decorator';
+import { formatResponse } from '~/main/types/response-data';
 import { CharityService } from './charity.service';
 
 @Controller('charities')

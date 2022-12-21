@@ -6,7 +6,7 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { uuid } from '~/lib';
+import { uuid } from '~/main/lib';
 import { StorageRepository } from '../repository/storage.repository';
 
 @ValidatorConstraint({ async: true })

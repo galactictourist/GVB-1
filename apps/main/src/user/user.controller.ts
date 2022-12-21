@@ -1,7 +1,7 @@
 import { Controller, Get, Request } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { formatResponse, ResponseData } from '~/types/response-data';
-import { UserRequest } from '~/types/user-request';
+import { formatResponse, ResponseData } from '~/main/types/response-data';
+import { UserRequest } from '~/main/types/user-request';
 import { SignedInUserResponse } from './types/responses';
 
 @Controller('users')

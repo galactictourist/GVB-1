@@ -1,9 +1,9 @@
 import { faker } from '@faker-js/faker';
 import { range } from 'lodash';
 import { DeepPartial } from 'typeorm';
-import { NftEntity } from '~/nft/entity/nft.entity';
-import { NftStatus } from '~/nft/types';
-import { BlockchainNetwork, BLOCKCHAIN_INFO } from '~/types/blockchain';
+import { NftEntity } from '~/main/nft/entity/nft.entity';
+import { NftStatus } from '~/main/nft/types';
+import { BlockchainNetwork, BLOCKCHAIN_INFO } from '~/main/types/blockchain';
 
 export function createNft(oriData: DeepPartial<NftEntity> = {}) {
   const data: DeepPartial<NftEntity> = { ...oriData };

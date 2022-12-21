@@ -1,5 +1,5 @@
 import { BigNumberish, ethers } from 'ethers';
-import { TokenInfo } from '~/types/blockchain';
+import { TokenInfo } from '~/main/types/blockchain';
 
 export function numberStringToTokenAmount(float: string, tokenInfo: TokenInfo) {
   return ethers.utils.parseUnits(float, tokenInfo.decimals);

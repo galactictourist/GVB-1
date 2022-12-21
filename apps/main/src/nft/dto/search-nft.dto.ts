@@ -7,9 +7,9 @@ import {
   IsUUID,
   ValidateNested,
 } from 'class-validator';
-import { BlockchainNetwork } from '~/types/blockchain';
-import { SimplePaginationDto } from '~/types/dto/simple-pagination.dto';
-import { SimpleSortDto } from '~/types/dto/simple-sort.dto';
+import { BlockchainNetwork } from '~/main/types/blockchain';
+import { SimplePaginationDto } from '~/main/types/dto/simple-pagination.dto';
+import { SimpleSortDto } from '~/main/types/dto/simple-sort.dto';
 
 class FilterNftDto {
   @ApiProperty({ nullable: true, required: false })

@@ -1,7 +1,7 @@
 import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
-import { AdminRequest } from '~/types/admin-request';
-import { formatResponse, ResponseData } from '~/types/response-data';
+import { AdminRequest } from '~/main/types/admin-request';
+import { formatResponse, ResponseData } from '~/main/types/response-data';
 import { AuthService } from './auth.service';
 import { Public } from './decorator/public.decorator';
 import { AdminSigninDto } from './dto/admin-signin.dto';

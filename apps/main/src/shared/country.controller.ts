@@ -1,8 +1,8 @@
 import { Controller, Get } from '@nestjs/common';
 import { getName } from 'country-list';
-import { Public } from '~/auth/decorator/public.decorator';
-import { CountryCode, CountryConfig } from '~/types/country';
-import { formatResponse, ResponseData } from '~/types/response-data';
+import { Public } from '~/main/auth/decorator/public.decorator';
+import { CountryCode, CountryConfig } from '~/main/types/country';
+import { formatResponse, ResponseData } from '~/main/types/response-data';
 
 @Controller()
 export class CountryController {

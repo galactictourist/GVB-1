@@ -6,8 +6,8 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator';
-import { BlockchainNetwork } from '~/types/blockchain';
-import { CountryCode } from '~/types/country';
+import { BlockchainNetwork } from '~/main/types/blockchain';
+import { CountryCode } from '~/main/types/country';
 
 export class UpdateSaleDto {
   @ApiProperty()

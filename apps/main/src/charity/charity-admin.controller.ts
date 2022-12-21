@@ -8,12 +8,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Public } from '~/auth/decorator/public.decorator';
-import { Roles } from '~/auth/decorator/roles.decorator';
-import { JwtAdminAuthGuard } from '~/auth/guard/jwt-admin-auth.guard';
-import { RolesGuard } from '~/auth/guard/roles.guard';
-import { formatResponse } from '~/types/response-data';
-import { AdminRole } from '~/user/types';
+import { Public } from '~/main/auth/decorator/public.decorator';
+import { Roles } from '~/main/auth/decorator/roles.decorator';
+import { JwtAdminAuthGuard } from '~/main/auth/guard/jwt-admin-auth.guard';
+import { RolesGuard } from '~/main/auth/guard/roles.guard';
+import { formatResponse } from '~/main/types/response-data';
+import { AdminRole } from '~/main/user/types';
 import { CharityAdminService } from './charity-admin.service';
 import { CreateCharityAdminDto } from './dto/create-charity-admin.dto';
 import { CreateCharityTopicAdminDto } from './dto/create-charity-topic-admin.dto';

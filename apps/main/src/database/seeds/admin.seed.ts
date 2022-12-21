@@ -2,8 +2,8 @@ import { faker } from '@faker-js/faker';
 import bcrypt from 'bcrypt';
 import { range } from 'lodash';
 import { DeepPartial } from 'typeorm';
-import { AdminEntity } from '~/user/entity/admin.entity';
-import { AdminRole, AdminStatus } from '~/user/types';
+import { AdminEntity } from '~/main/user/entity/admin.entity';
+import { AdminRole, AdminStatus } from '~/main/user/types';
 
 export function createAdmin(oriData: DeepPartial<AdminEntity> = {}) {
   const data: DeepPartial<AdminEntity> = { ...oriData };

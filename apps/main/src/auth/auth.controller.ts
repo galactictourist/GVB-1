@@ -1,8 +1,8 @@
 import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { Wallet } from 'ethers';
-import { formatResponse, ResponseData } from '~/types/response-data';
-import { UserRequest } from '~/types/user-request';
+import { formatResponse, ResponseData } from '~/main/types/response-data';
+import { UserRequest } from '~/main/types/user-request';
 import { AuthService } from './auth.service';
 import { Public } from './decorator/public.decorator';
 import { CreateNonceDto } from './dto/create-nonce.dto';

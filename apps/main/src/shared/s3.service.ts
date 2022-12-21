@@ -2,8 +2,8 @@ import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import mime from 'mime-types';
-import { IServiceConfig } from '~/config/service.config';
-import { ConfigNamespace } from '~/types/config';
+import { IServiceConfig } from '~/main/config/service.config';
+import { ConfigNamespace } from '~/main/types/config';
 @Injectable()
 export class S3Service {
   private client: S3Client;

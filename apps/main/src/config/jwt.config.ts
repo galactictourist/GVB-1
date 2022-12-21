@@ -1,8 +1,8 @@
 import { registerAs } from '@nestjs/config';
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { baseDir } from '~/base';
-import { ConfigNamespace } from '~/types/config';
+import { baseDir } from '~/main/base';
+import { ConfigNamespace } from '~/main/types/config';
 
 export interface IJwtConfig {
   issuer: string;

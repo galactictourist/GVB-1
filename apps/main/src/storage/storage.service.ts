@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { DeepPartial, FindOptionsWhere } from 'typeorm';
-import { uuid } from '~/lib';
-import { cleanUpFilename } from '~/lib/file';
-import { S3Service } from '~/shared/s3.service';
+import { uuid } from '~/main/lib';
+import { cleanUpFilename } from '~/main/lib/file';
+import { S3Service } from '~/main/shared/s3.service';
 import { StorageEntity } from './entity/storage.entity';
 import { StorageRepository } from './repository/storage.repository';
 import { StorageLocation } from './types';
