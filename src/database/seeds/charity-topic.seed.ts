@@ -13,9 +13,7 @@ export function createCharityTopic(
   data.countryCode =
     data.countryCode ?? faker.helpers.arrayElement(Object.values(CountryCode));
   data.wallet =
-    data.wallet === undefined && data.network
-      ? generateWallet().address
-      : undefined;
+    data.wallet === undefined ? generateWallet().address : undefined;
   return CharityTopicEntity.create<CharityTopicEntity>(data);
 }
 

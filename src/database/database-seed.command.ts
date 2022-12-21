@@ -102,7 +102,6 @@ export class DatabaseSeedCommand extends CommandRunner {
             createCharityTopic({
               topicId: childTopic.id,
               charityId: charity.id,
-              network: BlockchainNetwork.POLYGON_MUMBAI,
             }),
           );
         });
@@ -116,7 +115,6 @@ export class DatabaseSeedCommand extends CommandRunner {
             createCharityTopic({
               topicId: childTopic.id,
               charityId: charity.id,
-              network: BlockchainNetwork.POLYGON_MUMBAI,
             }),
           );
         });
@@ -130,7 +128,6 @@ export class DatabaseSeedCommand extends CommandRunner {
             createCharityTopic({
               topicId: childTopic.id,
               charityId: charity.id,
-              network: BlockchainNetwork.POLYGON_MUMBAI,
             }),
           );
         });
@@ -144,7 +141,6 @@ export class DatabaseSeedCommand extends CommandRunner {
             createCharityTopic({
               topicId: childTopic.id,
               charityId: charity.id,
-              network: BlockchainNetwork.POLYGON_MUMBAI,
             }),
           );
         });
