@@ -5,6 +5,8 @@ import { SignerService } from '~/blockchain/signer.service';
 import { randomTokenId } from '~/lib';
 import { deadlineIn } from '~/lib/web3';
 import { NftStorageService } from '~/shared/nft-storage.service';
+import { StorageService } from '~/storage/storage.service';
+import { StorageLabel } from '~/storage/types';
 import { BlockchainNetwork, getErc721SmartContract } from '~/types/blockchain';
 import { ContextUser } from '~/types/user-request';
 import { CreateNftDto } from './dto/create-nft.dto';
@@ -13,7 +15,6 @@ import { MintNftDto } from './dto/mint-nft.dto';
 import { SearchNftDto } from './dto/search-nft.dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
 import { NftEntity } from './entity/nft.entity';
-import { ImageService } from './image.service';
 import { NftRepository } from './repository/nft.repository';
 import { NftImmutable } from './types';
 
@@ -22,7 +23,7 @@ export class NftService {
   constructor(
     private readonly nftRepository: NftRepository,
     private readonly signerService: SignerService,
-    private readonly imageService: ImageService,
+    private readonly storageService: StorageService,
     private readonly nftStorageService: NftStorageService,
     private readonly marketSmartContractService: MarketSmartContractService,
   ) {}
@@ -113,18 +114,30 @@ export class NftService {
   async createNft(
     createNftDto: CreateNftDto,
     defaults: DeepPartial<NftEntity>,
+    user: ContextUser,
   ) {
+    let imageUrl: string | undefined;
+    if (createNftDto.imageStorageId) {
+      try {
+        const storage = await this.storageService.getStorage({
+          id: createNftDto.imageStorageId,
+          ownerId: user.id,
+          label: StorageLabel.NFT_IMAGE,
+        });
+        imageUrl = storage.url;
+      } catch (e) {
+        throw new BadRequestException('Invalid file');
+      }
+    }
+
     const nftEntity = this.nftRepository.create({
       ...defaults,
       name: createNftDto.name,
       description: createNftDto.description,
       royalty: createNftDto.royalty,
       network: createNftDto.network,
+      imageUrl,
     });
-
-    // TODO update uploading image
-    // const publicUrl = await this.imageService.upload('abc6.json');
-    // console.log('publicUrl', publicUrl);
 
     await nftEntity.save();
     return nftEntity;

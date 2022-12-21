@@ -14,6 +14,7 @@ import { TypeOrmConfigService } from './database/typeorm.service';
 import { MarketplaceModule } from './marketplace/marketplace.module';
 import { NftModule } from './nft/nft.module';
 import { SharedModule } from './shared/shared.module';
+import { StorageModule } from './storage/storage.module';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -27,6 +28,7 @@ import { UserModule } from './user/user.module';
     MarketplaceModule,
     SharedModule,
     BlockchainModule,
+    StorageModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsEnum,
@@ -6,6 +7,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  IsUUID,
   Length,
   Matches,
   Max,
@@ -68,6 +70,7 @@ class MetadataDto implements MetadataDto {
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
+  @Type(() => MetadataAttributeDto)
   attributes?: MetadataAttributeDto[];
 }
 
@@ -95,5 +98,12 @@ export class CreateNftDto {
   @ApiProperty({ nullable: true, required: false })
   @IsOptional()
   @ValidateNested()
+  @Type(() => MetadataDto)
   metadata?: MetadataDto;
+
+  @ApiProperty({ nullable: true, required: false })
+  @IsOptional()
+  @IsUUID()
+  // @IsStorageId() // TODO implement validation
+  imageStorageId?: string;
 }

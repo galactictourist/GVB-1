@@ -96,10 +96,14 @@ export class NftController {
     @Request() request: UserRequest,
     @Body() createNftDto: CreateNftDto,
   ): Promise<ResponseData<NftEntity>> {
-    const nft = await this.nftService.createNft(createNftDto, {
-      ownerId: request.user.id,
-      status: NftStatus.ACTIVE,
-    });
+    const nft = await this.nftService.createNft(
+      createNftDto,
+      {
+        ownerId: request.user.id,
+        status: NftStatus.ACTIVE,
+      },
+      request.user,
+    );
     return formatResponse(nft);
   }
 

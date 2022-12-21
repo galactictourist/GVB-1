@@ -1,4 +1,4 @@
-import axios from 'axios';
+// import axios from 'axios';
 import { promises as fs } from 'fs';
 import { v4 } from 'uuid';
 
@@ -7,11 +7,11 @@ export async function readFile(path: string) {
   return buffer64;
 }
 
-export async function readFileRemote(url: string) {
-  const response = await axios(url, { responseType: 'arraybuffer' });
-  const buffer64 = Buffer.from(response.data, 'binary').toString('base64');
-  return buffer64;
-}
+// export async function readFileRemote(url: string) {
+//   const response = await axios(url, { responseType: 'arraybuffer' });
+//   const buffer64 = Buffer.from(response.data, 'binary').toString('base64');
+//   return buffer64;
+// }
 
 export function randomTokenId() {
   const heads = '123456789';
