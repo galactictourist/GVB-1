@@ -21,11 +21,16 @@ export class SignerService {
     const wallet = new Wallet(blockchainConfig.verifier.pk);
 
     const domain: TypedDataDomain = {
-      name: BLOCKCHAIN_INFO[network].constract.erc721.name,
-      version: '1',
+      name: BLOCKCHAIN_INFO[network].constract.marketplace.name,
+      version: '1.0.0',
       chainId: BLOCKCHAIN_INFO[network].chainId,
-      verifyingContract: BLOCKCHAIN_INFO[network].constract.erc721.address,
+      verifyingContract: BLOCKCHAIN_INFO[network].constract.marketplace.address,
     };
+
+    // console.log('wallet', wallet.address);
+    // console.log('domain', domain);
+    // console.log('types', types);
+    // console.log('data', data);
 
     const signature = await wallet._signTypedData(domain, types, data);
     return {
