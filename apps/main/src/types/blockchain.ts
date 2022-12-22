@@ -29,6 +29,7 @@ export interface ContractInfo {
 }
 
 interface BlockchainConfig {
+  enable: boolean;
   chainId: number;
   name: string;
   endpoints: readonly string[];
@@ -44,17 +45,19 @@ export const BLOCKCHAIN_INFO: {
   [key in BlockchainNetwork]: BlockchainConfig;
 } = {
   [BlockchainNetwork.POLYGON_MUMBAI]: {
+    enable: true,
     chainId: 80001,
     name: 'Polygon Testnet - Mumbai',
     endpoints: ['https://rpc-mumbai.maticvigil.com'],
     explorer: 'https://mumbai.polygonscan.com',
     constract: {
       erc721: {
-        address: '0x91d4Ad404E2363ae7FFDf7C8909dFEB24B1727f9', // '0x57baA35a806bDa26B4c3DDc0329804017689d2E7',
+        address: '0x713e7ac007277644e778FD77d7C8DcD2629B5bE4',
+        // address: '0xC954AF5Cf0D34DC5B827a2Dc5B3f8055c862DC42', // '0x57baA35a806bDa26B4c3DDc0329804017689d2E7',
         name: 'GBCollection',
       } as const,
       marketplace: {
-        address: '0xC540ae1D4c0013034B42720172e19c7803e94826', // '0x2978606902693E7114e45e65CE25504611D5E24C',
+        address: '0xEc2BC804AA4872d4dc57D21d68b060bD2cBC2205', // '0x2978606902693E7114e45e65CE25504611D5E24C',
         name: 'GBMarketplace',
         types: {
           AddSingleItem: [
@@ -117,6 +120,10 @@ export const BLOCKCHAIN_INFO: {
 
 export function getErc721SmartContract(network: BlockchainNetwork) {
   return BLOCKCHAIN_INFO[network].constract.erc721;
+}
+
+export function getMarketplaceSmartContract(network: BlockchainNetwork) {
+  return BLOCKCHAIN_INFO[network].constract.marketplace;
 }
 
 export function isCryptoCurrencyEnabled(

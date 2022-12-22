@@ -1,10 +1,5 @@
-import {
-  BigNumberish,
-  Contract,
-  ContractInterface,
-  providers,
-  Wallet,
-} from 'ethers';
+import { BigNumberish, Contract, providers, Wallet } from 'ethers';
+import { Interface } from 'ethers/lib/utils';
 import { BlockchainNetwork, BLOCKCHAIN_INFO } from '~/main/types/blockchain';
 
 interface Overrides {
@@ -17,7 +12,7 @@ interface Overrides {
 }
 
 export abstract class BaseSmartContractService {
-  protected abi: ContractInterface;
+  protected abi: Interface;
 
   protected getContract(network: BlockchainNetwork, contractAddress: string) {
     return new Contract(
