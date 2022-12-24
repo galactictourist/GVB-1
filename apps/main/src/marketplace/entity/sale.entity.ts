@@ -1,3 +1,4 @@
+import { TypedData } from 'eip-712';
 import { Column, Entity, Index, ManyToOne, Unique } from 'typeorm';
 import { CharityEntity } from '~/main/charity/entity/charity.entity';
 import { TopicEntity } from '~/main/charity/entity/topic.entity';
@@ -85,6 +86,9 @@ export class SaleEntity extends BaseElement {
 
   @Column({ unique: true, length: 100, nullable: true })
   hash: string;
+
+  @Column('jsonb', { nullable: true })
+  typedData: TypedData;
 
   @Column('jsonb', { nullable: true })
   signedData: SignedData;

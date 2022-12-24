@@ -49,6 +49,7 @@ export class MarketSmartContractService extends BaseSmartContractService {
     return {
       hash: parsedEvent.args.orderHash,
       account: parsedEvent.args.account,
+      blockchainEvent: event,
     };
   }
 
@@ -70,6 +71,7 @@ export class MarketSmartContractService extends BaseSmartContractService {
     return {
       order: parsedEvent.args.item,
       hash: parsedEvent.args.orderHash,
+      blockchainEvent: event,
     };
   }
 }

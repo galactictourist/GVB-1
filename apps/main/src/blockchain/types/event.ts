@@ -10,9 +10,11 @@ export interface Erc721TransferEvent {
 export interface SaleCancelledEvent {
   hash: string;
   account: string;
+  blockchainEvent: Event;
 }
 
 export interface OrderCompletedEvent {
   hash: string;
   order: any;
+  blockchainEvent: Event;
 }

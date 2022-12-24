@@ -6,4 +6,5 @@ export enum OrderStatus {
 export enum SaleStatus {
   LISTING = 'LISTING',
   CANCELLED = 'CANCELLED',
+  FULFILLED = 'FULFILLED',
 }

@@ -1,13 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { DeepPartial, FindOptionsWhere, In } from 'typeorm';
+import { DeepPartial, FindOptionsWhere, In, MoreThanOrEqual } from 'typeorm';
+import { MarketSmartContractService } from '../blockchain/market-smart-contracts.service';
+import { OrderCompletedEvent } from '../blockchain/types/event';
+import { BlockchainNetwork } from '../types/blockchain';
+import { UserService } from '../user/user.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { SearchOrderDto } from './dto/search-order.dto';
 import { OrderEntity } from './entity/order.entity';
+import { SaleEntity } from './entity/sale.entity';
 import { OrderRepository } from './repository/order.repository';
+import { SaleRepository } from './repository/sale.repository';
+import { SaleStatus } from './types';
 
 @Injectable()
 export class OrderService {
-  constructor(private readonly orderRepository: OrderRepository) {}
+  constructor(
+    private readonly orderRepository: OrderRepository,
+    private readonly saleRepository: SaleRepository,
+    private readonly userService: UserService,
+    private readonly marketSmartContractService: MarketSmartContractService,
+  ) {}
 
   async search(
     searchOrderDto: SearchOrderDto,
@@ -47,5 +59,69 @@ export class OrderService {
 
     await orderEntity.save();
     return orderEntity;
+  }
+
+  async processCompletedOrders(
+    network: BlockchainNetwork,
+    fromBlock: number,
+    toBlock: number,
+  ) {
+    const events =
+      await this.marketSmartContractService.getOrderCompletedEvents(
+        network,
+        fromBlock,
+        toBlock,
+      );
+
+    const result = await Promise.allSettled(
+      events.map((event) => {
+        return this.completeOrder(network, event);
+      }),
+    );
+
+    return result;
+  }
+
+  async completeOrder(
+    network: BlockchainNetwork,
+    event: OrderCompletedEvent,
+  ): Promise<OrderEntity> {
+    const saleEntity = await this.saleRepository.findOneByOrFail({
+      network,
+      hash: event.hash,
+    });
+
+    return this._completeOrder(saleEntity, event);
+  }
+
+  private async _completeOrder(
+    saleEntity: SaleEntity,
+    event: OrderCompletedEvent,
+    quantity = 1,
+  ): Promise<OrderEntity> {
+    const transaction = await event.blockchainEvent.getTransactionReceipt();
+    const buyer = await this.userService.findOrCreateOneByWallet(
+      transaction.from,
+    );
+
+    await this.saleRepository.update(
+      {
+        id: saleEntity.id,
+        remainingQuantity: MoreThanOrEqual(quantity),
+        status: SaleStatus.LISTING,
+      },
+      {
+        remainingQuantity: () => `remainingQuantity - ${quantity}`,
+        status: SaleStatus.FULFILLED,
+      },
+    );
+
+    // TODO add more fields to order
+    const order = this.orderRepository.create({
+      seller: saleEntity.user,
+      buyer,
+    });
+
+    return order;
   }
 }
