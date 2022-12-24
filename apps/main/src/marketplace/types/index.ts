@@ -1,5 +1,5 @@
 export enum OrderStatus {
-  PLACED = 'PLACED',
+  PENDING = 'PENDING',
   COMPLETED = 'COMPLETED',
 }
 

@@ -73,7 +73,7 @@ export class OrderEntity extends BaseElement {
 
   @Column({
     enum: OrderStatus,
-    default: OrderStatus.PLACED,
+    default: OrderStatus.PENDING,
     length: 20,
   })
   status: OrderStatus;
