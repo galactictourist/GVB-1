@@ -7,7 +7,6 @@ import { MetadataAttribute, NftImmutable, NftStatus } from '../types';
 import { CollectionEntity } from './collection.entity';
 
 @Entity({ name: 'nft' })
-@Unique('nft_uq', ['network', 'scAddress', 'tokenId'])
 @Unique('nft_network_mintedTxId_uq', ['network', 'mintedTxId'])
 @Index('nft_ownerId_idx', ['ownerId'])
 @Index('nft_collectionId_idx', ['collectionId'])
