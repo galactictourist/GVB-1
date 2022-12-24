@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, Index, ManyToOne, Unique } from 'typeorm';
 import { CharityEntity } from '~/main/charity/entity/charity.entity';
 import { TopicEntity } from '~/main/charity/entity/topic.entity';
 import { BaseElement } from '~/main/lib/database/base-element';
@@ -10,6 +10,14 @@ import { OrderStatus } from '../types';
 import { SaleEntity } from './sale.entity';
 
 @Entity({ name: 'order' })
+@Unique('order_uq', ['network', 'txId'])
+@Index('order_sellerId_idx', ['sellerId'])
+@Index('order_buyerId_idx', ['buyerId'])
+@Index('order_saleId_idx', ['saleId'])
+@Index('order_nftId_idx', ['nftId'])
+@Index('order_charityId_idx', ['charityId'])
+@Index('order_topicId_idx', ['topicId'])
+@Index('order_status_idx', ['status'])
 export class OrderEntity extends BaseElement {
   @Column('uuid')
   sellerId: string;

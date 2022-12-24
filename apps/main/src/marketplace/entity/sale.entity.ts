@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, Index, ManyToOne, Unique } from 'typeorm';
 import { CharityEntity } from '~/main/charity/entity/charity.entity';
 import { TopicEntity } from '~/main/charity/entity/topic.entity';
 import { BaseElement } from '~/main/lib/database/base-element';
@@ -10,6 +10,13 @@ import { SaleStatus } from '../types';
 import { SignedData } from '../types/signed-data';
 
 @Entity({ name: 'sale' })
+@Unique('sale_uq', ['network', 'hash'])
+@Index('sale_userId_idx', ['userId'])
+@Index('sale_nftId_idx', ['nftId'])
+@Index('sale_charityId_idx', ['charityId'])
+@Index('sale_topicId_idx', ['topicId'])
+@Index('sale_expiredAt_idx', ['expiredAt'])
+@Index('sale_status_idx', ['status'])
 export class SaleEntity extends BaseElement {
   @Column('uuid')
   userId: string;

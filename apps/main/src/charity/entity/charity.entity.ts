@@ -1,10 +1,11 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, Index, OneToMany } from 'typeorm';
 import { BaseElement } from '~/main/lib/database/base-element';
 import { SaleEntity } from '~/main/marketplace/entity/sale.entity';
 import { CharityStatus } from '../types';
 import { CharityTopicEntity } from './charity-topic.entity';
 
 @Entity({ name: 'charity' })
+@Index('charity_status_idx', ['status'])
 export class CharityEntity extends BaseElement {
   @Column({
     length: 200,

@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, Unique } from 'typeorm';
+import { Column, Entity, Index, ManyToOne, Unique } from 'typeorm';
 import { BaseElement } from '~/main/lib/database/base-element';
 import { StorageEntity } from '~/main/storage/entity/storage.entity';
 import { BlockchainNetwork } from '../../types/blockchain';
@@ -8,6 +8,11 @@ import { CollectionEntity } from './collection.entity';
 
 @Entity({ name: 'nft' })
 @Unique('nft_uq', ['network', 'scAddress', 'tokenId'])
+@Unique('nft_network_mintedTxId_uq', ['network', 'mintedTxId'])
+@Index('nft_ownerId_idx', ['ownerId'])
+@Index('nft_collectionId_idx', ['collectionId'])
+@Index('nft_status_idx', ['status'])
+@Index('nft_imageStorageId_idx', ['imageStorageId'])
 export class NftEntity extends BaseElement {
   @Column({
     enum: BlockchainNetwork,
