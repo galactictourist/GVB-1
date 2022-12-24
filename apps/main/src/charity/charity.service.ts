@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { CountryCode } from '../types/country';
+import { CharityTopicEntity } from './entity/charity-topic.entity';
 import { CharityTopicRepository } from './repository/charity-topic.repository';
 import { CharityRepository } from './repository/charity.repository';
 import { CharityStatus } from './types';
@@ -38,5 +40,24 @@ export class CharityService {
       data,
       total,
     };
+  }
+
+  async getCharityTopic(
+    charityId: string,
+    topicId: string,
+    countryCode: CountryCode,
+  ): Promise<CharityTopicEntity | null> {
+    const entity = await this.charityTopicRepository.findOne({
+      relationLoadStrategy: 'query',
+      relations: {
+        topic: true,
+      },
+      where: {
+        charityId,
+        topicId,
+        countryCode,
+      },
+    });
+    return entity;
   }
 }

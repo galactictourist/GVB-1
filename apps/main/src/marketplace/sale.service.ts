@@ -8,6 +8,7 @@ import {
   isCryptoCurrencyEnabled,
 } from '~/main/types/blockchain';
 import { ContextUser } from '~/main/types/user-request';
+import { CharityService } from '../charity/charity.service';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { FilterSaleParam } from './dto/filter-sale.param';
 import { SearchSaleDto } from './dto/search-sale.dto';
@@ -20,6 +21,7 @@ export class SaleService {
   constructor(
     private readonly saleRepository: SaleRepository,
     private readonly nftService: NftService,
+    private readonly charityService: CharityService,
   ) {}
 
   async search(
@@ -115,7 +117,15 @@ export class SaleService {
     ) {
       throw new BadRequestException('Currency is not supported');
     }
-    // TODO validate charity and country and topic
+    // validate charity and country and topic
+    const charityTopic = await this.charityService.getCharityTopic(
+      createSaleDto.charityId,
+      createSaleDto.topicId,
+      createSaleDto.countryCode,
+    );
+    if (!charityTopic) {
+      throw new BadRequestException('Charity and topic are not matched');
+    }
 
     // count existing active sale
     const countExistingSale = await this.count(
