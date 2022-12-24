@@ -8,6 +8,7 @@ import {
   isCryptoCurrencyEnabled,
 } from '~/main/types/blockchain';
 import { ContextUser } from '~/main/types/user-request';
+import { MarketSmartContractService } from '../blockchain/market-smart-contracts.service';
 import { CharityService } from '../charity/charity.service';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { FilterSaleParam } from './dto/filter-sale.param';
@@ -22,6 +23,7 @@ export class SaleService {
     private readonly saleRepository: SaleRepository,
     private readonly nftService: NftService,
     private readonly charityService: CharityService,
+    private readonly marketSmartContractService: MarketSmartContractService,
   ) {}
 
   async search(
@@ -173,6 +175,26 @@ export class SaleService {
     return { sale: saleEntity };
   }
 
+  async processCancelledSales(
+    network: BlockchainNetwork,
+    fromBlock: number,
+    toBlock: number,
+  ) {
+    const events = await this.marketSmartContractService.getSaleCancelledEvents(
+      network,
+      fromBlock,
+      toBlock,
+    );
+
+    const result = await Promise.allSettled(
+      events.map((event) => {
+        return this.cancelSaleByHash(network, event.hash);
+      }),
+    );
+
+    return result;
+  }
+
   async cancelSaleByHash(
     network: BlockchainNetwork,
     hash: string,
@@ -186,7 +208,7 @@ export class SaleService {
   }
 
   private async _cancelSale(saleEntity: SaleEntity): Promise<SaleEntity> {
-    if (!saleEntity.isActive()) {
+    if (!saleEntity.isListing()) {
       throw new BadRequestException('Sale is invalid');
     }
 

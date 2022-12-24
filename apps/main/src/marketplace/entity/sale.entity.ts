@@ -92,7 +92,7 @@ export class SaleEntity extends BaseElement {
   @Column({ length: 200, nullable: true })
   signature: string;
 
-  isActive() {
+  isListing() {
     return this.status === SaleStatus.LISTING;
   }
 }

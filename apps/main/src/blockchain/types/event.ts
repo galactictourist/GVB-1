@@ -8,11 +8,11 @@ export interface Erc721TransferEvent {
 }
 
 export interface SaleCancelledEvent {
-  orderHash: string;
+  hash: string;
   account: string;
 }
 
 export interface OrderCompletedEvent {
-  orderHash: string;
+  hash: string;
   order: any;
 }

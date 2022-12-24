@@ -47,7 +47,7 @@ export class MarketSmartContractService extends BaseSmartContractService {
   private formatSaleCancelledEvent(event: Event): SaleCancelledEvent {
     const parsedEvent = this.abi.parseLog(event);
     return {
-      orderHash: parsedEvent.args.orderHash,
+      hash: parsedEvent.args.orderHash,
       account: parsedEvent.args.account,
     };
   }
@@ -69,7 +69,7 @@ export class MarketSmartContractService extends BaseSmartContractService {
     const parsedEvent = this.abi.parseLog(event);
     return {
       order: parsedEvent.args.item,
-      orderHash: parsedEvent.args.orderHash,
+      hash: parsedEvent.args.orderHash,
     };
   }
 }
