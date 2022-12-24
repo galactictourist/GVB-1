@@ -3,7 +3,10 @@ import { DateTime } from 'luxon';
 import { DeepPartial, FindManyOptions, FindOptionsWhere, In } from 'typeorm';
 import { NftService } from '~/main/nft/nft.service';
 import { NftStatus } from '~/main/nft/types';
-import { isCryptoCurrencyEnabled } from '~/main/types/blockchain';
+import {
+  BlockchainNetwork,
+  isCryptoCurrencyEnabled,
+} from '~/main/types/blockchain';
 import { ContextUser } from '~/main/types/user-request';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { FilterSaleParam } from './dto/filter-sale.param';
@@ -120,7 +123,7 @@ export class SaleService {
         userIds: [user.id],
         nftIds: [createSaleDto.nftId],
         networks: [createSaleDto.network],
-        statuses: [SaleStatus.ACTIVE],
+        statuses: [SaleStatus.LISTING],
       },
       { take: 1 },
     );
@@ -158,5 +161,28 @@ export class SaleService {
     });
     await saleEntity.save();
     return { sale: saleEntity };
+  }
+
+  async cancelSaleByHash(
+    network: BlockchainNetwork,
+    hash: string,
+  ): Promise<SaleEntity> {
+    const saleEntity = await this.saleRepository.findOneByOrFail({
+      network,
+      hash,
+    });
+
+    return this._cancelSale(saleEntity);
+  }
+
+  private async _cancelSale(saleEntity: SaleEntity): Promise<SaleEntity> {
+    if (!saleEntity.isActive()) {
+      throw new BadRequestException('Sale is invalid');
+    }
+
+    saleEntity.status = SaleStatus.CANCELLED;
+    await this.saleRepository.save(saleEntity);
+
+    return saleEntity;
   }
 }

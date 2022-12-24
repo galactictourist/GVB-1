@@ -20,7 +20,7 @@ export class SaleController {
     @Body() searchSaleDto: SearchSaleDto,
   ): Promise<ResponseData<SaleEntity[]>> {
     const result = await this.saleService.search(searchSaleDto, {
-      status: SaleStatus.ACTIVE,
+      status: SaleStatus.LISTING,
     });
     return formatResponse(result.data, {
       pagination: {
@@ -41,7 +41,7 @@ export class SaleController {
       createSaleDto,
       {
         userId: request.user.id,
-        status: SaleStatus.ACTIVE,
+        status: SaleStatus.LISTING,
       },
       request.user,
     );

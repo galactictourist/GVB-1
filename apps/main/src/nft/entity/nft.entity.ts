@@ -7,6 +7,7 @@ import { MetadataAttribute, NftImmutable, NftStatus } from '../types';
 import { CollectionEntity } from './collection.entity';
 
 @Entity({ name: 'nft' })
+@Index('nft_uq', { synchronize: false })
 @Unique('nft_network_mintedTxId_uq', ['network', 'mintedTxId'])
 @Index('nft_ownerId_idx', ['ownerId'])
 @Index('nft_collectionId_idx', ['collectionId'])
@@ -70,11 +71,11 @@ export class NftEntity extends BaseElement {
   })
   collection?: CollectionEntity;
 
-  @Column('uuid')
-  ownerId: string;
+  @Column('uuid', { nullable: true })
+  ownerId?: string;
 
-  @ManyToOne(() => UserEntity, (user) => user.id)
-  owner: UserEntity;
+  @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
+  owner?: UserEntity;
 
   @Column({
     enum: NftStatus,

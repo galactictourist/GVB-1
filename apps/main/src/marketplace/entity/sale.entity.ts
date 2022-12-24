@@ -64,6 +64,12 @@ export class SaleEntity extends BaseElement {
   @Column({ enum: CountryCode, length: 2, nullable: true })
   countryCode?: CountryCode;
 
+  @Column('int', { default: 1 })
+  quantity: number;
+
+  @Column('int', { default: 1 })
+  remainingQuantity: number;
+
   @Column('int', { nullable: true })
   charityShare?: number;
 
@@ -72,7 +78,7 @@ export class SaleEntity extends BaseElement {
 
   @Column({
     enum: SaleStatus,
-    default: SaleStatus.ACTIVE,
+    default: SaleStatus.LISTING,
     length: 20,
   })
   status: SaleStatus;
@@ -87,6 +93,6 @@ export class SaleEntity extends BaseElement {
   signature: string;
 
   isActive() {
-    return this.status === SaleStatus.ACTIVE;
+    return this.status === SaleStatus.LISTING;
   }
 }

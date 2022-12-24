@@ -4,6 +4,6 @@ export enum OrderStatus {
 }
 
 export enum SaleStatus {
-  ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE',
+  LISTING = 'LISTING',
+  CANCELLED = 'CANCELLED',
 }
