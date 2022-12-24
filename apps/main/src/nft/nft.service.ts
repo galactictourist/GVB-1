@@ -12,6 +12,9 @@ import {
   getErc721SmartContract,
 } from '~/main/types/blockchain';
 import { ContextUser } from '~/main/types/user-request';
+import { NftSmartContractService } from '../blockchain/nft-smart-contracts.service';
+import { Erc721TransferEvent } from '../blockchain/types/event';
+import { UserService } from '../user/user.service';
 import { CreateNftDto } from './dto/create-nft.dto';
 import { FilterNftParam } from './dto/filter-nft.param';
 import { MintNftDto } from './dto/mint-nft.dto';
@@ -26,8 +29,10 @@ export class NftService {
   constructor(
     private readonly nftRepository: NftRepository,
     private readonly signerService: SignerService,
+    private readonly userService: UserService,
     private readonly storageService: StorageService,
     private readonly nftStorageService: NftStorageService,
+    private readonly nftSmartContractService: NftSmartContractService,
     private readonly marketSmartContractService: MarketSmartContractService,
   ) {}
 
@@ -208,7 +213,7 @@ export class NftService {
     if (nftEntity.ownerId !== user.id) {
       throw new BadRequestException('NFT owner mismatch');
     }
-    if (!nftEntity.owner.wallet) {
+    if (!nftEntity.owner?.wallet) {
       throw new BadRequestException('Missing user wallet');
     }
 
@@ -245,5 +250,48 @@ export class NftService {
     );
 
     return { ...signature, data };
+  }
+
+  async processTransferedNfts(
+    network: BlockchainNetwork,
+    fromBlock: number,
+    toBlock: number,
+  ) {
+    const events = await this.nftSmartContractService.getTransferEvents(
+      network,
+      fromBlock,
+      toBlock,
+    );
+
+    const result = await Promise.allSettled(
+      events.map((event) => {
+        return this.processNftTransfer(network, event);
+      }),
+    );
+
+    return result;
+  }
+
+  private async processNftTransfer(
+    network: BlockchainNetwork,
+    event: Erc721TransferEvent,
+  ): Promise<boolean> {
+    try {
+      const nft = await this.nftRepository.findOneByOrFail({
+        network,
+        scAddress: event.blockchainEvent.address.toLowerCase(),
+        tokenId: event.tokenId.toString(),
+      });
+
+      const owner = await this.userService.findOrCreateOneByWallet(event.to);
+
+      nft.ownerId = owner.id;
+      await this.nftRepository.save(nft);
+
+      return true;
+    } catch (e) {
+      console.error('processNftTransfer failed', e);
+      return false;
+    }
   }
 }

@@ -53,6 +53,7 @@ export class NftSmartContractService extends BaseSmartContractService {
       from: parsedEvent.args.from,
       to: parsedEvent.args.to,
       tokenId: parsedEvent.args.tokenId.toString(),
+      blockchainEvent: event,
     };
   }
 }
