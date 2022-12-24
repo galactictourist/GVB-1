@@ -4,6 +4,7 @@ import { CountryCode } from '~/main/types/country';
 import { UserStatus } from '../types';
 
 @Entity({ name: 'user' })
+@Index('user_wallet_uq', { synchronize: false }) // https://typeorm.io/indices#disabling-synchronization
 @Index('user_status_idx', ['status'])
 export class UserEntity extends BaseElement {
   @Column({ nullable: true, length: 50 })

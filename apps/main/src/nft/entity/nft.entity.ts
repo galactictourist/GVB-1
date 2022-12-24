@@ -7,7 +7,7 @@ import { MetadataAttribute, NftImmutable, NftStatus } from '../types';
 import { CollectionEntity } from './collection.entity';
 
 @Entity({ name: 'nft' })
-@Index('nft_uq', { synchronize: false })
+@Index('nft_uq', { synchronize: false }) // https://typeorm.io/indices#disabling-synchronization
 @Unique('nft_network_mintedTxId_uq', ['network', 'mintedTxId'])
 @Index('nft_ownerId_idx', ['ownerId'])
 @Index('nft_collectionId_idx', ['collectionId'])
