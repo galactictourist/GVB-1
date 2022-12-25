@@ -90,7 +90,7 @@ export class OrderService {
     network: BlockchainNetwork,
     txId: string,
     event: OrderCompletedEvent,
-  ): Promise<OrderEntity> {
+  ): Promise<OrderEntity | undefined> {
     txId = txId.toLowerCase();
     const orderEntity = await this.orderRepository.findOneBy({
       network,
@@ -100,10 +100,14 @@ export class OrderService {
       return orderEntity;
     }
 
-    const saleEntity = await this.saleRepository.findOneByOrFail({
+    const saleEntity = await this.saleRepository.findOneBy({
       network,
       hash: event.hash.toLowerCase(),
     });
+
+    if (!saleEntity) {
+      return;
+    }
 
     return this._completeOrder(saleEntity, event);
   }
@@ -130,7 +134,6 @@ export class OrderService {
       },
     );
 
-    // TODO add more fields to order
     const order = this.orderRepository.create({
       sellerId: saleEntity.userId,
       buyerId: buyer.id,

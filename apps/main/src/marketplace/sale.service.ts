@@ -200,21 +200,27 @@ export class SaleService {
   async cancelSaleByHash(
     network: BlockchainNetwork,
     hash: string,
-  ): Promise<SaleEntity> {
+  ): Promise<SaleEntity | undefined> {
     hash = hash.toLowerCase();
-    const saleEntity = await this.saleRepository.findOneByOrFail({
+    const saleEntity = await this.saleRepository.findOneBy({
       network,
       hash,
     });
+
+    if (!saleEntity) {
+      return;
+    }
+    if (saleEntity.status === SaleStatus.CANCELLED) {
+      return saleEntity;
+    }
+    if (!saleEntity.isListing()) {
+      throw new BadRequestException('Sale is invalid');
+    }
 
     return this._cancelSale(saleEntity);
   }
 
   private async _cancelSale(saleEntity: SaleEntity): Promise<SaleEntity> {
-    if (!saleEntity.isListing()) {
-      throw new BadRequestException('Sale is invalid');
-    }
-
     saleEntity.status = SaleStatus.CANCELLED;
     await this.saleRepository.save(saleEntity);
 
