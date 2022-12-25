@@ -94,7 +94,7 @@ export class SaleEntity extends BaseElement {
   hash: string;
 
   @Column('jsonb', { nullable: true })
-  signedData: TypedData;
+  signedData: TypedData<Record<string, any>>;
 
   @Column({ length: 200, nullable: true })
   signature: string;
