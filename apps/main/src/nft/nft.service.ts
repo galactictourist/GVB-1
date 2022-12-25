@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { isZeroAddress } from 'ethereumjs-util';
 import { DeepPartial, FindManyOptions, FindOptionsWhere, In } from 'typeorm';
 import { MarketSmartContractService } from '~/main/blockchain/market-smart-contracts.service';
 import { SignerService } from '~/main/blockchain/signer.service';
@@ -286,6 +287,9 @@ export class NftService {
       const owner = await this.userService.findOrCreateOneByWallet(event.to);
 
       nft.ownerId = owner.id;
+      if (isZeroAddress(event.from)) {
+        nft.mintedTxId = event.blockchainEvent.transactionHash;
+      }
       await this.nftRepository.save(nft);
 
       return true;
