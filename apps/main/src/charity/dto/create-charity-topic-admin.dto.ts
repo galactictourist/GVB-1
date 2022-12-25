@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDefined, IsEnum, IsUUID } from 'class-validator';
-import { IsEip55Address } from '~/main/shared/validator/is-eip55-address.validator';
+import { IsDefined, IsEnum, IsEthereumAddress, IsUUID } from 'class-validator';
 import { CountryCode } from '~/main/types/country';
 
 export class CreateCharityTopicAdminDto {
@@ -16,6 +15,6 @@ export class CreateCharityTopicAdminDto {
 
   @ApiProperty()
   @IsDefined()
-  @IsEip55Address()
+  @IsEthereumAddress()
   wallet: string;
 }
