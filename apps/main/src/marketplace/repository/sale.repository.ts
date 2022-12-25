@@ -51,12 +51,12 @@ export class SaleRepository extends BaseRepository<SaleEntity> {
       tokenId: sale.nft.tokenId,
       tokenURI: sale.nft.getMetadataUrl(),
       quantity: sale.quantity,
-      itemPrice: parseCryptoAmount(sale.network, sale.currency, sale.price), // listed price
-      additionalPrice: 0, // additional price for charity
+      itemPrice: parseCryptoAmount(sale.network, sale.currency, sale.price),
+      additionalPrice: 0,
       charityAddress: sale.charityWallet,
       charityFee: sale.charityShare,
       royaltyFee: sale.nft.royalty,
-      deadline: DateTime.fromJSDate(sale.expiredAt).toSeconds(), // expiry time of listed NFT
+      deadline: DateTime.fromJSDate(sale.expiredAt).toSeconds(),
     };
 
     const typedData = {
