@@ -1,5 +1,5 @@
 import { TypedData } from 'eip-712';
-import { Column, Entity, Index, ManyToOne, Unique } from 'typeorm';
+import { Column, Entity, Index, ManyToOne } from 'typeorm';
 import { CharityEntity } from '~/main/charity/entity/charity.entity';
 import { TopicEntity } from '~/main/charity/entity/topic.entity';
 import { BaseElement } from '~/main/lib/database/base-element';
@@ -14,7 +14,7 @@ import { UserEntity } from '../../user/entity/user.entity';
 import { SaleStatus } from '../types';
 
 @Entity({ name: 'sale' })
-@Unique('sale_uq', ['network', 'hash'])
+@Index('sale_uq', { synchronize: false }) // https://typeorm.io/indices#disabling-synchronization
 @Index('sale_userId_idx', ['userId'])
 @Index('sale_nftId_idx', ['nftId'])
 @Index('sale_charityId_idx', ['charityId'])

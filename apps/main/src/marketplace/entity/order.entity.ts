@@ -1,4 +1,4 @@
-import { Column, Entity, Index, ManyToOne, Unique } from 'typeorm';
+import { Column, Entity, Index, ManyToOne } from 'typeorm';
 import { CharityEntity } from '~/main/charity/entity/charity.entity';
 import { TopicEntity } from '~/main/charity/entity/topic.entity';
 import { BaseElement } from '~/main/lib/database/base-element';
@@ -10,7 +10,7 @@ import { OrderStatus } from '../types';
 import { SaleEntity } from './sale.entity';
 
 @Entity({ name: 'order' })
-@Unique('order_uq', ['network', 'txId'])
+@Index('order_uq', { synchronize: false }) // https://typeorm.io/indices#disabling-synchronization
 @Index('order_sellerId_idx', ['sellerId'])
 @Index('order_buyerId_idx', ['buyerId'])
 @Index('order_saleId_idx', ['saleId'])
