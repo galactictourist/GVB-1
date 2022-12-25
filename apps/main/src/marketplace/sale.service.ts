@@ -201,6 +201,7 @@ export class SaleService {
     network: BlockchainNetwork,
     hash: string,
   ): Promise<SaleEntity> {
+    hash = hash.toLowerCase();
     const saleEntity = await this.saleRepository.findOneByOrFail({
       network,
       hash,

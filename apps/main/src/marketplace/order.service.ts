@@ -75,7 +75,11 @@ export class OrderService {
 
     const result = await Promise.allSettled(
       events.map((event) => {
-        return this.completeOrder(network, event);
+        return this.completeOrder(
+          network,
+          event.blockchainEvent.transactionHash,
+          event,
+        );
       }),
     );
 
@@ -84,11 +88,21 @@ export class OrderService {
 
   async completeOrder(
     network: BlockchainNetwork,
+    txId: string,
     event: OrderCompletedEvent,
   ): Promise<OrderEntity> {
+    txId = txId.toLowerCase();
+    const orderEntity = await this.orderRepository.findOneBy({
+      network,
+      txId,
+    });
+    if (orderEntity) {
+      return orderEntity;
+    }
+
     const saleEntity = await this.saleRepository.findOneByOrFail({
       network,
-      hash: event.hash,
+      hash: event.hash.toLowerCase(),
     });
 
     return this._completeOrder(saleEntity, event);
