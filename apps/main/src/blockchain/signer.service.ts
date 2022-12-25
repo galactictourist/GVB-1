@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { TypedDataDomain, TypedDataField, Wallet } from 'ethers';
+import { Bytes, TypedDataDomain, TypedDataField, utils, Wallet } from 'ethers';
 import { IBlockchainConfig } from '~/main/config/blockchain.config';
 import { BlockchainNetwork, BLOCKCHAIN_INFO } from '~/main/types/blockchain';
 import { ConfigNamespace } from '~/main/types/config';
@@ -10,15 +10,20 @@ import { AddSingleItem, BuyItem } from './types';
 export class SignerService {
   constructor(private readonly configService: ConfigService) {}
 
+  private getSignerWallet() {
+    const blockchainConfig = this.configService.getOrThrow<IBlockchainConfig>(
+      ConfigNamespace.BLOCKCHAIN,
+    );
+    const wallet = new Wallet(blockchainConfig.verifier.pk);
+    return wallet;
+  }
+
   private async signMarket(
     network: BlockchainNetwork,
     types: Record<string, Array<TypedDataField>>,
     data: Record<string, any>,
   ) {
-    const blockchainConfig = this.configService.getOrThrow<IBlockchainConfig>(
-      ConfigNamespace.BLOCKCHAIN,
-    );
-    const wallet = new Wallet(blockchainConfig.verifier.pk);
+    const wallet = this.getSignerWallet();
 
     const domain: TypedDataDomain = {
       name: BLOCKCHAIN_INFO[network].constract.marketplace.name,
@@ -60,5 +65,20 @@ export class SignerService {
       },
       data,
     );
+  }
+
+  async sign(message: Bytes | string): Promise<string> {
+    const wallet = this.getSignerWallet();
+    const signature = await wallet.signMessage(message);
+    return signature;
+  }
+
+  isSignedByVerifier(message: Bytes | string, signature: string): boolean {
+    return this.verify(message, signature, this.getSignerWallet().address);
+  }
+
+  verify(message: Bytes | string, signature: string, address: string): boolean {
+    const signerAddress = utils.verifyMessage(message, signature);
+    return signerAddress.toLowerCase() === address.toLowerCase();
   }
 }

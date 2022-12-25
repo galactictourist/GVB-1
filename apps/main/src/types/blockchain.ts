@@ -25,6 +25,7 @@ export interface TokenInfo {
 export interface ContractInfo {
   name: string;
   address: string;
+  version?: string;
   types?: Record<string, Array<TypedDataField>>;
 }
 
@@ -59,6 +60,7 @@ export const BLOCKCHAIN_INFO: {
       marketplace: {
         address: '0xEc2BC804AA4872d4dc57D21d68b060bD2cBC2205', // '0x2978606902693E7114e45e65CE25504611D5E24C',
         name: 'GBMarketplace',
+        version: '1.0.0',
         types: {
           AddSingleItem: [
             { type: 'address', name: 'account' },
@@ -117,6 +119,10 @@ export const BLOCKCHAIN_INFO: {
     },
   },
 } as const;
+
+export function getNetworkConfig(network: BlockchainNetwork) {
+  return BLOCKCHAIN_INFO[network];
+}
 
 export function getErc721SmartContract(network: BlockchainNetwork) {
   return BLOCKCHAIN_INFO[network].constract.erc721;

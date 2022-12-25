@@ -9,19 +9,23 @@ import {
 } from '~/main/types/blockchain';
 import { ContextUser } from '~/main/types/user-request';
 import { MarketSmartContractService } from '../blockchain/market-smart-contracts.service';
+import { SignerService } from '../blockchain/signer.service';
 import { CharityService } from '../charity/charity.service';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { FilterSaleParam } from './dto/filter-sale.param';
 import { SearchSaleDto } from './dto/search-sale.dto';
+import { SigningSaleDto } from './dto/signing-sale.dto';
 import { SaleEntity } from './entity/sale.entity';
 import { SaleRepository } from './repository/sale.repository';
 import { SaleStatus } from './types';
+import { SaleData, SigningData } from './types/sale-data';
 
 @Injectable()
 export class SaleService {
   constructor(
     private readonly saleRepository: SaleRepository,
     private readonly nftService: NftService,
+    private readonly signerService: SignerService,
     private readonly charityService: CharityService,
     private readonly marketSmartContractService: MarketSmartContractService,
   ) {}
@@ -108,22 +112,78 @@ export class SaleService {
     });
   }
 
+  async generateSigningData(
+    signingSaleDto: SigningSaleDto,
+    user: ContextUser,
+  ): Promise<SigningData> {
+    const saleEntity = await this._createSale(signingSaleDto, {}, user);
+
+    const saleData = this.saleRepository.generateSaleData(saleEntity);
+    const saleDataString = JSON.stringify(saleData);
+    const serverSignature = await this.signerService.sign(saleDataString);
+    const signingData = JSON.stringify(
+      this.saleRepository.generateSignDataSale(saleEntity),
+    );
+
+    return { signingData, saleData: saleDataString, serverSignature };
+  }
+
   async createSale(
     createSaleDto: CreateSaleDto,
+    user: ContextUser,
+  ): Promise<SaleEntity> {
+    if (
+      !this.signerService.isSignedByVerifier(
+        createSaleDto.saleData,
+        createSaleDto.serverSignature,
+      )
+    ) {
+      throw new BadRequestException('Invalid sale data');
+    }
+
+    const saleData: SaleData = JSON.parse(createSaleDto.saleData);
+    if (saleData.userId !== user.id) {
+      throw new BadRequestException('Invalid sale data');
+    }
+    // TODO validate saleData once again - optional
+    // TODO create sale entity from sale data
+    const sale = this.saleRepository.create({
+      userId: saleData.userId,
+      nftId: saleData.nftId,
+      network: saleData.network,
+      price: saleData.price,
+      currency: saleData.currency,
+      countryCode: saleData.countryCode,
+      charityShare: saleData.charityShare,
+      charityWallet: saleData.charityWallet,
+      topicId: saleData.topicId,
+      charityId: saleData.charityId,
+      expiredAt: DateTime.fromSeconds(saleData.expiredAt),
+      status: SaleStatus.LISTING,
+    });
+    // TODO generate signedData
+    // TODO verify clientSignature with signedData
+    // TODO save sale entity
+
+    return sale;
+  }
+
+  private async _createSale(
+    signingSaleDto: SigningSaleDto,
     defaults: DeepPartial<SaleEntity>,
     user: ContextUser,
   ) {
     // validate network and currency
     if (
-      !isCryptoCurrencyEnabled(createSaleDto.network, createSaleDto.currency)
+      !isCryptoCurrencyEnabled(signingSaleDto.network, signingSaleDto.currency)
     ) {
       throw new BadRequestException('Currency is not supported');
     }
     // validate charity and country and topic
     const charityTopic = await this.charityService.getCharityTopic(
-      createSaleDto.charityId,
-      createSaleDto.topicId,
-      createSaleDto.countryCode,
+      signingSaleDto.charityId,
+      signingSaleDto.topicId,
+      signingSaleDto.countryCode,
     );
     if (!charityTopic) {
       throw new BadRequestException('Charity and topic are not matched');
@@ -133,8 +193,8 @@ export class SaleService {
     const countExistingSale = await this.count(
       {
         userIds: [user.id],
-        nftIds: [createSaleDto.nftId],
-        networks: [createSaleDto.network],
+        nftIds: [signingSaleDto.nftId],
+        networks: [signingSaleDto.network],
         statuses: [SaleStatus.LISTING],
       },
       { take: 1 },
@@ -146,9 +206,9 @@ export class SaleService {
     // checking NFT
     const count = await this.nftService.count(
       {
-        ids: [createSaleDto.nftId],
+        ids: [signingSaleDto.nftId],
         ownerIds: [user.id],
-        networks: [createSaleDto.network],
+        networks: [signingSaleDto.network],
         statuses: [NftStatus.ACTIVE],
       },
       { take: 1 },
@@ -158,23 +218,25 @@ export class SaleService {
     }
 
     const expiredAt = DateTime.now().plus({
-      minutes: createSaleDto.expiryInMinutes,
+      minutes: signingSaleDto.expiryInMinutes,
     });
     const saleEntity = this.saleRepository.create({
-      nftId: createSaleDto.nftId,
-      network: createSaleDto.network,
-      price: createSaleDto.price.toString(),
-      currency: createSaleDto.currency,
-      countryCode: createSaleDto.countryCode,
-      charityShare: createSaleDto.charityShare,
+      nftId: signingSaleDto.nftId,
+      network: signingSaleDto.network,
+      price: signingSaleDto.price.toString(),
+      currency: signingSaleDto.currency,
+      countryCode: signingSaleDto.countryCode,
+      charityShare: signingSaleDto.charityShare,
       charityWallet: charityTopic.wallet,
-      topicId: createSaleDto.topicId,
-      charityId: createSaleDto.charityId,
+      topicId: signingSaleDto.topicId,
+      charityId: signingSaleDto.charityId,
       expiredAt,
       ...defaults,
     });
-    await saleEntity.save();
-    return { sale: saleEntity };
+
+    saleEntity.signedData =
+      this.saleRepository.generateSignDataSale(saleEntity);
+    return saleEntity;
   }
 
   async processCancelledSales(
