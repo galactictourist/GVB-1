@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { TypedData } from 'eip-712';
+import { TypedDataDomain } from 'ethers';
 import { DataSource } from 'typeorm';
+import { SaleContractData, TypedData } from '~/main/blockchain/types';
 import { randomTokenId } from '~/main/lib';
 import { BaseRepository } from '~/main/lib/database/base-repository';
 import {
@@ -16,44 +17,30 @@ export class SaleRepository extends BaseRepository<SaleEntity> {
     super(SaleEntity, dataSource.createEntityManager());
   }
 
-  generateSignDataSale(sale: SaleEntity): TypedData {
-    const salt = randomTokenId();
+  generateTypedData(sale: SaleEntity): TypedData<SaleContractData> {
     const marketplaceSC = getMarketplaceSmartContract(sale.network);
     if (!marketplaceSC.types || !marketplaceSC.version) {
       throw new Error('Missing signing domain configuration');
     }
 
-    const message: Record<string, any> = {
-      from: {
-        name: 'Cow',
-        wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
-      },
-      to: {
-        name: 'Bob',
-        wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
-      },
-      contents: 'Hello, Bob!',
+    const domain: TypedDataDomain = {
+      name: marketplaceSC.name,
+      version: marketplaceSC.version,
+      chainId: getNetworkConfig(sale.network).chainId,
+      verifyingContract: marketplaceSC.address,
+    };
+
+    const message: SaleContractData = {
+      seller: sale.user.wallet || '',
     };
 
     const signData = {
-      types: marketplaceSC.types || {},
-      primaryType: 'Mail',
-      domain: {
-        name: marketplaceSC.name,
-        version: marketplaceSC.version,
-        chainId: getNetworkConfig(sale.network).chainId,
-        verifyingContract: marketplaceSC.address,
-      },
-      message,
+      types: marketplaceSC.types,
+      domain,
+      value: message,
     };
 
     return signData;
-    // const msg = getMessage(
-    //   ,
-    //   true,
-    // );
-
-    // return '0x' + bytesToHex(msg).toLowerCase();
   }
 
   generateSaleData(sale: SaleEntity): SaleData {

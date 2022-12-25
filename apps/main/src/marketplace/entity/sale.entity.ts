@@ -1,5 +1,5 @@
-import { TypedData } from 'eip-712';
 import { Column, Entity, Index, ManyToOne } from 'typeorm';
+import { TypedData } from '~/main/blockchain/types';
 import { CharityEntity } from '~/main/charity/entity/charity.entity';
 import { TopicEntity } from '~/main/charity/entity/topic.entity';
 import { BaseElement } from '~/main/lib/database/base-element';

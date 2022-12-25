@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { DateTime } from 'luxon';
-import { DeepPartial, FindManyOptions, FindOptionsWhere, In } from 'typeorm';
+import { FindManyOptions, FindOptionsWhere, In } from 'typeorm';
 import { NftService } from '~/main/nft/nft.service';
 import { NftStatus } from '~/main/nft/types';
 import {
@@ -116,13 +116,13 @@ export class SaleService {
     signingSaleDto: SigningSaleDto,
     user: ContextUser,
   ): Promise<SigningData> {
-    const saleEntity = await this._createSale(signingSaleDto, {}, user);
+    const saleEntity = await this._createSaleEntity(signingSaleDto, user);
 
     const saleData = this.saleRepository.generateSaleData(saleEntity);
     const saleDataString = JSON.stringify(saleData);
     const serverSignature = await this.signerService.sign(saleDataString);
     const signingData = JSON.stringify(
-      this.saleRepository.generateSignDataSale(saleEntity),
+      this.saleRepository.generateTypedData(saleEntity),
     );
 
     return { signingData, saleData: saleDataString, serverSignature };
@@ -132,6 +132,9 @@ export class SaleService {
     createSaleDto: CreateSaleDto,
     user: ContextUser,
   ): Promise<SaleEntity> {
+    if (!user.wallet) {
+      throw new BadRequestException('Invalid user wallet');
+    }
     if (
       !this.signerService.isSignedByVerifier(
         createSaleDto.saleData,
@@ -146,7 +149,8 @@ export class SaleService {
       throw new BadRequestException('Invalid sale data');
     }
     // TODO validate saleData once again - optional
-    // TODO create sale entity from sale data
+
+    // create sale entity from sale data
     const sale = this.saleRepository.create({
       userId: saleData.userId,
       nftId: saleData.nftId,
@@ -161,18 +165,35 @@ export class SaleService {
       expiredAt: DateTime.fromSeconds(saleData.expiredAt),
       status: SaleStatus.LISTING,
     });
-    // TODO generate signedData
-    // TODO verify clientSignature with signedData
-    // TODO save sale entity
+
+    // generate signedData
+    const signedData = this.saleRepository.generateTypedData(sale);
+    sale.signedData = signedData;
+
+    // verify clientSignature with signedData
+    if (
+      this.signerService.verifyTypedData(
+        signedData,
+        createSaleDto.clientSignature,
+        user.wallet,
+      )
+    ) {
+      throw new BadRequestException('Invalid client signature');
+    }
+
+    // save sale entity
+    await sale.save();
 
     return sale;
   }
 
-  private async _createSale(
+  private async _createSaleEntity(
     signingSaleDto: SigningSaleDto,
-    defaults: DeepPartial<SaleEntity>,
     user: ContextUser,
   ) {
+    if (!user.wallet) {
+      throw new BadRequestException('Invalid user wallet');
+    }
     // validate network and currency
     if (
       !isCryptoCurrencyEnabled(signingSaleDto.network, signingSaleDto.currency)
@@ -221,6 +242,7 @@ export class SaleService {
       minutes: signingSaleDto.expiryInMinutes,
     });
     const saleEntity = this.saleRepository.create({
+      userId: user.id,
       nftId: signingSaleDto.nftId,
       network: signingSaleDto.network,
       price: signingSaleDto.price.toString(),
@@ -231,11 +253,9 @@ export class SaleService {
       topicId: signingSaleDto.topicId,
       charityId: signingSaleDto.charityId,
       expiredAt,
-      ...defaults,
     });
 
-    saleEntity.signedData =
-      this.saleRepository.generateSignDataSale(saleEntity);
+    saleEntity.signedData = this.saleRepository.generateTypedData(saleEntity);
     return saleEntity;
   }
 

@@ -1,4 +1,11 @@
-import { BigNumberish } from 'ethers';
+import { BigNumberish, TypedDataDomain, TypedDataField } from 'ethers';
+
+export interface TypedData<T extends Record<string, any>> {
+  domain: TypedDataDomain;
+  primaryType?: string;
+  types: Record<string, Array<TypedDataField>>;
+  value: T;
+}
 
 export interface AddSingleItem {
   account: string;
@@ -21,4 +28,19 @@ export interface BuyItem {
   charityFee: BigNumberish;
   deadline: BigNumberish;
   nonce: BigNumberish;
+}
+
+export interface SaleContractData extends Record<string, any> {
+  nftContract: string;
+  seller: string;
+  isMinted: boolean;
+  tokenId: string;
+  tokenURI: string;
+  quantity: BigNumberish;
+  itemPrice: BigNumberish; // listed price
+  additionalPrice: BigNumberish; // additional price for charity
+  charityAddress: string;
+  charityFee: BigNumberish;
+  royaltyFee: BigNumberish;
+  deadline: BigNumberish; // expiry time of listed NFT
 }

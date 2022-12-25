@@ -4,7 +4,7 @@ import { Bytes, TypedDataDomain, TypedDataField, utils, Wallet } from 'ethers';
 import { IBlockchainConfig } from '~/main/config/blockchain.config';
 import { BlockchainNetwork, BLOCKCHAIN_INFO } from '~/main/types/blockchain';
 import { ConfigNamespace } from '~/main/types/config';
-import { AddSingleItem, BuyItem } from './types';
+import { AddSingleItem, BuyItem, TypedData } from './types';
 
 @Injectable()
 export class SignerService {
@@ -79,6 +79,20 @@ export class SignerService {
 
   verify(message: Bytes | string, signature: string, address: string): boolean {
     const signerAddress = utils.verifyMessage(message, signature);
+    return signerAddress.toLowerCase() === address.toLowerCase();
+  }
+
+  verifyTypedData(
+    typedData: TypedData<Record<string, any>>,
+    signature: string,
+    address: string,
+  ): boolean {
+    const signerAddress = utils.verifyTypedData(
+      typedData.domain,
+      typedData.types,
+      typedData.value,
+      signature,
+    );
     return signerAddress.toLowerCase() === address.toLowerCase();
   }
 }
