@@ -5,10 +5,13 @@ import { TopicEntity } from '~/main/charity/entity/topic.entity';
 import { BaseElement } from '~/main/lib/database/base-element';
 import { NftEntity } from '~/main/nft/entity/nft.entity';
 import { CountryCode } from '~/main/types/country';
-import { BlockchainNetwork } from '../../types/blockchain';
+import {
+  BlockchainNetwork,
+  CryptoCurrency,
+  mulCryptoAmount,
+} from '../../types/blockchain';
 import { UserEntity } from '../../user/entity/user.entity';
 import { SaleStatus } from '../types';
-import { SignedData } from '../types/signed-data';
 
 @Entity({ name: 'sale' })
 @Unique('sale_uq', ['network', 'hash'])
@@ -31,8 +34,8 @@ export class SaleEntity extends BaseElement {
   })
   network: BlockchainNetwork;
 
-  @Column({ length: 50, nullable: true })
-  currency?: string;
+  @Column({ length: 50 })
+  currency: CryptoCurrency;
 
   @Column({
     type: 'decimal',
@@ -65,6 +68,9 @@ export class SaleEntity extends BaseElement {
   @Column({ enum: CountryCode, length: 2, nullable: true })
   countryCode?: CountryCode;
 
+  @Column({ length: 50, nullable: true })
+  charityWallet?: string;
+
   @Column('int', { default: 1 })
   quantity: number;
 
@@ -88,15 +94,16 @@ export class SaleEntity extends BaseElement {
   hash: string;
 
   @Column('jsonb', { nullable: true })
-  typedData: TypedData;
-
-  @Column('jsonb', { nullable: true })
-  signedData: SignedData;
+  signedData: TypedData;
 
   @Column({ length: 200, nullable: true })
   signature: string;
 
   isListing() {
     return this.status === SaleStatus.LISTING;
+  }
+
+  calculateTotalAmount(quantity: number): string {
+    return mulCryptoAmount(this.network, this.currency, this.price, quantity);
   }
 }

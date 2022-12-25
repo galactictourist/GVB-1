@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNumber, IsPositive, IsUUID, Min } from 'class-validator';
+import {
+  IsEnum,
+  IsNumber,
+  IsPositive,
+  IsUUID,
+  Max,
+  Min,
+} from 'class-validator';
 import { BlockchainNetwork, CryptoCurrency } from '~/main/types/blockchain';
 import { CountryCode } from '~/main/types/country';
 
@@ -19,6 +26,12 @@ export class CreateSaleDto {
   @ApiProperty()
   @IsUUID('4')
   charityId: string;
+
+  @ApiProperty()
+  @IsNumber()
+  @Min(0)
+  @Max(10000)
+  charityShare?: number;
 
   @ApiProperty()
   @IsEnum(BlockchainNetwork)

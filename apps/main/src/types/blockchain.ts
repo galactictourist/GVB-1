@@ -1,4 +1,4 @@
-import { TypedDataField } from 'ethers';
+import { BigNumber, BigNumberish, ethers, TypedDataField } from 'ethers';
 
 export enum BlockchainNetwork {
   // ETHEREUM = 'ETHEREUM',
@@ -131,4 +131,39 @@ export function isCryptoCurrencyEnabled(
   currency: CryptoCurrency,
 ) {
   return BLOCKCHAIN_INFO[network].currency[currency].enabled;
+}
+
+export function parseCryptoAmount(
+  network: BlockchainNetwork,
+  currency: CryptoCurrency,
+  value: string,
+): BigNumber {
+  return ethers.utils.parseUnits(
+    value,
+    BLOCKCHAIN_INFO[network].currency[currency].decimals,
+  );
+}
+
+export function formatCryptoAmount(
+  network: BlockchainNetwork,
+  currency: CryptoCurrency,
+  value: BigNumberish,
+): string {
+  return ethers.utils.formatUnits(
+    value,
+    BLOCKCHAIN_INFO[network].currency[currency].decimals,
+  );
+}
+
+export function mulCryptoAmount(
+  network: BlockchainNetwork,
+  currency: CryptoCurrency,
+  value: string,
+  mul: BigNumberish,
+) {
+  return formatCryptoAmount(
+    network,
+    currency,
+    parseCryptoAmount(network, currency, value).mul(mul),
+  );
 }

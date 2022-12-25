@@ -10,7 +10,7 @@ import { OrderEntity } from './entity/order.entity';
 import { SaleEntity } from './entity/sale.entity';
 import { OrderRepository } from './repository/order.repository';
 import { SaleRepository } from './repository/sale.repository';
-import { SaleStatus } from './types';
+import { OrderStatus, SaleStatus } from './types';
 
 @Injectable()
 export class OrderService {
@@ -118,8 +118,22 @@ export class OrderService {
 
     // TODO add more fields to order
     const order = this.orderRepository.create({
-      seller: saleEntity.user,
-      buyer,
+      sellerId: saleEntity.userId,
+      buyerId: buyer.id,
+      saleId: saleEntity.id,
+      nftId: saleEntity.nftId,
+      quantity,
+      network: saleEntity.network,
+      currency: saleEntity.currency,
+      price: saleEntity.price,
+      total: saleEntity.calculateTotalAmount(quantity),
+      status: OrderStatus.COMPLETED,
+      charityId: saleEntity.charityId,
+      topicId: saleEntity.topicId,
+      countryCode: saleEntity.countryCode,
+      charityShare: saleEntity.charityShare,
+      charityWallet: saleEntity.charityWallet,
+      txId: event.blockchainEvent.transactionHash.toLowerCase(),
     });
 
     return order;

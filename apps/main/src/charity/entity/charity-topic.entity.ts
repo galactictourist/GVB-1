@@ -16,8 +16,8 @@ export class CharityTopicEntity extends BaseElement {
   @Column({ enum: CountryCode, length: 2 })
   countryCode: CountryCode;
 
-  @Column({ length: 50, nullable: true })
-  wallet?: string;
+  @Column({ length: 50 })
+  wallet: string;
 
   @ManyToOne(() => CharityEntity, (charity) => charity.charityTopics)
   charity: CharityEntity;

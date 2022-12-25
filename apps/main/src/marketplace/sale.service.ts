@@ -166,6 +166,8 @@ export class SaleService {
       price: createSaleDto.price.toString(),
       currency: createSaleDto.currency,
       countryCode: createSaleDto.countryCode,
+      charityShare: createSaleDto.charityShare,
+      charityWallet: charityTopic.wallet,
       topicId: createSaleDto.topicId,
       charityId: createSaleDto.charityId,
       expiredAt,
