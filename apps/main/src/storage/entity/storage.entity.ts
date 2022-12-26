@@ -13,12 +13,14 @@ export class StorageEntity extends BaseElement {
   owner: UserEntity | null;
 
   @Column({
+    type: 'varchar',
     length: 20,
     default: StorageLocation.S3,
   })
   location: StorageLocation;
 
   @Column({
+    type: 'varchar',
     length: 100,
     nullable: true,
   })

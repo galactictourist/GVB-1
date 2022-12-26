@@ -13,7 +13,9 @@ import {
   Max,
   ValidateNested,
 } from 'class-validator';
+import { IsStorageId } from '~/main/storage/validator/is-storage-id.validator';
 import { BlockchainNetwork } from '~/main/types/blockchain';
+import { IsActiveNetwork } from '~/main/types/validator/is-active-network.validator';
 import { DisplayType, MetadataAttribute } from '../types';
 
 class MetadataAttributeDto implements MetadataAttribute {
@@ -93,6 +95,7 @@ export class CreateNftDto {
   @ApiProperty({ nullable: true, required: false })
   @IsOptional()
   @IsEnum(BlockchainNetwork)
+  @IsActiveNetwork()
   network?: BlockchainNetwork;
 
   @ApiProperty({ nullable: true, required: false })
@@ -104,6 +107,6 @@ export class CreateNftDto {
   @ApiProperty({ nullable: true, required: false })
   @IsOptional()
   @IsUUID()
-  // @IsStorageId() // TODO implement validation
+  @IsStorageId()
   imageStorageId?: string;
 }

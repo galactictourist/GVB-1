@@ -3,7 +3,10 @@ import { range } from 'lodash';
 import { DeepPartial } from 'typeorm';
 import { NftEntity } from '~/main/nft/entity/nft.entity';
 import { NftStatus } from '~/main/nft/types';
-import { BlockchainNetwork, BLOCKCHAIN_INFO } from '~/main/types/blockchain';
+import {
+  BlockchainNetwork,
+  getErc721SmartContract,
+} from '~/main/types/blockchain';
 
 export function createNft(oriData: DeepPartial<NftEntity> = {}) {
   const data: DeepPartial<NftEntity> = { ...oriData };
@@ -13,7 +16,7 @@ export function createNft(oriData: DeepPartial<NftEntity> = {}) {
     data.network ??
     faker.helpers.arrayElement(Object.values(BlockchainNetwork));
   data.scAddress =
-    data.scAddress ?? BLOCKCHAIN_INFO[data.network].constract.erc721.address;
+    data.scAddress ?? getErc721SmartContract(data.network).address;
   data.tokenId =
     data.tokenId ?? getTokenId(data.network, data.scAddress).toString();
   data.status =

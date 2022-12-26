@@ -1,12 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import {
   registerDecorator,
-  ValidationArguments,
   ValidationOptions,
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { uuid } from '~/main/lib';
 import { StorageRepository } from '../repository/storage.repository';
 
 @ValidatorConstraint({ async: true })
@@ -14,35 +12,20 @@ import { StorageRepository } from '../repository/storage.repository';
 export class IsStorageIdValidator implements ValidatorConstraintInterface {
   constructor(private storageRepository: StorageRepository) {}
 
-  async validate(storageId: string, args?: ValidationArguments) {
-    return true; // TODO implement
-    console.log('storageId', storageId);
-    console.log('args', args);
-    const userId = uuid(); // TODO args?.object?.context.user.id;
-
-    if (userId && Number.isInteger(storageId)) {
-      const storage = await this.storageRepository.countBy({
-        id: storageId,
-        ownerId: userId,
-      }); // Checking if comment belongs to selected user
-
-      if (!storage) {
-        return false;
-      }
-    }
-
-    return true;
+  async validate(storageId: string) {
+    const count = await this.storageRepository.countBy({ id: storageId });
+    return count > 0;
   }
 
   defaultMessage(): string {
-    return 'The storage does not belong to the user';
+    return 'The storage ID is invalid';
   }
 }
 
 export function IsStorageId(validationOptions?: ValidationOptions) {
   return function (object: any, propertyName: string) {
     registerDecorator({
-      name: 'IsStorageId',
+      name: 'isStorageId',
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,

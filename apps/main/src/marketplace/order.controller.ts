@@ -20,7 +20,7 @@ export class OrderController {
   ): Promise<ResponseData<OrderEntity>> {
     const order = await this.orderService.createOrder(createOrderDto, {
       buyerId: request.user.id,
-      status: OrderStatus.PLACED,
+      status: OrderStatus.PENDING,
     });
     return formatResponse(order);
   }

@@ -1,9 +1,10 @@
 export enum OrderStatus {
-  PLACED = 'PLACED',
+  PENDING = 'PENDING',
   COMPLETED = 'COMPLETED',
 }
 
 export enum SaleStatus {
-  ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE',
+  LISTING = 'LISTING',
+  CANCELLED = 'CANCELLED',
+  FULFILLED = 'FULFILLED',
 }

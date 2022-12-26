@@ -1,10 +1,12 @@
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, Index, ManyToOne, OneToMany } from 'typeorm';
 import { BaseElement } from '~/main/lib/database/base-element';
 import { UserEntity } from '../../user/entity/user.entity';
 import { CollectionStatus } from '../types';
 import { NftEntity } from './nft.entity';
 
 @Entity({ name: 'collection' })
+@Index('collection_ownerId_idx', ['ownerId'])
+@Index('collection_status_idx', ['status'])
 export class CollectionEntity extends BaseElement {
   @Column({ length: 200 })
   name: string;
@@ -24,6 +26,7 @@ export class CollectionEntity extends BaseElement {
   imageUrl?: string;
 
   @Column({
+    type: 'varchar',
     enum: CollectionStatus,
     default: CollectionStatus.DRAFT,
     length: 20,

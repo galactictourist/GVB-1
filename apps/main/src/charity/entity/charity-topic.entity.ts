@@ -1,10 +1,11 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, Unique } from 'typeorm';
 import { BaseElement } from '~/main/lib/database/base-element';
 import { CountryCode } from '~/main/types/country';
 import { CharityEntity } from './charity.entity';
 import { TopicEntity } from './topic.entity';
 
 @Entity({ name: 'charity_topic' })
+@Unique('charity_topic_uq', ['charityId', 'topicId', 'countryCode'])
 export class CharityTopicEntity extends BaseElement {
   @Column('uuid')
   charityId: string;
@@ -12,11 +13,11 @@ export class CharityTopicEntity extends BaseElement {
   @Column('uuid')
   topicId: string;
 
-  @Column({ enum: CountryCode, length: 2 })
+  @Column({ type: 'varchar', enum: CountryCode, length: 2 })
   countryCode: CountryCode;
 
-  @Column({ length: 50, nullable: true })
-  wallet?: string;
+  @Column({ length: 50 })
+  wallet: string;
 
   @ManyToOne(() => CharityEntity, (charity) => charity.charityTopics)
   charity: CharityEntity;

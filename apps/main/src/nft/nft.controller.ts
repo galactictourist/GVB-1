@@ -13,7 +13,6 @@ import { BlockchainNetwork } from '~/main/types/blockchain';
 import { formatResponse, ResponseData } from '~/main/types/response-data';
 import { UserRequest } from '~/main/types/user-request';
 import { CreateNftDto } from './dto/create-nft.dto';
-import { MintNftDto } from './dto/mint-nft.dto';
 import { SearchNftDto } from './dto/search-nft.dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
 import { NftEntity } from './entity/nft.entity';
@@ -107,20 +106,20 @@ export class NftController {
     return formatResponse(nft);
   }
 
-  @Post(':id/mint')
-  @ApiBearerAuth()
-  async generateSignature(
-    @Param('id') id: string,
-    @Body() mintNftDto: MintNftDto,
-    @Request() request: UserRequest,
-  ): Promise<ResponseData<object>> {
-    const result = await this.nftService.mint(id, mintNftDto, request.user);
-    return formatResponse({
-      signature: result.signature,
-      signer: result.address,
-      data: result.data,
-    });
-  }
+  // @Post(':id/mint')
+  // @ApiBearerAuth()
+  // async generateSignature(
+  //   @Param('id') id: string,
+  //   @Body() mintNftDto: MintNftDto,
+  //   @Request() request: UserRequest,
+  // ): Promise<ResponseData<object>> {
+  //   const result = await this.nftService.mint(id, mintNftDto, request.user);
+  //   return formatResponse({
+  //     signature: result.signature,
+  //     signer: result.address,
+  //     data: result.data,
+  //   });
+  // }
 
   @Put(':id/immutable')
   @ApiBearerAuth()

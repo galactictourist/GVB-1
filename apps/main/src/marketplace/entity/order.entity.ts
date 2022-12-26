@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, Index, ManyToOne } from 'typeorm';
 import { CharityEntity } from '~/main/charity/entity/charity.entity';
 import { TopicEntity } from '~/main/charity/entity/topic.entity';
 import { BaseElement } from '~/main/lib/database/base-element';
@@ -10,6 +10,14 @@ import { OrderStatus } from '../types';
 import { SaleEntity } from './sale.entity';
 
 @Entity({ name: 'order' })
+@Index('order_uq', { synchronize: false }) // https://typeorm.io/indices#disabling-synchronization
+@Index('order_sellerId_idx', ['sellerId'])
+@Index('order_buyerId_idx', ['buyerId'])
+@Index('order_saleId_idx', ['saleId'])
+@Index('order_nftId_idx', ['nftId'])
+@Index('order_charityId_idx', ['charityId'])
+@Index('order_topicId_idx', ['topicId'])
+@Index('order_status_idx', ['status'])
 export class OrderEntity extends BaseElement {
   @Column('uuid')
   sellerId: string;
@@ -39,6 +47,7 @@ export class OrderEntity extends BaseElement {
   quantity: number;
 
   @Column({
+    type: 'varchar',
     enum: BlockchainNetwork,
     length: 20,
   })
@@ -64,8 +73,9 @@ export class OrderEntity extends BaseElement {
   total: string;
 
   @Column({
+    type: 'varchar',
     enum: OrderStatus,
-    default: OrderStatus.PLACED,
+    default: OrderStatus.PENDING,
     length: 20,
   })
   status: OrderStatus;
@@ -84,7 +94,7 @@ export class OrderEntity extends BaseElement {
   @ManyToOne(() => TopicEntity, (topic) => topic.sales, { nullable: true })
   topic?: TopicEntity;
 
-  @Column({ enum: CountryCode, length: 2, nullable: true })
+  @Column({ type: 'varchar', enum: CountryCode, length: 2, nullable: true })
   countryCode?: CountryCode;
 
   @Column('int', { nullable: true })

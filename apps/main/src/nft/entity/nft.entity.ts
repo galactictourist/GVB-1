@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, Unique } from 'typeorm';
+import { Column, Entity, Index, ManyToOne, Unique } from 'typeorm';
 import { BaseElement } from '~/main/lib/database/base-element';
 import { StorageEntity } from '~/main/storage/entity/storage.entity';
 import { BlockchainNetwork } from '../../types/blockchain';
@@ -7,9 +7,15 @@ import { MetadataAttribute, NftImmutable, NftStatus } from '../types';
 import { CollectionEntity } from './collection.entity';
 
 @Entity({ name: 'nft' })
-@Unique('nft_uq', ['network', 'scAddress', 'tokenId'])
+@Index('nft_uq', { synchronize: false }) // https://typeorm.io/indices#disabling-synchronization
+@Unique('nft_network_mintedTxId_uq', ['network', 'mintedTxId'])
+@Index('nft_ownerId_idx', ['ownerId'])
+@Index('nft_collectionId_idx', ['collectionId'])
+@Index('nft_status_idx', ['status'])
+@Index('nft_imageStorageId_idx', ['imageStorageId'])
 export class NftEntity extends BaseElement {
   @Column({
+    type: 'varchar',
     enum: BlockchainNetwork,
     length: 20,
     nullable: true,
@@ -66,13 +72,14 @@ export class NftEntity extends BaseElement {
   })
   collection?: CollectionEntity;
 
-  @Column('uuid')
-  ownerId: string;
+  @Column('uuid', { nullable: true })
+  ownerId?: string;
 
-  @ManyToOne(() => UserEntity, (user) => user.id)
-  owner: UserEntity;
+  @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
+  owner?: UserEntity;
 
   @Column({
+    type: 'varchar',
     enum: NftStatus,
     default: NftStatus.ACTIVE,
     length: 20,
@@ -80,6 +87,7 @@ export class NftEntity extends BaseElement {
   status: NftStatus;
 
   @Column({
+    type: 'varchar',
     enum: NftImmutable,
     default: NftImmutable.NO,
     length: 10,

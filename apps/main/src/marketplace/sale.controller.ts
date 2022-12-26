@@ -5,9 +5,11 @@ import { formatResponse, ResponseData } from '~/main/types/response-data';
 import { UserRequest } from '~/main/types/user-request';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { SearchSaleDto } from './dto/search-sale.dto';
+import { SigningSaleDto } from './dto/signing-sale.dto';
 import { SaleEntity } from './entity/sale.entity';
 import { SaleService } from './sale.service';
 import { SaleStatus } from './types';
+import { SigningData } from './types/sale-data';
 
 @Controller('sales')
 @ApiTags('sale')
@@ -20,7 +22,7 @@ export class SaleController {
     @Body() searchSaleDto: SearchSaleDto,
   ): Promise<ResponseData<SaleEntity[]>> {
     const result = await this.saleService.search(searchSaleDto, {
-      status: SaleStatus.ACTIVE,
+      status: SaleStatus.LISTING,
     });
     return formatResponse(result.data, {
       pagination: {
@@ -31,20 +33,29 @@ export class SaleController {
     });
   }
 
+  @Post('signing')
+  @ApiBearerAuth()
+  async generateSigningData(
+    @Request() request: UserRequest,
+    @Body() signingSaleDto: SigningSaleDto,
+  ): Promise<ResponseData<SigningData>> {
+    const data = await this.saleService.generateSigningData(
+      signingSaleDto,
+      request.user,
+    );
+    return formatResponse(data);
+  }
+
   @Post('')
   @ApiBearerAuth()
   async createSale(
     @Request() request: UserRequest,
     @Body() createSaleDto: CreateSaleDto,
   ): Promise<ResponseData<any>> {
-    const result = await this.saleService.createSale(
+    const entity = await this.saleService.createSale(
       createSaleDto,
-      {
-        userId: request.user.id,
-        status: SaleStatus.ACTIVE,
-      },
       request.user,
     );
-    return formatResponse({ sale: result.sale });
+    return formatResponse(entity);
   }
 }
