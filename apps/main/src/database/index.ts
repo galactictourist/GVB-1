@@ -8,6 +8,7 @@ import { SaleEntity } from '../marketplace/entity/sale.entity';
 import { CollectionEntity } from '../nft/entity/collection.entity';
 import { NftEntity } from '../nft/entity/nft.entity';
 import { StorageEntity } from '../storage/entity/storage.entity';
+import { AdminEntity } from '../user/entity/admin.entity';
 import { UserEntity } from '../user/entity/user.entity';
 
 export const entities = [
@@ -22,4 +23,5 @@ export const entities = [
   NftEntity,
   StorageEntity,
   UserEntity,
+  AdminEntity,
 ];
