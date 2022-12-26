@@ -15,6 +15,7 @@ import { CollectionEntity } from './collection.entity';
 @Index('nft_imageStorageId_idx', ['imageStorageId'])
 export class NftEntity extends BaseElement {
   @Column({
+    type: 'varchar',
     enum: BlockchainNetwork,
     length: 20,
     nullable: true,
@@ -78,6 +79,7 @@ export class NftEntity extends BaseElement {
   owner?: UserEntity;
 
   @Column({
+    type: 'varchar',
     enum: NftStatus,
     default: NftStatus.ACTIVE,
     length: 20,
@@ -85,6 +87,7 @@ export class NftEntity extends BaseElement {
   status: NftStatus;
 
   @Column({
+    type: 'varchar',
     enum: NftImmutable,
     default: NftImmutable.NO,
     length: 10,

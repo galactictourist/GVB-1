@@ -47,6 +47,7 @@ export class OrderEntity extends BaseElement {
   quantity: number;
 
   @Column({
+    type: 'varchar',
     enum: BlockchainNetwork,
     length: 20,
   })
@@ -72,6 +73,7 @@ export class OrderEntity extends BaseElement {
   total: string;
 
   @Column({
+    type: 'varchar',
     enum: OrderStatus,
     default: OrderStatus.PENDING,
     length: 20,
@@ -92,7 +94,7 @@ export class OrderEntity extends BaseElement {
   @ManyToOne(() => TopicEntity, (topic) => topic.sales, { nullable: true })
   topic?: TopicEntity;
 
-  @Column({ enum: CountryCode, length: 2, nullable: true })
+  @Column({ type: 'varchar', enum: CountryCode, length: 2, nullable: true })
   countryCode?: CountryCode;
 
   @Column('int', { nullable: true })

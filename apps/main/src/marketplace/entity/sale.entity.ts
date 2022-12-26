@@ -29,12 +29,13 @@ export class SaleEntity extends BaseElement {
   user: UserEntity;
 
   @Column({
+    type: 'varchar',
     enum: BlockchainNetwork,
     length: 20,
   })
   network: BlockchainNetwork;
 
-  @Column({ length: 50 })
+  @Column({ type: 'varchar', enum: CryptoCurrency, length: 50 })
   currency: CryptoCurrency;
 
   @Column({
@@ -65,7 +66,7 @@ export class SaleEntity extends BaseElement {
   @ManyToOne(() => TopicEntity, (topic) => topic.sales, { nullable: true })
   topic?: TopicEntity;
 
-  @Column({ enum: CountryCode, length: 2, nullable: true })
+  @Column({ type: 'varchar', enum: CountryCode, length: 2, nullable: true })
   countryCode?: CountryCode;
 
   @Column({ length: 50, nullable: true })
@@ -84,6 +85,7 @@ export class SaleEntity extends BaseElement {
   expiredAt?: Date;
 
   @Column({
+    type: 'varchar',
     enum: SaleStatus,
     default: SaleStatus.LISTING,
     length: 20,

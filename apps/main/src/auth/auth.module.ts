@@ -2,14 +2,12 @@ import { forwardRef, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { IJwtConfig } from '~/main/config/jwt.config';
 import { ConfigNamespace } from '~/main/types/config';
 import { UserModule } from '~/main/user/user.module';
 import { AuthAdminController } from './auth-admin.controller';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { NonceEntity } from './entity/nonce.entity';
 import { NonceRepository } from './repository/nonce.repository';
 import { SignatureVerifierService } from './signature-verifier.service';
 import { JwtAdminStrategy } from './strategy/jwt-admin.strategy';
@@ -39,7 +37,6 @@ import { Web3Strategy } from './strategy/web3.strategy';
       },
     }),
     PassportModule,
-    TypeOrmModule.forFeature([NonceEntity]),
     forwardRef(() => UserModule),
   ],
   controllers: [AuthController, AuthAdminController],

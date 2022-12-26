@@ -7,6 +7,7 @@ import { BlockchainEventStatus } from '../types';
 @Unique('event_process_uq', ['network', 'scAddress', 'eventName'])
 export class EventProcessEntity extends BaseElement {
   @Column({
+    type: 'varchar',
     enum: BlockchainNetwork,
     length: 20,
   })
@@ -27,6 +28,7 @@ export class EventProcessEntity extends BaseElement {
   endBlockNumber?: number;
 
   @Column({
+    type: 'varchar',
     enum: BlockchainEventStatus,
     length: 20,
   })

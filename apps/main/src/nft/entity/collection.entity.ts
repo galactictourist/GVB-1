@@ -26,6 +26,7 @@ export class CollectionEntity extends BaseElement {
   imageUrl?: string;
 
   @Column({
+    type: 'varchar',
     enum: CollectionStatus,
     default: CollectionStatus.DRAFT,
     length: 20,

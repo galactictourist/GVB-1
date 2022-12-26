@@ -13,7 +13,7 @@ export class CharityTopicEntity extends BaseElement {
   @Column('uuid')
   topicId: string;
 
-  @Column({ enum: CountryCode, length: 2 })
+  @Column({ type: 'varchar', enum: CountryCode, length: 2 })
   countryCode: CountryCode;
 
   @Column({ length: 50 })

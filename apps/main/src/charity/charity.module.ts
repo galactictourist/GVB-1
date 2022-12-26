@@ -1,11 +1,8 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { CharityAdminController } from './charity-admin.controller';
 import { CharityAdminService } from './charity-admin.service';
 import { CharityController } from './charity.controller';
 import { CharityService } from './charity.service';
-import { CharityEntity } from './entity/charity.entity';
-import { TopicEntity } from './entity/topic.entity';
 import { CharityTopicRepository } from './repository/charity-topic.repository';
 import { CharityRepository } from './repository/charity.repository';
 import { TopicRepository } from './repository/topic.repository';
@@ -15,7 +12,7 @@ import { TopicController } from './topic.controller';
 import { TopicService } from './topic.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CharityEntity, TopicEntity])],
+  imports: [],
   providers: [
     CharityService,
     CharityRepository,

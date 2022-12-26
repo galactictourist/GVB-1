@@ -12,10 +12,11 @@ export class AdminEntity extends BaseElement {
   @Column({ length: 200 })
   password: string;
 
-  @Column({ enum: AdminRole, length: 20 })
+  @Column({ type: 'varchar', enum: AdminRole, length: 20 })
   role: AdminRole;
 
   @Column({
+    type: 'varchar',
     enum: AdminStatus,
     default: AdminStatus.ACTIVE,
     length: 20,

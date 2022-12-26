@@ -13,6 +13,7 @@ export class CharityEntity extends BaseElement {
   name: string;
 
   @Column({
+    type: 'varchar',
     enum: CharityStatus,
     default: CharityStatus.ACTIVE,
     length: 20,

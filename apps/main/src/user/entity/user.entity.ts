@@ -16,10 +16,11 @@ export class UserEntity extends BaseElement {
   @Column({ nullable: true, length: 100 })
   name?: string;
 
-  @Column({ enum: CountryCode, nullable: true, length: 2 })
+  @Column({ type: 'varchar', enum: CountryCode, nullable: true, length: 2 })
   countryCode?: CountryCode;
 
   @Column({
+    type: 'varchar',
     enum: UserStatus,
     default: UserStatus.ACTIVE,
     length: 20,

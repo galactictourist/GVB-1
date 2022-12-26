@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { IDatabaseConfig } from '~/main/config/database.config';
 import { ConfigNamespace } from '~/main/types/config';
+import { entities } from '.';
 
 @Injectable()
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
@@ -20,7 +21,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       username: databaseConfig.username,
       password: databaseConfig.password,
       database: databaseConfig.database,
-      entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+      entities: entities,
       migrations: [__dirname + '/migrations/*.{ts,js}'],
       logger: databaseConfig.logging,
     };
