@@ -3,7 +3,7 @@ import { isZeroAddress } from 'ethereumjs-util';
 import { DeepPartial, FindManyOptions, FindOptionsWhere, In } from 'typeorm';
 import { MarketSmartContractService } from '~/main/blockchain/market-smart-contracts.service';
 import { SignerService } from '~/main/blockchain/signer.service';
-import { randomTokenId } from '~/main/lib';
+import { randomUnit256 } from '~/main/lib';
 import { NftStorageService } from '~/main/shared/nft-storage.service';
 import { StorageService } from '~/main/storage/storage.service';
 import { StorageLabel } from '~/main/storage/types';
@@ -196,7 +196,7 @@ export class NftService {
       await this.nftRepository.update(nftEntity.id, {
         network: nftEntity.network,
         scAddress: getErc721SmartContract(nftEntity.network).address,
-        tokenId: randomTokenId(),
+        tokenId: randomUnit256(),
       });
       await nftEntity.reload();
     }

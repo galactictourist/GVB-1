@@ -3,7 +3,7 @@ import { TypedDataDomain } from 'ethers';
 import { DateTime } from 'luxon';
 import { DataSource } from 'typeorm';
 import { SaleContractData, TypedData } from '~/main/blockchain/types';
-import { randomTokenId } from '~/main/lib';
+import { randomUnit256 } from '~/main/lib';
 import { BaseRepository } from '~/main/lib/database/base-repository';
 import {
   getMarketplaceSmartContract,
@@ -81,7 +81,7 @@ export class SaleRepository extends BaseRepository<SaleEntity> {
       throw new Error('Cannot generate sale data');
     }
 
-    const salt = randomTokenId();
+    const salt = randomUnit256();
     const saleData: SaleData = {
       userId: sale.userId,
       nftId: sale.nftId,

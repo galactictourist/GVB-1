@@ -13,7 +13,7 @@ export async function readFile(path: string) {
 //   return buffer64;
 // }
 
-export function randomTokenId() {
+export function randomUnit256() {
   const heads = '123456789';
   const tails = '0123456789';
   const length = 76;
