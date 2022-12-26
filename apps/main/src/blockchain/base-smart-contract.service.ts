@@ -1,6 +1,9 @@
 import { BigNumberish, Contract, providers, Wallet } from 'ethers';
 import { Interface } from 'ethers/lib/utils';
-import { BlockchainNetwork, BLOCKCHAIN_INFO } from '~/main/types/blockchain';
+import {
+  BlockchainNetwork,
+  getAllBlockchainNetworks,
+} from '~/main/types/blockchain';
 
 interface Overrides {
   from?: string;
@@ -18,7 +21,9 @@ export abstract class BaseSmartContractService {
     return new Contract(
       contractAddress,
       this.abi,
-      new providers.JsonRpcProvider(BLOCKCHAIN_INFO[network].endpoints[0]),
+      new providers.JsonRpcProvider(
+        getAllBlockchainNetworks()[network].endpoints[0],
+      ),
     );
   }
 
@@ -34,7 +39,9 @@ export abstract class BaseSmartContractService {
       this.abi,
       new Wallet(
         privateKey,
-        new providers.JsonRpcProvider(BLOCKCHAIN_INFO[network].endpoints[0]),
+        new providers.JsonRpcProvider(
+          getAllBlockchainNetworks()[network].endpoints[0],
+        ),
       ),
     );
   }

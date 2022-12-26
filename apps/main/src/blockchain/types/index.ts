@@ -1,5 +1,10 @@
 import { BigNumberish, TypedDataDomain, TypedDataField } from 'ethers';
 
+export enum BlockchainEventStatus {
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+}
+
 export interface TypedData<T extends Record<string, any>> {
   domain: TypedDataDomain;
   primaryType?: string;

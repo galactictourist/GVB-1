@@ -4,7 +4,6 @@ import { DeepPartial, FindManyOptions, FindOptionsWhere, In } from 'typeorm';
 import { MarketSmartContractService } from '~/main/blockchain/market-smart-contracts.service';
 import { SignerService } from '~/main/blockchain/signer.service';
 import { randomTokenId } from '~/main/lib';
-import { deadlineIn } from '~/main/lib/web3';
 import { NftStorageService } from '~/main/shared/nft-storage.service';
 import { StorageService } from '~/main/storage/storage.service';
 import { StorageLabel } from '~/main/storage/types';
@@ -18,7 +17,6 @@ import { Erc721TransferEvent } from '../blockchain/types/event';
 import { UserService } from '../user/user.service';
 import { CreateNftDto } from './dto/create-nft.dto';
 import { FilterNftParam } from './dto/filter-nft.param';
-import { MintNftDto } from './dto/mint-nft.dto';
 import { SearchNftDto } from './dto/search-nft.dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
 import { NftEntity } from './entity/nft.entity';
@@ -204,54 +202,54 @@ export class NftService {
     }
   }
 
-  async mint(id: string, mintNftDto: MintNftDto, user: ContextUser) {
-    const nftEntity = await this.nftRepository.findOneOrFail({
-      where: {
-        id,
-      },
-      relations: ['owner'],
-    });
-    if (nftEntity.ownerId !== user.id) {
-      throw new BadRequestException('NFT owner mismatch');
-    }
-    if (!nftEntity.owner?.wallet) {
-      throw new BadRequestException('Missing user wallet');
-    }
+  // async mint(id: string, mintNftDto: MintNftDto, user: ContextUser) {
+  //   const nftEntity = await this.nftRepository.findOneOrFail({
+  //     where: {
+  //       id,
+  //     },
+  //     relations: ['owner'],
+  //   });
+  //   if (nftEntity.ownerId !== user.id) {
+  //     throw new BadRequestException('NFT owner mismatch');
+  //   }
+  //   if (!nftEntity.owner?.wallet) {
+  //     throw new BadRequestException('Missing user wallet');
+  //   }
 
-    await this.generateTokenId(nftEntity);
-    if (!nftEntity.network || !nftEntity.scAddress || !nftEntity.tokenId) {
-      throw new BadRequestException('Missing information');
-    }
-    if (!nftEntity.royalty) {
-      throw new BadRequestException('Royalty is not set');
-    }
+  //   await this.generateTokenId(nftEntity);
+  //   if (!nftEntity.network || !nftEntity.scAddress || !nftEntity.tokenId) {
+  //     throw new BadRequestException('Missing information');
+  //   }
+  //   if (!nftEntity.royalty) {
+  //     throw new BadRequestException('Royalty is not set');
+  //   }
 
-    const nonce =
-      mintNftDto.nonce ||
-      (
-        await this.marketSmartContractService.getNonce(
-          nftEntity.network,
-          nftEntity.owner.wallet,
-        )
-      ).toString();
+  //   const nonce =
+  //     mintNftDto.nonce ||
+  //     (
+  //       await this.marketSmartContractService.getNonce(
+  //         nftEntity.network,
+  //         nftEntity.owner.wallet,
+  //       )
+  //     ).toString();
 
-    const data = {
-      account: nftEntity.owner.wallet,
-      collection: nftEntity.scAddress,
-      tokenId: nftEntity.tokenId,
-      royaltyFee: nftEntity.royalty,
-      tokenURI: nftEntity.getMetadataUrl(),
-      deadline: deadlineIn(600),
-      nonce,
-    };
+  //   const data = {
+  //     account: nftEntity.owner.wallet,
+  //     collection: nftEntity.scAddress,
+  //     tokenId: nftEntity.tokenId,
+  //     royaltyFee: nftEntity.royalty,
+  //     tokenURI: nftEntity.getMetadataUrl(),
+  //     deadline: deadlineIn(600),
+  //     nonce,
+  //   };
 
-    const signature = await this.signerService.signForMinting(
-      nftEntity.network,
-      data,
-    );
+  //   const signature = await this.signerService.signForMinting(
+  //     nftEntity.network,
+  //     data,
+  //   );
 
-    return { ...signature, data };
-  }
+  //   return { ...signature, data };
+  // }
 
   async processTransferedNfts(
     network: BlockchainNetwork,

@@ -9,6 +9,7 @@ import {
 } from 'class-validator';
 import { BlockchainNetwork, CryptoCurrency } from '~/main/types/blockchain';
 import { CountryCode } from '~/main/types/country';
+import { IsActiveNetwork } from '~/main/types/validator/is-active-network.validator';
 
 export class SigningSaleDto {
   @ApiProperty()
@@ -35,6 +36,7 @@ export class SigningSaleDto {
 
   @ApiProperty()
   @IsEnum(BlockchainNetwork)
+  @IsActiveNetwork()
   network: BlockchainNetwork;
 
   @ApiProperty()

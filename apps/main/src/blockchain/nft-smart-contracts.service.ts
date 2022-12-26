@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { BigNumber, Event } from 'ethers';
 import { Interface } from 'ethers/lib/utils';
-import { BlockchainNetwork, BLOCKCHAIN_INFO } from '~/main/types/blockchain';
+import {
+  BlockchainNetwork,
+  getErc721SmartContract,
+} from '~/main/types/blockchain';
 import NftAbi from './abi/nft.json';
 import { BaseSmartContractService } from './base-smart-contract.service';
 import { Erc721TransferEvent } from './types/event';
@@ -15,7 +18,7 @@ export class NftSmartContractService extends BaseSmartContractService {
   }
 
   protected getContractAddress(network: BlockchainNetwork): string {
-    return BLOCKCHAIN_INFO[network].constract.erc721.address;
+    return getErc721SmartContract(network).address;
   }
 
   async balanceOf(network: BlockchainNetwork, address: string) {

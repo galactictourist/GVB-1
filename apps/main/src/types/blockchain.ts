@@ -30,7 +30,7 @@ export interface ContractInfo {
 }
 
 interface BlockchainConfig {
-  enable: boolean;
+  enabled: boolean;
   chainId: number;
   name: string;
   endpoints: readonly string[];
@@ -46,7 +46,7 @@ export const BLOCKCHAIN_INFO: {
   [key in BlockchainNetwork]: BlockchainConfig;
 } = {
   [BlockchainNetwork.POLYGON_MUMBAI]: {
-    enable: true,
+    enabled: true,
     chainId: 80001,
     name: 'Polygon Testnet - Mumbai',
     endpoints: ['https://rpc-mumbai.maticvigil.com'],
@@ -119,6 +119,24 @@ export const BLOCKCHAIN_INFO: {
     },
   },
 } as const;
+
+export function getAllBlockchainNetworks() {
+  return BLOCKCHAIN_INFO;
+}
+
+export function getEnabledBlockchainNetworks() {
+  const result: {
+    [key in BlockchainNetwork]?: BlockchainConfig;
+  } = {};
+  Object.keys(BLOCKCHAIN_INFO).forEach(
+    (key: keyof typeof BlockchainNetwork) => {
+      if (BLOCKCHAIN_INFO[key].enabled) {
+        result[key] = BLOCKCHAIN_INFO[key];
+      }
+    },
+  );
+  return result;
+}
 
 export function getNetworkConfig(network: BlockchainNetwork) {
   return BLOCKCHAIN_INFO[network];

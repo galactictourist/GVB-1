@@ -120,7 +120,9 @@ export class SaleService {
 
     const saleData = this.saleRepository.generateSaleData(saleEntity);
     const saleDataString = JSON.stringify(saleData);
-    const serverSignature = await this.signerService.sign(saleDataString);
+    const serverSignature = await this.signerService.signByVerifier(
+      saleDataString,
+    );
     const signingData = JSON.stringify(
       this.saleRepository.generateTypedData(saleEntity),
     );

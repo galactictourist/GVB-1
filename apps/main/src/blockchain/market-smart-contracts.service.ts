@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { BigNumber, Event } from 'ethers';
 import { Interface } from 'ethers/lib/utils';
-import { BlockchainNetwork, BLOCKCHAIN_INFO } from '~/main/types/blockchain';
+import {
+  BlockchainNetwork,
+  getMarketplaceSmartContract,
+} from '~/main/types/blockchain';
 import MarketAbi from './abi/market.json';
 import { BaseSmartContractService } from './base-smart-contract.service';
 import { OrderCompletedEvent, SaleCancelledEvent } from './types/event';
@@ -15,7 +18,7 @@ export class MarketSmartContractService extends BaseSmartContractService {
   }
 
   protected getContractAddress(network: BlockchainNetwork): string {
-    return BLOCKCHAIN_INFO[network].constract.marketplace.address;
+    return getMarketplaceSmartContract(network).address;
   }
 
   async getNonce(network: BlockchainNetwork, address: string) {
