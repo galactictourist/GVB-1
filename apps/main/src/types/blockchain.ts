@@ -1,11 +1,11 @@
 import { BigNumber, BigNumberish, ethers, TypedDataField } from 'ethers';
 
 export enum BlockchainNetwork {
+  POLYGON_MUMBAI = 'POLYGON_MUMBAI',
+  // POLYGON = 'POLYGON',
   // ETHEREUM = 'ETHEREUM',
   // BSC = 'BSC',
   BSC_TESTNET = 'BSC_TESTNET',
-  // POLYGON = 'POLYGON',
-  POLYGON_MUMBAI = 'POLYGON_MUMBAI',
 }
 
 export enum CryptoCurrency {
