@@ -30,7 +30,12 @@ class FilterNftDto {
   @IsUUID('4', { each: true })
   collectionIds?: string[];
 
-  @ApiProperty({ nullable: true, required: false })
+  @ApiProperty({
+    isArray: true,
+    enum: BlockchainNetwork,
+    nullable: true,
+    required: false,
+  })
   @IsOptional()
   @IsArray()
   @IsEnum(BlockchainNetwork, { each: true })

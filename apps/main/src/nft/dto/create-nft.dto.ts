@@ -30,7 +30,7 @@ class MetadataAttributeDto implements MetadataAttribute {
   @IsNumber()
   max_value?: number;
 
-  @ApiProperty({ nullable: true, required: false })
+  @ApiProperty({ enum: DisplayType, nullable: true, required: false })
   @IsOptional()
   @IsEnum(DisplayType)
   display_type?: DisplayType;
@@ -92,8 +92,7 @@ export class CreateNftDto {
   @Max(8000)
   royalty?: number;
 
-  @ApiProperty({ nullable: true, required: false })
-  @IsOptional()
+  @ApiProperty({ enum: BlockchainNetwork, nullable: true, required: false })
   @IsEnum(BlockchainNetwork)
   @IsActiveNetwork()
   network?: BlockchainNetwork;

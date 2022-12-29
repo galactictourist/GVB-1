@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { DeepPartial, FindOptionsWhere, In, MoreThanOrEqual } from 'typeorm';
+import { FindOptionsWhere, In, MoreThanOrEqual } from 'typeorm';
 import { MarketSmartContractService } from '../blockchain/market-smart-contracts.service';
 import { OrderCompletedEvent } from '../blockchain/types/event';
 import { BlockchainNetwork } from '../types/blockchain';
 import { UserService } from '../user/user.service';
-import { CreateOrderDto } from './dto/create-order.dto';
 import { SearchOrderDto } from './dto/search-order.dto';
 import { OrderEntity } from './entity/order.entity';
 import { SaleEntity } from './entity/sale.entity';
@@ -47,18 +46,6 @@ export class OrderService {
       searchOrderDto.pagination,
     );
     return result;
-  }
-
-  async createOrder(
-    createOrderDto: CreateOrderDto,
-    defaults: DeepPartial<OrderEntity>,
-  ) {
-    const orderEntity = this.orderRepository.create({
-      ...defaults,
-    });
-
-    await orderEntity.save();
-    return orderEntity;
   }
 
   async processCompletedOrders(

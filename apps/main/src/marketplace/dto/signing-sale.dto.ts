@@ -16,7 +16,7 @@ export class SigningSaleDto {
   @IsUUID('4')
   nftId: string;
 
-  @ApiProperty()
+  @ApiProperty({ enum: CountryCode })
   @IsEnum(CountryCode)
   countryCode: CountryCode;
 
@@ -34,12 +34,12 @@ export class SigningSaleDto {
   @Max(10000)
   charityShare?: number;
 
-  @ApiProperty()
+  @ApiProperty({ enum: BlockchainNetwork })
   @IsEnum(BlockchainNetwork)
   @IsActiveNetwork()
   network: BlockchainNetwork;
 
-  @ApiProperty()
+  @ApiProperty({ enum: CryptoCurrency })
   @IsEnum(CryptoCurrency)
   currency: CryptoCurrency;
 

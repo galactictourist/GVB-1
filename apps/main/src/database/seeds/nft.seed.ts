@@ -38,6 +38,7 @@ interface SmartcontractTokenIncremment {
 const increment: { [key in BlockchainNetwork]: SmartcontractTokenIncremment } =
   {
     [BlockchainNetwork.POLYGON_MUMBAI]: {},
+    [BlockchainNetwork.BSC_TESTNET]: {},
   };
 
 function getTokenId(network: BlockchainNetwork, scAddress: string) {

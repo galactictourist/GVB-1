@@ -31,13 +31,23 @@ class FilterSaleDto {
   @IsUUID('4', { each: true })
   charityIds?: string[];
 
-  @ApiProperty({ nullable: true, required: false })
+  @ApiProperty({
+    isArray: true,
+    enum: CountryCode,
+    nullable: true,
+    required: false,
+  })
   @IsOptional()
   @IsArray()
   @IsEnum(CountryCode, { each: true })
   countryCodes?: CountryCode[];
 
-  @ApiProperty({ nullable: true, required: false })
+  @ApiProperty({
+    isArray: true,
+    enum: BlockchainNetwork,
+    nullable: true,
+    required: false,
+  })
   @IsOptional()
   @IsArray()
   @IsEnum(BlockchainNetwork, { each: true })

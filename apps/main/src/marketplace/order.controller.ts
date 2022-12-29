@@ -1,8 +1,8 @@
-import { Body, Controller, Post, Request } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Post } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { formatResponse, ResponseData } from '~/main/types/response-data';
-import { UserRequest } from '~/main/types/user-request';
-import { CreateOrderDto } from './dto/create-order.dto';
+import { Public } from '../auth/decorator/public.decorator';
+import { SearchOrderDto } from './dto/search-order.dto';
 import { OrderEntity } from './entity/order.entity';
 import { OrderService } from './order.service';
 import { OrderStatus } from './types';
@@ -12,16 +12,20 @@ import { OrderStatus } from './types';
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
-  @Post('')
-  @ApiBearerAuth()
-  async createOrder(
-    @Request() request: UserRequest,
-    @Body() createOrderDto: CreateOrderDto,
-  ): Promise<ResponseData<OrderEntity>> {
-    const order = await this.orderService.createOrder(createOrderDto, {
-      buyerId: request.user.id,
-      status: OrderStatus.PENDING,
+  @Public()
+  @Post('_search')
+  async search(
+    @Body() searchOrderDto: SearchOrderDto,
+  ): Promise<ResponseData<OrderEntity[]>> {
+    const result = await this.orderService.search(searchOrderDto, {
+      status: OrderStatus.COMPLETED,
     });
-    return formatResponse(order);
+    return formatResponse(result.data, {
+      pagination: {
+        total: result.total,
+        limit: result.limit,
+        page: result.page,
+      },
+    });
   }
 }

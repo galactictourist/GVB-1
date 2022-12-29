@@ -62,12 +62,12 @@ export class NftController {
   @Public()
   @Get(':network/:scAddress/:tokenId')
   async getPublishedCollectionByWallet(
-    @Param('network') network: BlockchainNetwork,
+    @Param('network') network: string,
     @Param('scAddress') scAddress: string,
     @Param('tokenId') tokenId: string,
   ): Promise<ResponseData<NftEntity>> {
     const nft = await this.nftService.getNftByNetworkAddressTokenId(
-      network,
+      network as BlockchainNetwork,
       scAddress,
       tokenId,
     );
@@ -77,12 +77,12 @@ export class NftController {
   @Public()
   @Get(':network/:scAddress/:tokenId/metadata.json')
   async getMetadata(
-    @Param('network') network: BlockchainNetwork,
+    @Param('network') network: string,
     @Param('scAddress') scAddress: string,
     @Param('tokenId') tokenId: string,
   ): Promise<object> {
     const nft = await this.nftService.getNftByNetworkAddressTokenId(
-      network,
+      network as BlockchainNetwork,
       scAddress,
       tokenId,
     );

@@ -8,7 +8,7 @@ export class CreateCharityTopicAdminDto {
   @IsUUID()
   topicId: string;
 
-  @ApiProperty()
+  @ApiProperty({ enum: CountryCode })
   @IsDefined()
   @IsEnum(CountryCode)
   countryCode: CountryCode;

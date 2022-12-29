@@ -1,11 +1,11 @@
 import { BigNumber, BigNumberish, ethers, TypedDataField } from 'ethers';
 
 export enum BlockchainNetwork {
+  POLYGON_MUMBAI = 'POLYGON_MUMBAI',
+  // POLYGON = 'POLYGON',
   // ETHEREUM = 'ETHEREUM',
   // BSC = 'BSC',
-  // BSC_TESTNET = 'BSC_TESTNET',
-  // POLYGON = 'POLYGON',
-  POLYGON_MUMBAI = 'POLYGON_MUMBAI',
+  BSC_TESTNET = 'BSC_TESTNET',
 }
 
 export enum CryptoCurrency {
@@ -115,6 +115,85 @@ export const BLOCKCHAIN_INFO: {
         symbol: 'BNB',
         decimals: 18,
         address: '0xabc',
+      },
+    },
+  },
+  [BlockchainNetwork.BSC_TESTNET]: {
+    enabled: false,
+    chainId: 97,
+    name: 'BSC Testnet',
+    endpoints: [
+      'https://data-seed-prebsc-1-s1.binance.org:8545',
+      'https://data-seed-prebsc-2-s1.binance.org:8545',
+      'https://data-seed-prebsc-1-s2.binance.org:8545',
+      'https://data-seed-prebsc-2-s2.binance.org:8545',
+      'https://data-seed-prebsc-1-s3.binance.org:8545',
+      'https://data-seed-prebsc-2-s3.binance.org:8545',
+    ],
+    explorer: 'https://testnet.bscscan.com',
+    constract: {
+      erc721: {
+        address: '0x0',
+        name: 'GBCollection',
+      } as const,
+      marketplace: {
+        address: '0x0',
+        name: 'GBMarketplace',
+        version: '1.0.0',
+        types: {
+          AddSingleItem: [
+            { type: 'address', name: 'account' },
+            { type: 'address', name: 'collection' },
+            { type: 'uint256', name: 'tokenId' },
+            { type: 'uint96', name: 'royaltyFee' },
+            { type: 'string', name: 'tokenURI' },
+            { type: 'uint256', name: 'deadline' },
+            { type: 'uint256', name: 'nonce' },
+          ],
+          BuyItem: [
+            { type: 'address', name: 'account' },
+            { type: 'address', name: 'collection' },
+            { type: 'address', name: 'seller' },
+            { type: 'uint256', name: 'tokenId' },
+            { type: 'uint256', name: 'itemPrice' },
+            { type: 'uint256', name: 'additionalPrice' },
+            { type: 'address', name: 'charityAddress' },
+            { type: 'uint96', name: 'charityFee' },
+            { type: 'uint256', name: 'deadline' },
+            { type: 'uint256', name: 'nonce' },
+          ],
+          UpdateTokenURI: [
+            { type: 'address', name: 'account' },
+            { type: 'address', name: 'collection' },
+            { type: 'uint256', name: 'tokenId' },
+            { type: 'string', name: 'tokenURI' },
+            { type: 'uint256', name: 'deadline' },
+            { type: 'uint256', name: 'nonce' },
+          ],
+        } as Record<string, Array<TypedDataField>>,
+      },
+    },
+    currency: {
+      [CryptoCurrency.NATIVE_CURRENCY]: {
+        enabled: true,
+        name: 'Binance BNB',
+        symbol: 'BNB',
+        decimals: 18,
+        address: null,
+      },
+      [CryptoCurrency.ETH]: {
+        enabled: true,
+        name: 'Ethereum',
+        symbol: 'ETH',
+        decimals: 18,
+        address: '0x0',
+      },
+      [CryptoCurrency.BNB]: {
+        enabled: false,
+        name: 'Matic',
+        symbol: 'MATIC',
+        decimals: 18,
+        address: '0x0',
       },
     },
   },
