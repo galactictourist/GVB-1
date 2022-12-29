@@ -19,7 +19,7 @@ export class UpdateNftDto {
   @Max(8000)
   royalty?: number;
 
-  @ApiProperty({ nullable: true, required: false })
+  @ApiProperty({ enum: BlockchainNetwork, nullable: true, required: false })
   @IsOptional()
   @IsEnum(BlockchainNetwork)
   @IsActiveNetwork()

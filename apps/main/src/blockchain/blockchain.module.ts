@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { BlockchainController } from './blockchain.controller';
 import { EventProcessController } from './event-process.controller';
 import { EventProcessService } from './event-process.service';
 import { MarketSmartContractService } from './market-smart-contracts.service';
@@ -9,7 +10,7 @@ import { SignerService } from './signer.service';
 
 @Module({
   imports: [ConfigModule],
-  controllers: [EventProcessController],
+  controllers: [BlockchainController, EventProcessController],
   providers: [
     SignerService,
     NftSmartContractService,
