@@ -1,5 +1,4 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { _TypedDataEncoder } from 'ethers/lib/utils';
 import { DateTime } from 'luxon';
 import { FindManyOptions, FindOptionsWhere, In } from 'typeorm';
 import { NftService } from '~/main/nft/nft.service';
@@ -10,7 +9,9 @@ import {
 import { ContextUser } from '~/main/types/user-request';
 import { MarketSmartContractService } from '../blockchain/market-smart-contracts.service';
 import { SignerService } from '../blockchain/signer.service';
+import { SaleContractData, TypedData } from '../blockchain/types';
 import { CharityService } from '../charity/charity.service';
+import { hashTypedData } from '../lib/web3';
 import { UserService } from '../user/user.service';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { FilterSaleParam } from './dto/filter-sale.param';
@@ -182,16 +183,10 @@ export class SaleService {
     });
 
     // generate signedData
-    const signedData = this.saleRepository.generateTypedData(
-      sale,
-      saleData.salt,
-    );
+    const signedData: TypedData<SaleContractData> =
+      this.saleRepository.generateTypedData(sale, saleData.salt);
     sale.signedData = signedData;
-    sale.hash = _TypedDataEncoder.hash(
-      signedData.domain,
-      signedData.types,
-      signedData.value,
-    );
+    sale.hash = hashTypedData(signedData);
 
     // verify clientSignature with signedData
     if (
