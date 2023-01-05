@@ -56,7 +56,7 @@ export class SaleRepository extends BaseRepository<SaleEntity> {
       charityAddress: sale.charityWallet,
       charityFee: sale.charityShare,
       royaltyFee: sale.nft.royalty,
-      deadline: DateTime.fromJSDate(sale.expiredAt).toSeconds(),
+      deadline: DateTime.fromJSDate(sale.expiredAt).toUnixInteger(),
     };
 
     const typedData = {
