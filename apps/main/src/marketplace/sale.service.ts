@@ -194,16 +194,33 @@ export class SaleService {
     signingSaleDto: SigningSaleDto,
     contextUser: ContextUser,
   ) {
-    const user = await this.userService.findById(contextUser.id);
-    if (!user) {
+    // checking NFT
+    const nft = await this.nftService.findById(signingSaleDto.nftId, {
+      relations: { owner: true },
+    });
+    if (!nft) {
+      throw new BadRequestException('NFT is invalid');
+    }
+    if (nft.ownerId !== contextUser.id) {
+      throw new BadRequestException('Owner mismatch');
+    }
+    if (nft.network !== signingSaleDto.network) {
+      throw new BadRequestException('Network mismatch');
+    }
+    if (!nft.isActive()) {
+      throw new BadRequestException('NFT is not active');
+    }
+
+    if (!nft.owner) {
       throw new BadRequestException('Invalid user');
     }
-    if (!user.isActive()) {
+    if (!nft.owner.isActive()) {
       throw new BadRequestException('User is not active');
     }
-    if (!user.wallet) {
+    if (!nft.owner.wallet) {
       throw new BadRequestException('Invalid user wallet');
     }
+
     // validate network and currency
     if (
       !isCryptoCurrencyEnabled(signingSaleDto.network, signingSaleDto.currency)
@@ -226,7 +243,7 @@ export class SaleService {
     // count existing active sale
     const countExistingSale = await this.count(
       {
-        userIds: [user.id],
+        userIds: [nft.owner.id],
         nftIds: [signingSaleDto.nftId],
         networks: [signingSaleDto.network],
         statuses: [SaleStatus.LISTING],
@@ -237,29 +254,14 @@ export class SaleService {
       throw new BadRequestException('NFT is on sale');
     }
 
-    // checking NFT
-    const nft = await this.nftService.findById(signingSaleDto.nftId);
-    if (!nft) {
-      throw new BadRequestException('NFT is invalid');
-    }
-    if (nft.ownerId !== user.id) {
-      throw new BadRequestException('Owner mismatch');
-    }
-    if (nft.network !== signingSaleDto.network) {
-      throw new BadRequestException('Network mismatch');
-    }
-    if (!nft.isActive()) {
-      throw new BadRequestException('NFT is not active');
-    }
-
     const expiredAt = DateTime.now()
       .plus({
         minutes: signingSaleDto.expiryInMinutes,
       })
       .toJSDate();
     const saleEntity = this.saleRepository.create({
-      userId: user.id,
-      user,
+      userId: nft.owner.id,
+      user: nft.owner,
       nftId: signingSaleDto.nftId,
       nft,
       network: signingSaleDto.network,
