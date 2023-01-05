@@ -34,6 +34,11 @@ export class SigningSaleDto {
   @Max(10000)
   charityShare?: number;
 
+  @ApiProperty()
+  @IsNumber()
+  @Min(1)
+  quantity: number;
+
   @ApiProperty({ enum: BlockchainNetwork })
   @IsEnum(BlockchainNetwork)
   @IsActiveNetwork()

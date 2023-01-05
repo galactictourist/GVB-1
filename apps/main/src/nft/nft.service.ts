@@ -84,6 +84,11 @@ export class NftService {
     return where;
   }
 
+  async findById(nftId: string) {
+    const nft = await this.nftRepository.findOneBy({ id: nftId });
+    return nft;
+  }
+
   async query(
     filterParam: FilterNftParam,
     defaults: FindManyOptions<NftEntity> = {},

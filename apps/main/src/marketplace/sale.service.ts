@@ -2,7 +2,6 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { DateTime } from 'luxon';
 import { FindManyOptions, FindOptionsWhere, In } from 'typeorm';
 import { NftService } from '~/main/nft/nft.service';
-import { NftStatus } from '~/main/nft/types';
 import {
   BlockchainNetwork,
   isCryptoCurrencyEnabled,
@@ -11,6 +10,7 @@ import { ContextUser } from '~/main/types/user-request';
 import { MarketSmartContractService } from '../blockchain/market-smart-contracts.service';
 import { SignerService } from '../blockchain/signer.service';
 import { CharityService } from '../charity/charity.service';
+import { UserService } from '../user/user.service';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { FilterSaleParam } from './dto/filter-sale.param';
 import { SearchSaleDto } from './dto/search-sale.dto';
@@ -27,6 +27,7 @@ export class SaleService {
     private readonly nftService: NftService,
     private readonly signerService: SignerService,
     private readonly charityService: CharityService,
+    private readonly userService: UserService,
     private readonly marketSmartContractService: MarketSmartContractService,
   ) {}
 
@@ -164,7 +165,7 @@ export class SaleService {
       charityWallet: saleData.charityWallet,
       topicId: saleData.topicId,
       charityId: saleData.charityId,
-      expiredAt: DateTime.fromSeconds(saleData.expiredAt),
+      expiredAt: DateTime.fromSeconds(saleData.expiredAt).toJSDate(),
       status: SaleStatus.LISTING,
     });
 
@@ -191,8 +192,15 @@ export class SaleService {
 
   private async _createSaleEntity(
     signingSaleDto: SigningSaleDto,
-    user: ContextUser,
+    contextUser: ContextUser,
   ) {
+    const user = await this.userService.findById(contextUser.id);
+    if (!user) {
+      throw new BadRequestException('Invalid user');
+    }
+    if (!user.isActive()) {
+      throw new BadRequestException('User is not active');
+    }
     if (!user.wallet) {
       throw new BadRequestException('Invalid user wallet');
     }
@@ -211,6 +219,9 @@ export class SaleService {
     if (!charityTopic) {
       throw new BadRequestException('Charity and topic are not matched');
     }
+    if (!charityTopic.wallet) {
+      throw new BadRequestException('Charity wallet is invalid');
+    }
 
     // count existing active sale
     const countExistingSale = await this.count(
@@ -227,25 +238,30 @@ export class SaleService {
     }
 
     // checking NFT
-    const count = await this.nftService.count(
-      {
-        ids: [signingSaleDto.nftId],
-        ownerIds: [user.id],
-        networks: [signingSaleDto.network],
-        statuses: [NftStatus.ACTIVE],
-      },
-      { take: 1 },
-    );
-    if (count !== 1) {
+    const nft = await this.nftService.findById(signingSaleDto.nftId);
+    if (!nft) {
       throw new BadRequestException('NFT is invalid');
     }
+    if (nft.ownerId !== user.id) {
+      throw new BadRequestException('Owner mismatch');
+    }
+    if (nft.network !== signingSaleDto.network) {
+      throw new BadRequestException('Network mismatch');
+    }
+    if (!nft.isActive()) {
+      throw new BadRequestException('NFT is not active');
+    }
 
-    const expiredAt = DateTime.now().plus({
-      minutes: signingSaleDto.expiryInMinutes,
-    });
+    const expiredAt = DateTime.now()
+      .plus({
+        minutes: signingSaleDto.expiryInMinutes,
+      })
+      .toJSDate();
     const saleEntity = this.saleRepository.create({
       userId: user.id,
+      user,
       nftId: signingSaleDto.nftId,
+      nft,
       network: signingSaleDto.network,
       price: signingSaleDto.price.toString(),
       currency: signingSaleDto.currency,
@@ -254,6 +270,8 @@ export class SaleService {
       charityWallet: charityTopic.wallet,
       topicId: signingSaleDto.topicId,
       charityId: signingSaleDto.charityId,
+      quantity: signingSaleDto.quantity,
+      remainingQuantity: signingSaleDto.quantity,
       expiredAt,
     });
 

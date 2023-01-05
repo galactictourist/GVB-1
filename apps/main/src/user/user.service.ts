@@ -5,6 +5,11 @@ import { UserRepository } from './repository/user.repository';
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
+  async findById(userId: string) {
+    const user = await this.userRepository.findOneBy({ id: userId });
+    return user;
+  }
+
   async findOrCreateOneByWallet(wallet: string) {
     const user = await this.userRepository.findOrCreateOneByWallet(wallet);
     return user;
