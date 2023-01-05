@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { _TypedDataEncoder } from 'ethers/lib/utils';
 import { DateTime } from 'luxon';
 import { FindManyOptions, FindOptionsWhere, In } from 'typeorm';
 import { NftService } from '~/main/nft/nft.service';
@@ -176,6 +177,7 @@ export class SaleService {
       charityId: saleData.charityId,
       quantity: saleData.quantity,
       expiredAt: DateTime.fromSeconds(saleData.expiredAt).toJSDate(),
+      signature: createSaleDto.clientSignature,
       status: SaleStatus.LISTING,
     });
 
@@ -185,6 +187,11 @@ export class SaleService {
       saleData.salt,
     );
     sale.signedData = signedData;
+    sale.hash = _TypedDataEncoder.hash(
+      signedData.domain,
+      signedData.types,
+      signedData.value,
+    );
 
     // verify clientSignature with signedData
     if (
