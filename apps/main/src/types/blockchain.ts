@@ -53,43 +53,68 @@ export const BLOCKCHAIN_INFO: {
     explorer: 'https://mumbai.polygonscan.com',
     constract: {
       erc721: {
-        address: '0x713e7ac007277644e778FD77d7C8DcD2629B5bE4',
+        address: '0x78b3d5f2cbaf71f2f581fa51d5eed6b854027b79',
         // address: '0xC954AF5Cf0D34DC5B827a2Dc5B3f8055c862DC42', // '0x57baA35a806bDa26B4c3DDc0329804017689d2E7',
         name: 'GBCollection',
       } as const,
       marketplace: {
-        address: '0xEc2BC804AA4872d4dc57D21d68b060bD2cBC2205', // '0x2978606902693E7114e45e65CE25504611D5E24C',
+        address: '0xa3a1737d636426226a5f17e15896f6e56cc378e9', // '0x2978606902693E7114e45e65CE25504611D5E24C',
         name: 'GBMarketplace',
         version: '1.0.0',
         types: {
-          AddSingleItem: [
-            { type: 'address', name: 'account' },
-            { type: 'address', name: 'collection' },
-            { type: 'uint256', name: 'tokenId' },
-            { type: 'uint96', name: 'royaltyFee' },
-            { type: 'string', name: 'tokenURI' },
-            { type: 'uint256', name: 'deadline' },
-            { type: 'uint256', name: 'nonce' },
-          ],
-          BuyItem: [
-            { type: 'address', name: 'account' },
-            { type: 'address', name: 'collection' },
-            { type: 'address', name: 'seller' },
-            { type: 'uint256', name: 'tokenId' },
-            { type: 'uint256', name: 'itemPrice' },
-            { type: 'uint256', name: 'additionalPrice' },
-            { type: 'address', name: 'charityAddress' },
-            { type: 'uint96', name: 'charityFee' },
-            { type: 'uint256', name: 'deadline' },
-            { type: 'uint256', name: 'nonce' },
-          ],
-          UpdateTokenURI: [
-            { type: 'address', name: 'account' },
-            { type: 'address', name: 'collection' },
-            { type: 'uint256', name: 'tokenId' },
-            { type: 'string', name: 'tokenURI' },
-            { type: 'uint256', name: 'deadline' },
-            { type: 'uint256', name: 'nonce' },
+          OrderItem: [
+            {
+              // internalType: 'address',
+              name: 'nftContract',
+              type: 'address',
+            },
+            {
+              internalType: 'address',
+              name: 'seller',
+              type: 'address',
+            },
+            { internalType: 'bool', name: 'isMinted', type: 'bool' },
+            {
+              internalType: 'uint256',
+              name: 'tokenId',
+              type: 'uint256',
+            },
+            {
+              internalType: 'string',
+              name: 'tokenURI',
+              type: 'string',
+            },
+            {
+              internalType: 'uint256',
+              name: 'quantity',
+              type: 'uint256',
+            },
+            {
+              internalType: 'uint256',
+              name: 'itemAmount',
+              type: 'uint256',
+            },
+            {
+              internalType: 'address',
+              name: 'charityAddress',
+              type: 'address',
+            },
+            {
+              internalType: 'uint96',
+              name: 'charityShare',
+              type: 'uint96',
+            },
+            {
+              internalType: 'uint96',
+              name: 'royaltyFee',
+              type: 'uint96',
+            },
+            {
+              internalType: 'uint256',
+              name: 'deadline',
+              type: 'uint256',
+            },
+            { internalType: 'uint256', name: 'salt', type: 'uint256' },
           ],
         } as Record<string, Array<TypedDataField>>,
       },

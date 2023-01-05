@@ -19,7 +19,10 @@ export class SaleRepository extends BaseRepository<SaleEntity> {
     super(SaleEntity, dataSource.createEntityManager());
   }
 
-  generateTypedData(sale: SaleEntity): TypedData<SaleContractData> {
+  generateTypedData(
+    sale: SaleEntity,
+    salt: string,
+  ): TypedData<SaleContractData> {
     const marketplaceSC = getMarketplaceSmartContract(sale.network);
     if (!marketplaceSC.types || !marketplaceSC.version) {
       throw new Error('Missing signing domain configuration');
@@ -51,12 +54,13 @@ export class SaleRepository extends BaseRepository<SaleEntity> {
       tokenId: sale.nft.tokenId,
       tokenURI: sale.nft.getMetadataUrl(),
       quantity: sale.quantity,
-      itemPrice: parseCryptoAmount(sale.network, sale.currency, sale.price),
+      itemAmount: parseCryptoAmount(sale.network, sale.currency, sale.price),
       additionalPrice: 0,
       charityAddress: sale.charityWallet,
-      charityFee: sale.charityShare,
+      charityShare: sale.charityShare,
       royaltyFee: sale.nft.royalty,
       deadline: DateTime.fromJSDate(sale.expiredAt).toUnixInteger(),
+      salt,
     };
 
     const typedData = {
@@ -93,7 +97,8 @@ export class SaleRepository extends BaseRepository<SaleEntity> {
       network: sale.network,
       currency: sale.currency,
       price: sale.price,
-      expiredAt: Math.floor(sale.expiredAt.getTime() / 1000),
+      quantity: sale.quantity,
+      expiredAt: DateTime.fromJSDate(sale.expiredAt).toUnixInteger(),
       salt,
     };
     return saleData;

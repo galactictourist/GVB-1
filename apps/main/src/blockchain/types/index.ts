@@ -36,16 +36,17 @@ export interface BuyItem {
 }
 
 export interface SaleContractData extends Record<string, any> {
+  salt: BigNumberish;
   nftContract: string;
   seller: string;
   isMinted: boolean;
   tokenId: string;
   tokenURI: string;
   quantity: BigNumberish;
-  itemPrice: BigNumberish; // listed price
+  itemAmount: BigNumberish; // listed price
   additionalPrice: BigNumberish; // additional price for charity
   charityAddress: string;
-  charityFee: BigNumberish;
+  charityShare: BigNumberish;
   royaltyFee: BigNumberish;
   deadline: BigNumberish; // expiry time of listed NFT
 }

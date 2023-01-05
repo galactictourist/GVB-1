@@ -92,7 +92,7 @@ export class NftService {
 
   async findById(
     nftId: string,
-    { relations }: FindOneOptions<NftEntity>,
+    { relations }: FindOneOptions<NftEntity> = {},
   ): Promise<NftEntity | null> {
     const nft = await this.nftRepository.findOne({
       where: { id: nftId },

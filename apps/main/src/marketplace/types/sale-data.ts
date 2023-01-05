@@ -22,6 +22,8 @@ export class SaleData {
 
   price: string;
 
+  quantity: number;
+
   expiredAt: number;
 
   salt: string; // 77-length number string = uint256
