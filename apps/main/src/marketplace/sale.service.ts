@@ -186,7 +186,7 @@ export class SaleService {
     const signedData: TypedData<SaleContractData> =
       this.saleRepository.generateTypedData(sale, saleData.salt);
     sale.signedData = signedData;
-    sale.hash = this.hashSaleContractData(signedData.value);
+    sale.hash = this.hashSaleContractData(signedData.message);
 
     // verify clientSignature with signedData
     if (

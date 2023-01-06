@@ -70,7 +70,7 @@ export class SaleRepository extends BaseRepository<SaleEntity> {
     const typedData: TypedData<SaleContractData> = {
       types: marketplaceSC.types,
       domain,
-      value: message,
+      message,
     };
 
     return typedData;
