@@ -24,7 +24,7 @@
           { "internalType": "uint256", "name": "quantity", "type": "uint256" },
           {
             "internalType": "uint256",
-            "name": "itemAmount",
+            "name": "itemPrice",
             "type": "uint256"
           },
           {
@@ -299,7 +299,7 @@
               },
               {
                 "internalType": "uint256",
-                "name": "itemAmount",
+                "name": "itemPrice",
                 "type": "uint256"
               },
               {
@@ -369,7 +369,7 @@
           { "internalType": "uint256", "name": "quantity", "type": "uint256" },
           {
             "internalType": "uint256",
-            "name": "itemAmount",
+            "name": "itemPrice",
             "type": "uint256"
           },
           {

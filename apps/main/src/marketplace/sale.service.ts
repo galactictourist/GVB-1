@@ -376,7 +376,7 @@ export class SaleService {
           item.tokenId,
           utils.keccak256(utils.toUtf8Bytes(item.tokenURI)),
           item.quantity,
-          item.itemAmount,
+          item.itemPrice,
           item.charityAddress,
           item.charityShare,
           item.royaltyFee,

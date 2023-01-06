@@ -19,7 +19,7 @@ export interface SaleContractData extends Record<string, any> {
   tokenId: string;
   tokenURI: string;
   quantity: BigNumberish;
-  itemAmount: BigNumberish; // listed price
+  itemPrice: BigNumberish; // listed price
   additionalPrice: BigNumberish; // additional price for charity
   charityAddress: string;
   charityShare: BigNumberish;

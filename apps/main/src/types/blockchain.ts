@@ -53,12 +53,12 @@ export const BLOCKCHAIN_INFO: {
     explorer: 'https://mumbai.polygonscan.com',
     constract: {
       erc721: {
-        address: '0x78b3d5f2cbaf71f2f581fa51d5eed6b854027b79',
+        address: '0x4AEc07e38a5a045c3f65bA2bbF4d2BcEb2b77d36',
         // address: '0xC954AF5Cf0D34DC5B827a2Dc5B3f8055c862DC42', // '0x57baA35a806bDa26B4c3DDc0329804017689d2E7',
         name: 'GBCollection',
       } as const,
       marketplace: {
-        address: '0xa3a1737d636426226a5f17e15896f6e56cc378e9', // '0x2978606902693E7114e45e65CE25504611D5E24C',
+        address: '0x415F1AeB524f445C96800D513F60Dc59185b3b39', // '0x2978606902693E7114e45e65CE25504611D5E24C',
         name: 'GBMarketplace',
         version: '1.0.0',
         types: {
@@ -85,7 +85,7 @@ export const BLOCKCHAIN_INFO: {
               type: 'uint256',
             },
             {
-              name: 'itemAmount',
+              name: 'itemPrice',
               type: 'uint256',
             },
             {

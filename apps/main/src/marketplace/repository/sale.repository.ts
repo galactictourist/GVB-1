@@ -54,7 +54,11 @@ export class SaleRepository extends BaseRepository<SaleEntity> {
       tokenId: sale.nft.tokenId,
       tokenURI: sale.nft.getMetadataUrl(),
       quantity: sale.quantity,
-      itemAmount: parseCryptoAmount(sale.network, sale.currency, sale.price),
+      itemPrice: parseCryptoAmount(
+        sale.network,
+        sale.currency,
+        sale.price,
+      ).toString(),
       additionalPrice: 0,
       charityAddress: sale.charityWallet,
       charityShare: sale.charityShare,
