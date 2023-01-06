@@ -1,6 +1,4 @@
 import { utils, Wallet } from 'ethers';
-import { _TypedDataEncoder } from 'ethers/lib/utils';
-import { TypedData } from '~/main/blockchain/types';
 
 export function generateWallets(mnemonic: string, count: number) {
   const wallets: Wallet[] = [];
@@ -14,12 +12,4 @@ export function generateWallets(mnemonic: string, count: number) {
 
 export function deadlineIn(seconds: number) {
   return Math.round(new Date().getTime() / 1000) + seconds;
-}
-
-export function hashTypedData(typedData: TypedData<any>): string {
-  return _TypedDataEncoder.hash(
-    typedData.domain,
-    typedData.types,
-    typedData.value,
-  );
 }

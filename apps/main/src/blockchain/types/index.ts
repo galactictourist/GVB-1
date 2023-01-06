@@ -12,31 +12,7 @@ export interface TypedData<T extends Record<string, any>> {
   value: T;
 }
 
-export interface AddSingleItem {
-  account: string;
-  collection: string;
-  tokenId: BigNumberish;
-  royaltyFee: BigNumberish;
-  tokenURI: string;
-  deadline: BigNumberish;
-  nonce: BigNumberish;
-}
-
-export interface BuyItem {
-  account: string;
-  collection: string;
-  seller: string;
-  tokenId: BigNumberish;
-  itemPrice: BigNumberish;
-  additionalPrice: BigNumberish;
-  charityAddress: string;
-  charityFee: BigNumberish;
-  deadline: BigNumberish;
-  nonce: BigNumberish;
-}
-
 export interface SaleContractData extends Record<string, any> {
-  salt: BigNumberish;
   nftContract: string;
   seller: string;
   isMinted: boolean;
@@ -49,4 +25,5 @@ export interface SaleContractData extends Record<string, any> {
   charityShare: BigNumberish;
   royaltyFee: BigNumberish;
   deadline: BigNumberish; // expiry time of listed NFT
+  salt: BigNumberish;
 }
