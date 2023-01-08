@@ -26,6 +26,25 @@ export class SaleController {
     const result = await this.saleService.search(searchSaleDto, {
       status: SaleStatus.LISTING,
       expiredAt: MoreThan(now),
+      remainingQuantity: MoreThan(0),
+    });
+    return formatResponse(result.data, {
+      pagination: {
+        total: result.total,
+        limit: result.limit,
+        page: result.page,
+      },
+    });
+  }
+
+  @Post('_search/mine')
+  @ApiBearerAuth()
+  async searchMine(
+    @Request() request: UserRequest,
+    @Body() searchSaleDto: SearchSaleDto,
+  ): Promise<ResponseData<SaleEntity[]>> {
+    const result = await this.saleService.search(searchSaleDto, {
+      userId: request.user.id,
     });
     return formatResponse(result.data, {
       pagination: {
