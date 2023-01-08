@@ -1,4 +1,4 @@
-import { BigNumberish, TypedDataDomain, TypedDataField } from 'ethers';
+import { TypedDataDomain, TypedDataField } from 'ethers';
 
 export enum BlockchainEventStatus {
   ACTIVE = 'ACTIVE',
@@ -18,12 +18,11 @@ export interface SaleContractData extends Record<string, any> {
   isMinted: boolean;
   tokenId: string;
   tokenURI: string;
-  quantity: BigNumberish;
-  itemPrice: BigNumberish; // listed price
-  additionalPrice: BigNumberish; // additional price for charity
+  quantity: number;
+  itemPrice: string;
   charityAddress: string;
-  charityShare: BigNumberish;
-  royaltyFee: BigNumberish;
-  deadline: BigNumberish; // expiry time of listed NFT
-  salt: BigNumberish;
+  charityShare: number;
+  royaltyFee: number;
+  deadline: number;
+  salt: string;
 }
