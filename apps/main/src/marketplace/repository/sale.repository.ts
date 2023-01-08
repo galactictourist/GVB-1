@@ -59,7 +59,6 @@ export class SaleRepository extends BaseRepository<SaleEntity> {
         sale.currency,
         sale.price,
       ).toString(),
-      additionalPrice: 0,
       charityAddress: sale.charityWallet,
       charityShare: sale.charityShare,
       royaltyFee: sale.nft.royalty,
@@ -70,6 +69,7 @@ export class SaleRepository extends BaseRepository<SaleEntity> {
     const typedData: TypedData<SaleContractData> = {
       types: marketplaceSC.types,
       domain,
+      primaryType: 'OrderItem',
       message,
     };
 
