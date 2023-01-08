@@ -1,3 +1,4 @@
+import { SaleContractData, TypedData } from '~/main/blockchain/types';
 import { BlockchainNetwork, CryptoCurrency } from '~/main/types/blockchain';
 import { CountryCode } from '~/main/types/country';
 
@@ -27,6 +28,11 @@ export class SaleData {
   expiredAt: number;
 
   salt: string; // 77-length number string = uint256
+}
+
+export interface RawSigningData {
+  signingData: TypedData<SaleContractData>;
+  saleData: SaleData;
 }
 
 export interface SigningData {

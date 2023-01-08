@@ -20,7 +20,7 @@ import { SigningSaleDto } from './dto/signing-sale.dto';
 import { SaleEntity } from './entity/sale.entity';
 import { SaleRepository } from './repository/sale.repository';
 import { SaleStatus } from './types';
-import { SaleData, SigningData } from './types/sale-data';
+import { RawSigningData, SaleData, SigningData } from './types/sale-data';
 
 @Injectable()
 export class SaleService {
@@ -122,15 +122,30 @@ export class SaleService {
     const saleEntity = await this._createSaleEntity(signingSaleDto, user);
 
     const saleData = this.saleRepository.generateSaleData(saleEntity);
-    const saleDataString = JSON.stringify(saleData);
+    const signingData = this.saleRepository.generateTypedData(
+      saleEntity,
+      saleData.salt,
+    );
+    const rawSigningData: RawSigningData = {
+      saleData,
+      signingData,
+    };
+
+    return this.convertSigningData(rawSigningData);
+  }
+
+  private async convertSigningData(raw: RawSigningData): Promise<SigningData> {
+    const saleDataString = JSON.stringify(raw.saleData);
+    const signingDataString = JSON.stringify(raw.signingData);
     const serverSignature = await this.signerService.signByVerifier(
       saleDataString,
     );
-    const signingData = JSON.stringify(
-      this.saleRepository.generateTypedData(saleEntity, saleData.salt),
-    );
 
-    return { signingData, saleData: saleDataString, serverSignature };
+    return {
+      signingData: signingDataString,
+      saleData: saleDataString,
+      serverSignature,
+    };
   }
 
   async createSale(
