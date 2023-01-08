@@ -81,6 +81,8 @@ export class SignerService {
     signature: string,
     address: string,
   ): boolean {
+    // const types = { ...typedData.types };
+    // delete types.EIP712Domain;
     const signerAddress = utils.verifyTypedData(
       typedData.domain,
       typedData.types,

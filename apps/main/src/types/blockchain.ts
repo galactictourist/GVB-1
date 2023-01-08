@@ -58,10 +58,28 @@ export const BLOCKCHAIN_INFO: {
         name: 'GBCollection',
       } as const,
       marketplace: {
-        address: '0x415F1AeB524f445C96800D513F60Dc59185b3b39', // '0x2978606902693E7114e45e65CE25504611D5E24C',
+        address: '0x2B26171D78b1175fF74d16115114FB2D6cfDFE3D', // '0x2978606902693E7114e45e65CE25504611D5E24C',
         name: 'GBMarketplace',
         version: '1.0.0',
         types: {
+          // EIP712Domain: [
+          //   {
+          //     name: 'name',
+          //     type: 'string',
+          //   },
+          //   {
+          //     name: 'version',
+          //     type: 'string',
+          //   },
+          //   {
+          //     name: 'chainId',
+          //     type: 'uint256',
+          //   },
+          //   {
+          //     name: 'verifyingContract',
+          //     type: 'address',
+          //   },
+          // ],
           OrderItem: [
             {
               name: 'nftContract',
