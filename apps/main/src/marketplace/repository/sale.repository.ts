@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { TypedDataDomain } from 'ethers';
 import { DateTime } from 'luxon';
 import { DataSource } from 'typeorm';
-import { SaleContractData, TypedData } from '~/main/blockchain/types';
+import { ItemType, SaleContractData, TypedData } from '~/main/blockchain/types';
 import { randomUnit256 } from '~/main/lib';
 import { BaseRepository } from '~/main/lib/database/base-repository';
 import {
@@ -48,8 +48,9 @@ export class SaleRepository extends BaseRepository<SaleEntity> {
     };
 
     const message: SaleContractData = {
-      seller: sale.user.wallet,
       nftContract: sale.nft.scAddress,
+      itemType: ItemType.ERC721,
+      seller: sale.user.wallet,
       isMinted: sale.nft.isMinted(),
       tokenId: sale.nft.tokenId,
       tokenURI: sale.nft.getMetadataUrl(),

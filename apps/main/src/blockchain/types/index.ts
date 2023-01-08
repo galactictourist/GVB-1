@@ -5,6 +5,11 @@ export enum BlockchainEventStatus {
   INACTIVE = 'INACTIVE',
 }
 
+export enum ItemType {
+  ERC721 = 0,
+  ERC1155 = 1,
+}
+
 export interface TypedData<T extends Record<string, any>> {
   domain: TypedDataDomain;
   primaryType?: string;
@@ -14,6 +19,7 @@ export interface TypedData<T extends Record<string, any>> {
 
 export interface SaleContractData extends Record<string, any> {
   nftContract: string;
+  itemType: ItemType;
   seller: string;
   isMinted: boolean;
   tokenId: string;
