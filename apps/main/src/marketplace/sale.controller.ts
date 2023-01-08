@@ -1,5 +1,6 @@
 import { Body, Controller, Post, Request } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { MoreThan } from 'typeorm';
 import { Public } from '~/main/auth/decorator/public.decorator';
 import { formatResponse, ResponseData } from '~/main/types/response-data';
 import { UserRequest } from '~/main/types/user-request';
@@ -21,8 +22,10 @@ export class SaleController {
   async search(
     @Body() searchSaleDto: SearchSaleDto,
   ): Promise<ResponseData<SaleEntity[]>> {
+    const now = new Date();
     const result = await this.saleService.search(searchSaleDto, {
       status: SaleStatus.LISTING,
+      expiredAt: MoreThan(now),
     });
     return formatResponse(result.data, {
       pagination: {
