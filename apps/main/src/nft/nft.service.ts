@@ -1,6 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { isZeroAddress } from 'ethereumjs-util';
-import { DeepPartial, FindManyOptions, FindOptionsWhere, In } from 'typeorm';
+import {
+  DeepPartial,
+  FindManyOptions,
+  FindOneOptions,
+  FindOptionsWhere,
+  In,
+} from 'typeorm';
 import { MarketSmartContractService } from '~/main/blockchain/market-smart-contracts.service';
 import { SignerService } from '~/main/blockchain/signer.service';
 import { randomUnit256 } from '~/main/lib';
@@ -82,6 +88,18 @@ export class NftService {
     }
 
     return where;
+  }
+
+  async findById(
+    nftId: string,
+    { relations }: FindOneOptions<NftEntity> = {},
+  ): Promise<NftEntity | null> {
+    const nft = await this.nftRepository.findOne({
+      where: { id: nftId },
+      relationLoadStrategy: 'query',
+      relations,
+    });
+    return nft;
   }
 
   async query(

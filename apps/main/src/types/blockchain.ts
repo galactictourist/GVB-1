@@ -53,43 +53,80 @@ export const BLOCKCHAIN_INFO: {
     explorer: 'https://mumbai.polygonscan.com',
     constract: {
       erc721: {
-        address: '0x713e7ac007277644e778FD77d7C8DcD2629B5bE4',
+        address: '0x4AEc07e38a5a045c3f65bA2bbF4d2BcEb2b77d36',
         // address: '0xC954AF5Cf0D34DC5B827a2Dc5B3f8055c862DC42', // '0x57baA35a806bDa26B4c3DDc0329804017689d2E7',
         name: 'GBCollection',
       } as const,
       marketplace: {
-        address: '0xEc2BC804AA4872d4dc57D21d68b060bD2cBC2205', // '0x2978606902693E7114e45e65CE25504611D5E24C',
+        address: '0x5FbBFA7ea57C693C30BA9658A01943944870224F', // '0x2978606902693E7114e45e65CE25504611D5E24C',
         name: 'GBMarketplace',
         version: '1.0.0',
         types: {
-          AddSingleItem: [
-            { type: 'address', name: 'account' },
-            { type: 'address', name: 'collection' },
-            { type: 'uint256', name: 'tokenId' },
-            { type: 'uint96', name: 'royaltyFee' },
-            { type: 'string', name: 'tokenURI' },
-            { type: 'uint256', name: 'deadline' },
-            { type: 'uint256', name: 'nonce' },
-          ],
-          BuyItem: [
-            { type: 'address', name: 'account' },
-            { type: 'address', name: 'collection' },
-            { type: 'address', name: 'seller' },
-            { type: 'uint256', name: 'tokenId' },
-            { type: 'uint256', name: 'itemPrice' },
-            { type: 'uint256', name: 'additionalPrice' },
-            { type: 'address', name: 'charityAddress' },
-            { type: 'uint96', name: 'charityFee' },
-            { type: 'uint256', name: 'deadline' },
-            { type: 'uint256', name: 'nonce' },
-          ],
-          UpdateTokenURI: [
-            { type: 'address', name: 'account' },
-            { type: 'address', name: 'collection' },
-            { type: 'uint256', name: 'tokenId' },
-            { type: 'string', name: 'tokenURI' },
-            { type: 'uint256', name: 'deadline' },
-            { type: 'uint256', name: 'nonce' },
+          // EIP712Domain: [
+          //   {
+          //     name: 'name',
+          //     type: 'string',
+          //   },
+          //   {
+          //     name: 'version',
+          //     type: 'string',
+          //   },
+          //   {
+          //     name: 'chainId',
+          //     type: 'uint256',
+          //   },
+          //   {
+          //     name: 'verifyingContract',
+          //     type: 'address',
+          //   },
+          // ],
+          OrderItem: [
+            {
+              name: 'nftContract',
+              type: 'address',
+            },
+            {
+              name: 'itemType',
+              type: 'uint256',
+            },
+            {
+              name: 'seller',
+              type: 'address',
+            },
+            { name: 'isMinted', type: 'bool' },
+            {
+              name: 'tokenId',
+              type: 'uint256',
+            },
+            {
+              name: 'tokenURI',
+              type: 'string',
+            },
+            {
+              name: 'quantity',
+              type: 'uint256',
+            },
+            {
+              name: 'itemPrice',
+              type: 'uint256',
+            },
+            {
+              name: 'charityAddress',
+              type: 'address',
+            },
+            {
+              name: 'charityShare',
+              type: 'uint96',
+            },
+            {
+              name: 'royaltyFee',
+              type: 'uint96',
+            },
+            {
+              name: 'deadline',
+              type: 'uint256',
+            },
+            { name: 'salt', type: 'uint256' },
           ],
         } as Record<string, Array<TypedDataField>>,
       },

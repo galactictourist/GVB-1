@@ -1,5 +1,8 @@
-import { Column, Entity, Index } from 'typeorm';
+import { Column, Entity, Index, OneToMany } from 'typeorm';
 import { BaseElement } from '~/main/lib/database/base-element';
+import { OrderEntity } from '~/main/marketplace/entity/order.entity';
+import { SaleEntity } from '~/main/marketplace/entity/sale.entity';
+import { NftEntity } from '~/main/nft/entity/nft.entity';
 import { CountryCode } from '~/main/types/country';
 import { UserStatus } from '../types';
 
@@ -18,6 +21,15 @@ export class UserEntity extends BaseElement {
 
   @Column({ type: 'varchar', enum: CountryCode, nullable: true, length: 2 })
   countryCode?: CountryCode;
+
+  @OneToMany(() => NftEntity, (nft) => nft.owner)
+  nfts: NftEntity[];
+
+  @OneToMany(() => SaleEntity, (sale) => sale.user)
+  sales: SaleEntity[];
+
+  @OneToMany(() => OrderEntity, (order) => order.buyer)
+  orders: OrderEntity[];
 
   @Column({
     type: 'varchar',

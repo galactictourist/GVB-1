@@ -54,7 +54,6 @@
     "class-validator": "^0.13.2",
     "country-list": "^2.2.0",
     "dotenv": "^16.0.3",
-    "eip-712": "^1.0.0",
     "eip55": "^2.1.0",
     "ethereumjs-util": "^7.1.5",
     "ethers": "^5.7.2",

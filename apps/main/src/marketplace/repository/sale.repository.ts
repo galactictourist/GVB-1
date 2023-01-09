@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { TypedDataDomain } from 'ethers';
 import { DateTime } from 'luxon';
 import { DataSource } from 'typeorm';
-import { SaleContractData, TypedData } from '~/main/blockchain/types';
+import { ItemType, SaleContractData, TypedData } from '~/main/blockchain/types';
 import { randomUnit256 } from '~/main/lib';
 import { BaseRepository } from '~/main/lib/database/base-repository';
 import {
@@ -19,7 +19,10 @@ export class SaleRepository extends BaseRepository<SaleEntity> {
     super(SaleEntity, dataSource.createEntityManager());
   }
 
-  generateTypedData(sale: SaleEntity): TypedData<SaleContractData> {
+  generateTypedData(
+    sale: SaleEntity,
+    salt: string,
+  ): TypedData<SaleContractData> {
     const marketplaceSC = getMarketplaceSmartContract(sale.network);
     if (!marketplaceSC.types || !marketplaceSC.version) {
       throw new Error('Missing signing domain configuration');
@@ -45,24 +48,30 @@ export class SaleRepository extends BaseRepository<SaleEntity> {
     };
 
     const message: SaleContractData = {
-      seller: sale.user.wallet,
       nftContract: sale.nft.scAddress,
+      itemType: ItemType.ERC721,
+      seller: sale.user.wallet,
       isMinted: sale.nft.isMinted(),
       tokenId: sale.nft.tokenId,
       tokenURI: sale.nft.getMetadataUrl(),
       quantity: sale.quantity,
-      itemPrice: parseCryptoAmount(sale.network, sale.currency, sale.price),
-      additionalPrice: 0,
+      itemPrice: parseCryptoAmount(
+        sale.network,
+        sale.currency,
+        sale.price,
+      ).toString(),
       charityAddress: sale.charityWallet,
-      charityFee: sale.charityShare,
+      charityShare: sale.charityShare,
       royaltyFee: sale.nft.royalty,
-      deadline: DateTime.fromJSDate(sale.expiredAt).toSeconds(),
+      deadline: DateTime.fromJSDate(sale.expiredAt).toUnixInteger(),
+      salt,
     };
 
-    const typedData = {
+    const typedData: TypedData<SaleContractData> = {
       types: marketplaceSC.types,
       domain,
-      value: message,
+      primaryType: 'OrderItem',
+      message,
     };
 
     return typedData;
@@ -93,7 +102,8 @@ export class SaleRepository extends BaseRepository<SaleEntity> {
       network: sale.network,
       currency: sale.currency,
       price: sale.price,
-      expiredAt: Math.floor(sale.expiredAt.getTime() / 1000),
+      quantity: sale.quantity,
+      expiredAt: DateTime.fromJSDate(sale.expiredAt).toUnixInteger(),
       salt,
     };
     return saleData;
