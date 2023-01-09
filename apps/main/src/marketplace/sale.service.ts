@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { utils } from 'ethers';
+import { _TypedDataEncoder } from 'ethers/lib/utils';
 import { DateTime } from 'luxon';
 import { FindManyOptions, FindOptionsWhere, In } from 'typeorm';
 import { NftService } from '~/main/nft/nft.service';
@@ -35,7 +35,7 @@ export class SaleService {
 
   async search(
     searchSaleDto: SearchSaleDto,
-    defaults: FindOptionsWhere<SaleEntity>,
+    defaults: FindOptionsWhere<SaleEntity> = {},
   ) {
     const where: FindOptionsWhere<SaleEntity> = {};
     if (searchSaleDto.filter?.userIds && searchSaleDto.filter.userIds.length) {
@@ -201,7 +201,10 @@ export class SaleService {
     const signedData: TypedData<SaleContractData> =
       this.saleRepository.generateTypedData(sale, saleData.salt);
     sale.signedData = signedData;
-    sale.hash = this.hashSaleContractData(signedData.message);
+    sale.hash = _TypedDataEncoder
+      .from(signedData.types)
+      .hash(signedData.message)
+      .toLowerCase();
 
     // verify clientSignature with signedData
     if (
@@ -358,49 +361,5 @@ export class SaleService {
     await this.saleRepository.save(saleEntity);
 
     return saleEntity;
-  }
-
-  private hashSaleContractData(item: SaleContractData) {
-    const ORDER_ITEM_TYPEHASH = utils.keccak256(
-      utils.toUtf8Bytes(
-        'OrderItem(address nftContract,address seller,bool isMinted,uint256 tokenId,string tokenURI, uint256 quantity,uint256 itemPrice,address charityAddress,uint96 charityShare,uint96 royaltyFee,uint256 deadline,uint256 salt)',
-      ),
-    );
-    const hash = utils.keccak256(
-      utils.defaultAbiCoder.encode(
-        [
-          'bytes32',
-          'address',
-          'address',
-          'bool',
-          'uint256',
-          'bytes32',
-          'uint256',
-          'uint256',
-          'address',
-          'uint96',
-          'uint96',
-          'uint256',
-          'uint256',
-        ],
-        [
-          ORDER_ITEM_TYPEHASH,
-          item.nftContract,
-          item.seller,
-          item.isMinted,
-          item.tokenId,
-          utils.keccak256(utils.toUtf8Bytes(item.tokenURI)),
-          item.quantity,
-          item.itemPrice,
-          item.charityAddress,
-          item.charityShare,
-          item.royaltyFee,
-          item.deadline,
-          item.salt,
-        ],
-      ),
-    );
-
-    return hash;
   }
 }

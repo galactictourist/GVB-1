@@ -58,7 +58,7 @@ export const BLOCKCHAIN_INFO: {
         name: 'GBCollection',
       } as const,
       marketplace: {
-        address: '0x2B26171D78b1175fF74d16115114FB2D6cfDFE3D', // '0x2978606902693E7114e45e65CE25504611D5E24C',
+        address: '0x5FbBFA7ea57C693C30BA9658A01943944870224F', // '0x2978606902693E7114e45e65CE25504611D5E24C',
         name: 'GBMarketplace',
         version: '1.0.0',
         types: {
@@ -84,6 +84,10 @@ export const BLOCKCHAIN_INFO: {
             {
               name: 'nftContract',
               type: 'address',
+            },
+            {
+              name: 'itemType',
+              type: 'uint256',
             },
             {
               name: 'seller',
