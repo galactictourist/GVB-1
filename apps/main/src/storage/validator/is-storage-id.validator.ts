@@ -10,7 +10,7 @@ import { StorageRepository } from '../repository/storage.repository';
 @ValidatorConstraint({ async: true })
 @Injectable()
 export class IsStorageIdValidator implements ValidatorConstraintInterface {
-  constructor(private storageRepository: StorageRepository) {}
+  constructor(private readonly storageRepository: StorageRepository) {}
 
   async validate(storageId: string) {
     const count = await this.storageRepository.countBy({ id: storageId });
