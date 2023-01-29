@@ -158,6 +158,7 @@ export class NftService {
       royalty: createNftDto.royalty,
       network: createNftDto.network,
       imageStorageId: createNftDto.imageStorageId,
+      rawMetadata: createNftDto.metadata,
       imageUrl,
     });
 

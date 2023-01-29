@@ -115,10 +115,11 @@ export class NftEntity extends BaseElement {
     return this.immutable === NftImmutable.YES;
   }
 
-  async generateMetadata() {
+  async generateMetadata(): Promise<Record<string, unknown>> {
     return {
       name: this.name,
       description: this.description,
+      ...this.rawMetadata,
     };
   }
 
