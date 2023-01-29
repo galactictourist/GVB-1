@@ -2,6 +2,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { useContainer } from 'class-validator';
 import { AppModule } from './app.module';
 import { IAppConfig } from './config/app.config';
 import { httpConfig as getHttpConfig } from './config/http.config';
@@ -14,6 +15,7 @@ async function bootstrap() {
     ? { key: httpConfig.ssl.key, cert: httpConfig.ssl.cert }
     : undefined;
   const app = await NestFactory.create(AppModule, { httpsOptions });
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   const configService = app.get(ConfigService);
   const appConfig = configService.getOrThrow<IAppConfig>(ConfigNamespace.APP);
