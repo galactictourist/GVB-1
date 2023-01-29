@@ -17,14 +17,14 @@ interface Overrides {
 export abstract class BaseSmartContractService {
   protected abi: Interface;
 
-  protected getContract(network: BlockchainNetwork, contractAddress: string) {
-    return new Contract(
-      contractAddress,
-      this.abi,
-      new providers.JsonRpcProvider(
-        getAllBlockchainNetworks()[network].endpoints[0],
-      ),
+  protected getProvider(network: BlockchainNetwork) {
+    return new providers.JsonRpcProvider(
+      getAllBlockchainNetworks()[network].endpoints[0],
     );
+  }
+
+  protected getContract(network: BlockchainNetwork, contractAddress: string) {
+    return new Contract(contractAddress, this.abi, this.getProvider(network));
   }
 
   protected abstract getContractAddress(network: BlockchainNetwork): string;
@@ -37,13 +37,13 @@ export abstract class BaseSmartContractService {
     return new Contract(
       contractAddress,
       this.abi,
-      new Wallet(
-        privateKey,
-        new providers.JsonRpcProvider(
-          getAllBlockchainNetworks()[network].endpoints[0],
-        ),
-      ),
+      new Wallet(privateKey, this.getProvider(network)),
     );
+  }
+
+  async getCurrentBlockNumber(network: BlockchainNetwork): Promise<number> {
+    const provider = this.getProvider(network);
+    return provider.getBlockNumber();
   }
 
   protected async read(

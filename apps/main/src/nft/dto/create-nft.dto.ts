@@ -40,11 +40,6 @@ class MetadataDto implements MetadataDto {
   @ApiProperty({ nullable: true, required: false })
   @IsOptional()
   @IsString()
-  description?: string;
-
-  @ApiProperty({ nullable: true, required: false })
-  @IsOptional()
-  @IsString()
   external_url?: string;
 
   @ApiProperty({ nullable: true, required: false })

@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -80,13 +81,25 @@ export class NftController {
     @Param('network') network: string,
     @Param('scAddress') scAddress: string,
     @Param('tokenId') tokenId: string,
-  ): Promise<object> {
+  ): Promise<Record<string, unknown>> {
     const nft = await this.nftService.getNftByNetworkAddressTokenId(
       network as BlockchainNetwork,
       scAddress,
       tokenId,
     );
     return nft.generateMetadata();
+  }
+
+  @Public()
+  @Get(':nftId/metadata.json')
+  async getMetadataByNftId(
+    @Param('nftId') nftId: string,
+  ): Promise<Record<string, unknown>> {
+    const nft = await this.nftService.findById(nftId);
+    if (nft) {
+      return nft.generateMetadata();
+    }
+    throw new NotFoundException();
   }
 
   @Post('')

@@ -8,7 +8,11 @@ import {
 } from '~/main/types/blockchain';
 import MarketAbi from './abi/market.json';
 import { BaseSmartContractService } from './base-smart-contract.service';
-import { OrderCompletedEvent, SaleCancelledEvent } from './types/event';
+import {
+  OrderCompletedEvent,
+  OrderCompletedEventV1,
+  SaleCancelledEvent,
+} from './types/event';
 
 @Injectable()
 export class MarketSmartContractService extends BaseSmartContractService {
@@ -50,8 +54,9 @@ export class MarketSmartContractService extends BaseSmartContractService {
   private formatSaleCancelledEvent(event: Event): SaleCancelledEvent {
     const parsedEvent = this.abi.parseLog(event);
     return {
-      hash: parsedEvent.args.orderHash,
-      account: parsedEvent.args.account,
+      cancelResults: parsedEvent.args.cancelResults,
+      cancelStatus: parsedEvent.args.cancelStatus,
+      ordersHash: parsedEvent.args.ordersHash,
       blockchainEvent: event,
     };
   }
@@ -69,11 +74,22 @@ export class MarketSmartContractService extends BaseSmartContractService {
     return events.map((e) => this.formatOrderCompletedEvent(e));
   }
 
-  private formatOrderCompletedEvent(event: Event): OrderCompletedEvent {
+  private formatOrderCompletedEventV1(event: Event): OrderCompletedEventV1 {
     const parsedEvent = this.abi.parseLog(event);
     return {
       order: parsedEvent.args.item,
       hash: parsedEvent.args.orderHash,
+      blockchainEvent: event,
+    };
+  }
+
+  private formatOrderCompletedEvent(event: Event): OrderCompletedEvent {
+    const parsedEvent = this.abi.parseLog(event);
+    return {
+      ordersHash: parsedEvent.args.ordersHash,
+      ordersResult: parsedEvent.args.ordersResult,
+      ordersStatus: parsedEvent.args.ordersStatus,
+      orders: parsedEvent.args.orders,
       blockchainEvent: event,
     };
   }
