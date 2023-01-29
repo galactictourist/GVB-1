@@ -105,4 +105,7 @@ export class OrderEntity extends BaseElement {
 
   @Column({ length: 66, nullable: true })
   txId?: string;
+
+  @Column('int', { nullable: true })
+  orderIndex?: number;
 }

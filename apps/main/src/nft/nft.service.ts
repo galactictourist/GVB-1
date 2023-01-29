@@ -9,14 +9,10 @@ import {
 } from 'typeorm';
 import { MarketSmartContractService } from '~/main/blockchain/market-smart-contracts.service';
 import { SignerService } from '~/main/blockchain/signer.service';
-import { randomUnit256 } from '~/main/lib';
 import { NftStorageService } from '~/main/shared/nft-storage.service';
 import { StorageService } from '~/main/storage/storage.service';
 import { StorageLabel } from '~/main/storage/types';
-import {
-  BlockchainNetwork,
-  getErc721SmartContract,
-} from '~/main/types/blockchain';
+import { BlockchainNetwork } from '~/main/types/blockchain';
 import { ContextUser } from '~/main/types/user-request';
 import { NftSmartContractService } from '../blockchain/nft-smart-contracts.service';
 import { Erc721TransferEvent } from '../blockchain/types/event';
@@ -206,19 +202,19 @@ export class NftService {
     return nftEntity;
   }
 
-  private async generateTokenId(nftEntity: NftEntity) {
-    if (!nftEntity.network) {
-      throw new BadRequestException('Network is not set');
-    }
-    if (!nftEntity.scAddress || !nftEntity.tokenId) {
-      await this.nftRepository.update(nftEntity.id, {
-        network: nftEntity.network,
-        scAddress: getErc721SmartContract(nftEntity.network).address,
-        tokenId: randomUnit256(),
-      });
-      await nftEntity.reload();
-    }
-  }
+  // private async generateTokenId(nftEntity: NftEntity) {
+  //   if (!nftEntity.network) {
+  //     throw new BadRequestException('Network is not set');
+  //   }
+  //   if (!nftEntity.scAddress || !nftEntity.tokenId) {
+  //     await this.nftRepository.update(nftEntity.id, {
+  //       network: nftEntity.network,
+  //       scAddress: getErc721SmartContract(nftEntity.network).address,
+  //       tokenId: randomUnit256(),
+  //     });
+  //     await nftEntity.reload();
+  //   }
+  // }
 
   // async mint(id: string, mintNftDto: MintNftDto, user: ContextUser) {
   //   const nftEntity = await this.nftRepository.findOneOrFail({
@@ -274,6 +270,7 @@ export class NftService {
     fromBlock: number,
     toBlock: number,
   ) {
+    console.log('processTransferedNfts');
     const events = await this.nftSmartContractService.getTransferEvents(
       network,
       fromBlock,

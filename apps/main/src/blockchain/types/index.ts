@@ -5,6 +5,11 @@ export enum BlockchainEventStatus {
   INACTIVE = 'INACTIVE',
 }
 
+export enum ContractStandard {
+  ERC721 = 'ERC721',
+  GAB_MARKETPLACE_V1 = 'GAB_MARKETPLACE_V1',
+}
+
 export enum ItemType {
   ERC721 = 0,
   ERC1155 = 1,

@@ -11,6 +11,7 @@ import { ContextUser } from '~/main/types/user-request';
 import { MarketSmartContractService } from '../blockchain/market-smart-contracts.service';
 import { SignerService } from '../blockchain/signer.service';
 import { SaleContractData, TypedData } from '../blockchain/types';
+import { SaleCancelledEvent } from '../blockchain/types/event';
 import { CharityService } from '../charity/charity.service';
 import { UserService } from '../user/user.service';
 import { CreateSaleDto } from './dto/create-sale.dto';
@@ -318,6 +319,7 @@ export class SaleService {
     fromBlock: number,
     toBlock: number,
   ) {
+    console.log('processCancelledSales');
     const events = await this.marketSmartContractService.getSaleCancelledEvents(
       network,
       fromBlock,
@@ -326,34 +328,67 @@ export class SaleService {
 
     const result = await Promise.allSettled(
       events.map((event) => {
-        return this.cancelSaleByHash(network, event.hash);
+        return this.cancelSalesByHashes(network, event);
       }),
     );
 
     return result;
   }
 
-  async cancelSaleByHash(
+  // async cancelSaleByHash(
+  //   network: BlockchainNetwork,
+  //   hash: string,
+  // ): Promise<SaleEntity | undefined> {
+  //   hash = hash.toLowerCase();
+  //   const saleEntity = await this.saleRepository.findOneBy({
+  //     network,
+  //     hash,
+  //   });
+
+  //   if (!saleEntity) {
+  //     return;
+  //   }
+  //   if (saleEntity.status === SaleStatus.CANCELLED) {
+  //     return saleEntity;
+  //   }
+  //   if (!saleEntity.isListing()) {
+  //     throw new BadRequestException('Sale is invalid');
+  //   }
+
+  //   return this._cancelSale(saleEntity);
+  // }
+
+  async cancelSalesByHashes(
     network: BlockchainNetwork,
-    hash: string,
-  ): Promise<SaleEntity | undefined> {
-    hash = hash.toLowerCase();
-    const saleEntity = await this.saleRepository.findOneBy({
-      network,
-      hash,
-    });
+    event: SaleCancelledEvent,
+  ): Promise<PromiseSettledResult<SaleEntity | undefined>[]> {
+    const result = await Promise.allSettled(
+      event.ordersHash.map(async (hash) => {
+        try {
+          hash = hash.toLowerCase();
+          const saleEntity = await this.saleRepository.findOneBy({
+            network,
+            hash,
+          });
 
-    if (!saleEntity) {
-      return;
-    }
-    if (saleEntity.status === SaleStatus.CANCELLED) {
-      return saleEntity;
-    }
-    if (!saleEntity.isListing()) {
-      throw new BadRequestException('Sale is invalid');
-    }
+          if (!saleEntity) {
+            return;
+          }
+          if (saleEntity.status === SaleStatus.CANCELLED) {
+            return saleEntity;
+          }
+          if (!saleEntity.isListing()) {
+            throw new BadRequestException('Sale is invalid');
+          }
 
-    return this._cancelSale(saleEntity);
+          return this._cancelSale(saleEntity);
+        } catch (e: unknown) {
+          console.error('Error on cancelling sale', hash, e);
+          throw e;
+        }
+      }),
+    );
+    return result;
   }
 
   private async _cancelSale(saleEntity: SaleEntity): Promise<SaleEntity> {

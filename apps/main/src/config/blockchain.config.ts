@@ -5,6 +5,7 @@ export interface IBlockchainConfig {
   verifier: {
     pk: string;
   };
+  eventFetchingMaxBlock: number;
 }
 
 export const blockchainConfig = registerAs(
@@ -13,5 +14,8 @@ export const blockchainConfig = registerAs(
     verifier: {
       pk: process.env.VERIFIER_PK || '',
     },
+    eventFetchingMaxBlock: process.env.EVENT_FETCHING_MAX_BLOCKS
+      ? +process.env.EVENT_FETCHING_MAX_BLOCKS
+      : 1000,
   }),
 );

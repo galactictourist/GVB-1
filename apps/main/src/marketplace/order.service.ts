@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { FindOptionsWhere, In, MoreThanOrEqual } from 'typeorm';
 import { MarketSmartContractService } from '../blockchain/market-smart-contracts.service';
-import { OrderCompletedEvent } from '../blockchain/types/event';
+import {
+  OrderCompletedEvent,
+  OrderCompletedEventV1,
+} from '../blockchain/types/event';
 import { BlockchainNetwork } from '../types/blockchain';
 import { UserService } from '../user/user.service';
 import { SearchOrderDto } from './dto/search-order.dto';
@@ -53,6 +56,7 @@ export class OrderService {
     fromBlock: number,
     toBlock: number,
   ) {
+    console.log('processCompletedOrders');
     const events =
       await this.marketSmartContractService.getOrderCompletedEvents(
         network,
@@ -62,7 +66,7 @@ export class OrderService {
 
     const result = await Promise.allSettled(
       events.map((event) => {
-        return this.completeOrder(
+        return this.completeOrders(
           network,
           event.blockchainEvent.transactionHash,
           event,
@@ -73,16 +77,58 @@ export class OrderService {
     return result;
   }
 
-  async completeOrder(
+  private async completeOrders(
     network: BlockchainNetwork,
     txId: string,
     event: OrderCompletedEvent,
+  ): Promise<PromiseSettledResult<OrderEntity | undefined>[]> {
+    txId = txId.toLowerCase();
+    const result = await Promise.allSettled(
+      event.ordersHash.map(async (hash, orderIndex) => {
+        try {
+          if (event.ordersResult[orderIndex]) {
+            const orderEntity = await this.orderRepository.findOneBy({
+              network,
+              txId,
+              orderIndex,
+            });
+            console.log('orderEntity', orderEntity);
+            if (orderEntity) {
+              return orderEntity;
+            }
+
+            const saleEntity = await this.saleRepository.findOneBy({
+              network,
+              hash: hash.toLowerCase(),
+            });
+            console.log('saleEntity', saleEntity);
+
+            if (!saleEntity) {
+              return;
+            }
+
+            return this._completeOrder(saleEntity, event);
+          }
+        } catch (e: unknown) {
+          console.error('Error on completing order', hash, orderIndex, e);
+          throw e;
+        }
+      }),
+    );
+    return result;
+  }
+
+  private async completeOrder(
+    network: BlockchainNetwork,
+    txId: string,
+    event: OrderCompletedEventV1,
   ): Promise<OrderEntity | undefined> {
     txId = txId.toLowerCase();
     const orderEntity = await this.orderRepository.findOneBy({
       network,
       txId,
     });
+    console.log('orderEntity', orderEntity);
     if (orderEntity) {
       return orderEntity;
     }
@@ -91,17 +137,62 @@ export class OrderService {
       network,
       hash: event.hash.toLowerCase(),
     });
+    console.log('saleEntity', saleEntity);
 
     if (!saleEntity) {
       return;
     }
 
-    return this._completeOrder(saleEntity, event);
+    return this._completeOrderV1(saleEntity, event);
   }
 
   private async _completeOrder(
     saleEntity: SaleEntity,
     event: OrderCompletedEvent,
+    quantity = 1,
+  ): Promise<OrderEntity> {
+    const transaction = await event.blockchainEvent.getTransactionReceipt();
+    const buyer = await this.userService.findOrCreateOneByWallet(
+      transaction.from,
+    );
+
+    await this.saleRepository.update(
+      {
+        id: saleEntity.id,
+        remainingQuantity: MoreThanOrEqual(quantity),
+        status: SaleStatus.LISTING,
+      },
+      {
+        remainingQuantity: () => `remainingQuantity - ${quantity}`,
+        status: SaleStatus.FULFILLED,
+      },
+    );
+
+    const order = this.orderRepository.create({
+      sellerId: saleEntity.userId,
+      buyerId: buyer.id,
+      saleId: saleEntity.id,
+      nftId: saleEntity.nftId,
+      quantity,
+      network: saleEntity.network,
+      currency: saleEntity.currency,
+      price: saleEntity.price,
+      total: saleEntity.calculateTotalAmount(quantity),
+      status: OrderStatus.COMPLETED,
+      charityId: saleEntity.charityId,
+      topicId: saleEntity.topicId,
+      countryCode: saleEntity.countryCode,
+      charityShare: saleEntity.charityShare,
+      charityWallet: saleEntity.charityWallet,
+      txId: event.blockchainEvent.transactionHash.toLowerCase(),
+    });
+
+    return order;
+  }
+
+  private async _completeOrderV1(
+    saleEntity: SaleEntity,
+    event: OrderCompletedEventV1,
     quantity = 1,
   ): Promise<OrderEntity> {
     const transaction = await event.blockchainEvent.getTransactionReceipt();

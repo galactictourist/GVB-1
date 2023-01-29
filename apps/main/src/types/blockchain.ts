@@ -53,12 +53,11 @@ export const BLOCKCHAIN_INFO: {
     explorer: 'https://mumbai.polygonscan.com',
     constract: {
       erc721: {
-        address: '0xA3706f2c177D7E32DB69A6bD159aE91F83513403',
-        // address: '0xC954AF5Cf0D34DC5B827a2Dc5B3f8055c862DC42', // '0x57baA35a806bDa26B4c3DDc0329804017689d2E7',
+        address: '0xa3706f2c177d7e32db69a6bd159ae91f83513403',
         name: 'GBCollection',
       } as const,
       marketplace: {
-        address: '0xf36Ce999Ee23beff2dc48095FC22e11F02029e40', // '0x2978606902693E7114e45e65CE25504611D5E24C',
+        address: '0xf36ce999ee23beff2dc48095fc22e11f02029e40',
         name: 'GBMarketplace',
         version: '1.0.0',
         types: {
