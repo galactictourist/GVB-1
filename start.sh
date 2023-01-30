@@ -1,3 +1,5 @@
 #! /bin/sh
 
-yarn build && pm2 start dist/apps/main/main.js --name "${1-givabit}"
+pm2 start yarn --name "${1-givabit}" -- start
+
+pm2 start yarn --name "${1-givabit}-worker" -- start worker
