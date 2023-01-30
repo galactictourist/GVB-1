@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { IsNull, Not } from 'typeorm';
 import { CharityTopicRepository } from './repository/charity-topic.repository';
 import { TopicRepository } from './repository/topic.repository';
 
@@ -17,6 +18,14 @@ export class TopicService {
   async getTopic(topicId: string) {
     const topic = await this.topicRepository.findOneByOrFail({
       id: topicId,
+    });
+    return topic;
+  }
+
+  async getChildTopic(childTopicId: string) {
+    const topic = await this.topicRepository.findOneByOrFail({
+      id: childTopicId,
+      parentId: Not(IsNull()),
     });
     return topic;
   }

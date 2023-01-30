@@ -1,6 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { DeepPartial, FindOptionsWhere, In } from 'typeorm';
 import { ContextUser } from '~/main/types/user-request';
+import { TopicEntity } from '../charity/entity/topic.entity';
+import { TopicService } from '../charity/topic.service';
 import { StorageService } from '../storage/storage.service';
 import { StorageLabel } from '../storage/types';
 import { CreateCollectionDto } from './dto/create-collection.dto';
@@ -17,6 +19,7 @@ export class CollectionService {
     private readonly collectionRepository: CollectionRepository,
     private readonly storageService: StorageService,
     private readonly nftRepository: NftRepository,
+    private readonly topicService: TopicService,
   ) {}
 
   async createCollection(
@@ -38,12 +41,23 @@ export class CollectionService {
       }
     }
 
+    let topic: TopicEntity | undefined;
+    if (createCollectionDto.topicId) {
+      topic = await this.topicService.getChildTopic(
+        createCollectionDto.topicId,
+      );
+      if (!topic) {
+        throw new BadRequestException('Topic is invalid');
+      }
+    }
+
     const collectionEntity = this.collectionRepository.create({
       ...defaults,
       name: createCollectionDto.name,
       description: createCollectionDto.description,
       imageStorageId: createCollectionDto.imageStorageId,
       imageUrl,
+      topicId: topic ? topic.id : undefined,
     });
 
     await collectionEntity.save();
@@ -70,6 +84,16 @@ export class CollectionService {
       }
     }
 
+    let topic: TopicEntity | undefined;
+    if (updateCollectionDto.topicId) {
+      topic = await this.topicService.getChildTopic(
+        updateCollectionDto.topicId,
+      );
+      if (!topic) {
+        throw new BadRequestException('Topic is invalid');
+      }
+    }
+
     const collectionEntity = await this.collectionRepository.findOneByOrFail({
       id,
     });
@@ -81,6 +105,9 @@ export class CollectionService {
     if (updateCollectionDto.imageStorageId) {
       collectionEntity.imageStorageId = updateCollectionDto.imageStorageId;
       collectionEntity.imageUrl = imageUrl;
+    }
+    if (updateCollectionDto.topicId) {
+      collectionEntity.topicId = updateCollectionDto.topicId;
     }
 
     await collectionEntity.save();

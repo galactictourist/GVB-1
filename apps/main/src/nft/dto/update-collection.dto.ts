@@ -16,4 +16,9 @@ export class UpdateCollectionDto {
   @IsUUID()
   @IsStorageId()
   imageStorageId?: string;
+
+  @ApiProperty({ nullable: true, required: false })
+  @IsOptional()
+  @IsUUID('4')
+  topicId?: string;
 }
