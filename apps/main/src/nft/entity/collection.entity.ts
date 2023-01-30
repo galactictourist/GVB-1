@@ -1,4 +1,5 @@
 import { Column, Entity, Index, ManyToOne, OneToMany } from 'typeorm';
+import { TopicEntity } from '~/main/charity/entity/topic.entity';
 import { BaseElement } from '~/main/lib/database/base-element';
 import { StorageEntity } from '~/main/storage/entity/storage.entity';
 import { UserEntity } from '../../user/entity/user.entity';
@@ -42,6 +43,14 @@ export class CollectionEntity extends BaseElement {
 
   @OneToMany(() => NftEntity, (nft) => nft.collection)
   nfts: NftEntity[];
+
+  @Column('uuid', { nullable: true })
+  topicId?: string;
+
+  @ManyToOne(() => TopicEntity, (topic) => topic.collections, {
+    nullable: true,
+  })
+  topic?: TopicEntity;
 
   isPublished() {
     return this.status === CollectionStatus.PUBLISHED;

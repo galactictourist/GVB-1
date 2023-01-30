@@ -1,6 +1,7 @@
 import { Column, Entity, Index, ManyToOne, OneToMany } from 'typeorm';
 import { BaseElement } from '~/main/lib/database/base-element';
 import { SaleEntity } from '~/main/marketplace/entity/sale.entity';
+import { CollectionEntity } from '~/main/nft/entity/collection.entity';
 import { CharityTopicEntity } from './charity-topic.entity';
 
 @Entity({ name: 'topic' })
@@ -23,4 +24,7 @@ export class TopicEntity extends BaseElement {
 
   @OneToMany(() => SaleEntity, (sale) => sale.topic)
   sales: SaleEntity[];
+
+  @OneToMany(() => CollectionEntity, (collection) => collection.topic)
+  collections: CollectionEntity[];
 }
