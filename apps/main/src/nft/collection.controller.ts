@@ -56,6 +56,7 @@ export class CollectionController {
     const collection = await this.collectionService.createCollection(
       createCollectionDto,
       { ownerId: request.user.id, status: CollectionStatus.PUBLISHED },
+      request.user,
     );
     return formatResponse(collection);
   }

@@ -1,5 +1,6 @@
 import { Column, Entity, Index, ManyToOne, OneToMany } from 'typeorm';
 import { BaseElement } from '~/main/lib/database/base-element';
+import { StorageEntity } from '~/main/storage/entity/storage.entity';
 import { UserEntity } from '../../user/entity/user.entity';
 import { CollectionStatus } from '../types';
 import { NftEntity } from './nft.entity';
@@ -21,6 +22,12 @@ export class CollectionEntity extends BaseElement {
 
   @ManyToOne(() => UserEntity, (user) => user.id)
   owner: UserEntity;
+
+  @Column('uuid', { nullable: true })
+  imageStorageId: string | null;
+
+  @ManyToOne(() => StorageEntity, (storage) => storage.id, { nullable: true })
+  imageStorage: StorageEntity | null;
 
   @Column({ length: 200, nullable: true })
   imageUrl?: string;

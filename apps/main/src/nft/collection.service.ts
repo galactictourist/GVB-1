@@ -1,7 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { DeepPartial, FindOptionsWhere, In } from 'typeorm';
 import { ContextUser } from '~/main/types/user-request';
-import { UserService } from '~/main/user/user.service';
+import { StorageService } from '../storage/storage.service';
+import { StorageLabel } from '../storage/types';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { FilterCollectionDto } from './dto/filter-collection.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
@@ -14,18 +15,35 @@ import { CollectionStatus } from './types';
 export class CollectionService {
   constructor(
     private readonly collectionRepository: CollectionRepository,
-    private readonly userService: UserService,
+    private readonly storageService: StorageService,
     private readonly nftRepository: NftRepository,
   ) {}
 
   async createCollection(
     createCollectionDto: CreateCollectionDto,
     defaults: DeepPartial<CollectionEntity>,
+    user: ContextUser,
   ) {
+    let imageUrl: string | undefined;
+    if (createCollectionDto.imageStorageId) {
+      try {
+        const storage = await this.storageService.getStorage({
+          id: createCollectionDto.imageStorageId,
+          ownerId: user.id,
+          label: StorageLabel.COLLECTION_IMAGE,
+        });
+        imageUrl = storage.url;
+      } catch (e) {
+        throw new BadRequestException('Invalid file');
+      }
+    }
+
     const collectionEntity = this.collectionRepository.create({
       ...defaults,
       name: createCollectionDto.name,
       description: createCollectionDto.description,
+      imageStorageId: createCollectionDto.imageStorageId,
+      imageUrl,
     });
 
     await collectionEntity.save();
