@@ -3,6 +3,7 @@ import { BlockchainModule } from '~/main/blockchain/blockchain.module';
 import { SharedModule } from '~/main/shared/shared.module';
 import { StorageModule } from '~/main/storage/storage.module';
 import { UserModule } from '~/main/user/user.module';
+import { CharityModule } from '../charity/charity.module';
 import { CollectionController } from './collection.controller';
 import { CollectionService } from './collection.service';
 import { NftController } from './nft.controller';
@@ -11,7 +12,13 @@ import { CollectionRepository } from './repository/collection.repository';
 import { NftRepository } from './repository/nft.repository';
 
 @Module({
-  imports: [SharedModule, UserModule, BlockchainModule, StorageModule],
+  imports: [
+    SharedModule,
+    UserModule,
+    CharityModule,
+    BlockchainModule,
+    StorageModule,
+  ],
   controllers: [NftController, CollectionController],
   providers: [
     CollectionRepository,

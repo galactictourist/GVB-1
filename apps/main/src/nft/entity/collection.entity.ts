@@ -1,5 +1,7 @@
 import { Column, Entity, Index, ManyToOne, OneToMany } from 'typeorm';
+import { TopicEntity } from '~/main/charity/entity/topic.entity';
 import { BaseElement } from '~/main/lib/database/base-element';
+import { StorageEntity } from '~/main/storage/entity/storage.entity';
 import { UserEntity } from '../../user/entity/user.entity';
 import { CollectionStatus } from '../types';
 import { NftEntity } from './nft.entity';
@@ -22,6 +24,12 @@ export class CollectionEntity extends BaseElement {
   @ManyToOne(() => UserEntity, (user) => user.id)
   owner: UserEntity;
 
+  @Column('uuid', { nullable: true })
+  imageStorageId: string | null;
+
+  @ManyToOne(() => StorageEntity, (storage) => storage.id, { nullable: true })
+  imageStorage: StorageEntity | null;
+
   @Column({ length: 200, nullable: true })
   imageUrl?: string;
 
@@ -35,6 +43,14 @@ export class CollectionEntity extends BaseElement {
 
   @OneToMany(() => NftEntity, (nft) => nft.collection)
   nfts: NftEntity[];
+
+  @Column('uuid', { nullable: true })
+  topicId?: string;
+
+  @ManyToOne(() => TopicEntity, (topic) => topic.collections, {
+    nullable: true,
+  })
+  topic?: TopicEntity;
 
   isPublished() {
     return this.status === CollectionStatus.PUBLISHED;
