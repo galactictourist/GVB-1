@@ -12,10 +12,14 @@ import { SignerService } from '~/main/blockchain/signer.service';
 import { NftStorageService } from '~/main/shared/nft-storage.service';
 import { StorageService } from '~/main/storage/storage.service';
 import { StorageLabel } from '~/main/storage/types';
-import { BlockchainNetwork } from '~/main/types/blockchain';
+import {
+  BlockchainNetwork,
+  getErc721SmartContract,
+} from '~/main/types/blockchain';
 import { ContextUser } from '~/main/types/user-request';
 import { NftSmartContractService } from '../blockchain/nft-smart-contracts.service';
 import { Erc721TransferEvent } from '../blockchain/types/event';
+import { randomUnit256 } from '../lib';
 import { UserService } from '../user/user.service';
 import { CreateNftDto } from './dto/create-nft.dto';
 import { FilterNftParam } from './dto/filter-nft.param';
@@ -157,6 +161,8 @@ export class NftService {
       description: createNftDto.description,
       royalty: createNftDto.royalty,
       network: createNftDto.network,
+      scAddress: getErc721SmartContract(createNftDto.network).address,
+      tokenId: randomUnit256(),
       imageStorageId: createNftDto.imageStorageId,
       rawMetadata: createNftDto.metadata,
       imageUrl,
