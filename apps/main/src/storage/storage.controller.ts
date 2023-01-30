@@ -12,6 +12,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { formatResponse, ResponseData } from '~/main/types/response-data';
 import { UserRequest } from '~/main/types/user-request';
+import { appConfig } from '../config/app.config';
+import { UploadCollectionImageDto } from './dto/upload-collection-image.dto';
 import { UploadNftImageDto } from './dto/upload-nft-image.dto';
 import { StorageEntity } from './entity/storage.entity';
 import { StorageService } from './storage.service';
@@ -29,12 +31,14 @@ export class StorageController {
     type: UploadNftImageDto,
   })
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(
+  async uploadNftImage(
     @UploadedFile(
       new ParseFilePipe({
         validators: [
           new FileTypeValidator({ fileType: new RegExp('.(jpg|jpeg|png)$') }),
-          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 100 }), // TODO move to config
+          new MaxFileSizeValidator({
+            maxSize: appConfig().maxFileUploadSize,
+          }),
         ],
       }),
     )
@@ -44,6 +48,34 @@ export class StorageController {
     const storage = await this.storageService.storePublicReadFile(file, {
       ownerId: request.user.id,
       label: StorageLabel.NFT_IMAGE,
+    });
+    return formatResponse(storage);
+  }
+
+  @Post('collection/image')
+  @ApiBearerAuth()
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    type: UploadCollectionImageDto,
+  })
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadCollectionImage(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: new RegExp('.(jpg|jpeg|png)$') }),
+          new MaxFileSizeValidator({
+            maxSize: appConfig().maxFileUploadSize,
+          }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+    @Request() request: UserRequest,
+  ): Promise<ResponseData<StorageEntity>> {
+    const storage = await this.storageService.storePublicReadFile(file, {
+      ownerId: request.user.id,
+      label: StorageLabel.COLLECTION_IMAGE,
     });
     return formatResponse(storage);
   }

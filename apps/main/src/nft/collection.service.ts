@@ -56,6 +56,20 @@ export class CollectionService {
     updateCollectionDto: UpdateCollectionDto,
     user: ContextUser,
   ) {
+    let imageUrl: string | undefined;
+    if (updateCollectionDto.imageStorageId) {
+      try {
+        const storage = await this.storageService.getStorage({
+          id: updateCollectionDto.imageStorageId,
+          ownerId: user.id,
+          label: StorageLabel.COLLECTION_IMAGE,
+        });
+        imageUrl = storage.url;
+      } catch (e) {
+        throw new BadRequestException('Invalid file');
+      }
+    }
+
     const collectionEntity = await this.collectionRepository.findOneByOrFail({
       id,
     });
@@ -64,6 +78,10 @@ export class CollectionService {
     }
     collectionEntity.name = updateCollectionDto.name;
     collectionEntity.description = updateCollectionDto.description;
+    if (updateCollectionDto.imageStorageId) {
+      collectionEntity.imageStorageId = updateCollectionDto.imageStorageId;
+      collectionEntity.imageUrl = imageUrl;
+    }
 
     await collectionEntity.save();
     return collectionEntity;
