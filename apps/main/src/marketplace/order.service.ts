@@ -1,3 +1,4 @@
+import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { Injectable } from '@nestjs/common';
 import { FindOptionsWhere, In, MoreThanOrEqual } from 'typeorm';
 import { MarketSmartContractService } from '../blockchain/market-smart-contracts.service';
@@ -83,8 +84,13 @@ export class OrderService {
     event: OrderCompletedEvent,
   ): Promise<PromiseSettledResult<OrderEntity | undefined>[]> {
     txId = txId.toLowerCase();
+    const transactionReceipt =
+      await event.blockchainEvent.getTransactionReceipt();
+    console.log('transactionReceipt', transactionReceipt);
+
     const result = await Promise.allSettled(
       event.ordersHash.map(async (hash, orderIndex) => {
+        hash = hash.toLowerCase();
         try {
           if (event.ordersResult[orderIndex]) {
             const orderEntity = await this.orderRepository.findOneBy({
@@ -99,15 +105,19 @@ export class OrderService {
 
             const saleEntity = await this.saleRepository.findOneBy({
               network,
-              hash: hash.toLowerCase(),
+              hash,
             });
             console.log('saleEntity', saleEntity);
 
             if (!saleEntity) {
-              return;
+              throw new Error(`Could not find sale entity by hash: ${hash}`);
             }
 
-            return this._completeOrder(saleEntity, event);
+            return this._completeOrder(
+              saleEntity,
+              transactionReceipt,
+              orderIndex,
+            );
           }
         } catch (e: unknown) {
           console.error('Error on completing order', hash, orderIndex, e);
@@ -148,10 +158,10 @@ export class OrderService {
 
   private async _completeOrder(
     saleEntity: SaleEntity,
-    event: OrderCompletedEvent,
+    transaction: TransactionReceipt,
+    orderIndex: number,
     quantity = 1,
   ): Promise<OrderEntity> {
-    const transaction = await event.blockchainEvent.getTransactionReceipt();
     const buyer = await this.userService.findOrCreateOneByWallet(
       transaction.from,
     );
@@ -163,29 +173,32 @@ export class OrderService {
         status: SaleStatus.LISTING,
       },
       {
-        remainingQuantity: () => `remainingQuantity - ${quantity}`,
+        remainingQuantity: () => `"remainingQuantity" - ${quantity}`,
         status: SaleStatus.FULFILLED,
       },
     );
 
-    const order = this.orderRepository.create({
-      sellerId: saleEntity.userId,
-      buyerId: buyer.id,
-      saleId: saleEntity.id,
-      nftId: saleEntity.nftId,
-      quantity,
-      network: saleEntity.network,
-      currency: saleEntity.currency,
-      price: saleEntity.price,
-      total: saleEntity.calculateTotalAmount(quantity),
-      status: OrderStatus.COMPLETED,
-      charityId: saleEntity.charityId,
-      topicId: saleEntity.topicId,
-      countryCode: saleEntity.countryCode,
-      charityShare: saleEntity.charityShare,
-      charityWallet: saleEntity.charityWallet,
-      txId: event.blockchainEvent.transactionHash.toLowerCase(),
-    });
+    const order = await this.orderRepository
+      .create({
+        sellerId: saleEntity.userId,
+        buyerId: buyer.id,
+        saleId: saleEntity.id,
+        nftId: saleEntity.nftId,
+        quantity,
+        network: saleEntity.network,
+        currency: saleEntity.currency,
+        price: saleEntity.price,
+        total: saleEntity.calculateTotalAmount(quantity),
+        status: OrderStatus.COMPLETED,
+        charityId: saleEntity.charityId,
+        topicId: saleEntity.topicId,
+        countryCode: saleEntity.countryCode,
+        charityShare: saleEntity.charityShare,
+        charityWallet: saleEntity.charityWallet,
+        txId: transaction.transactionHash.toLowerCase(),
+        orderIndex,
+      })
+      .save();
 
     return order;
   }
@@ -212,24 +225,26 @@ export class OrderService {
       },
     );
 
-    const order = this.orderRepository.create({
-      sellerId: saleEntity.userId,
-      buyerId: buyer.id,
-      saleId: saleEntity.id,
-      nftId: saleEntity.nftId,
-      quantity,
-      network: saleEntity.network,
-      currency: saleEntity.currency,
-      price: saleEntity.price,
-      total: saleEntity.calculateTotalAmount(quantity),
-      status: OrderStatus.COMPLETED,
-      charityId: saleEntity.charityId,
-      topicId: saleEntity.topicId,
-      countryCode: saleEntity.countryCode,
-      charityShare: saleEntity.charityShare,
-      charityWallet: saleEntity.charityWallet,
-      txId: event.blockchainEvent.transactionHash.toLowerCase(),
-    });
+    const order = await this.orderRepository
+      .create({
+        sellerId: saleEntity.userId,
+        buyerId: buyer.id,
+        saleId: saleEntity.id,
+        nftId: saleEntity.nftId,
+        quantity,
+        network: saleEntity.network,
+        currency: saleEntity.currency,
+        price: saleEntity.price,
+        total: saleEntity.calculateTotalAmount(quantity),
+        status: OrderStatus.COMPLETED,
+        charityId: saleEntity.charityId,
+        topicId: saleEntity.topicId,
+        countryCode: saleEntity.countryCode,
+        charityShare: saleEntity.charityShare,
+        charityWallet: saleEntity.charityWallet,
+        txId: event.blockchainEvent.transactionHash.toLowerCase(),
+      })
+      .save();
 
     return order;
   }
