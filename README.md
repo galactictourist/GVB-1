@@ -35,6 +35,9 @@ $ yarn
 # start docker containers
 $ docker-compose up -d
 
+# create .env file
+$ cp .development.env .env
+
 # setup local database
 $ yarn db:setup
 ```
