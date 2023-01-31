@@ -29,7 +29,14 @@
 ## Installation
 
 ```bash
-$ npm install
+# install node packages
+$ yarn
+
+# start docker containers
+$ docker-compose up -d
+
+# setup local database
+$ yarn db:setup
 ```
 
 ## Running the app
