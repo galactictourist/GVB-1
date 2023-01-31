@@ -35,7 +35,7 @@ export const serviceConfig = registerAs(
       region: process.env.AWS_S3_REGION || 'sgp1',
       accessKey: process.env.AWS_S3_ACCESS_KEY || 'demo_key',
       secretKey: process.env.AWS_S3_SECRET_KEY || 'demo_secret_key',
-      pathPrefix: process.env.AWS_S3_PATH_PREFIX || '/demo/media',
+      pathPrefix: process.env.AWS_S3_PATH_PREFIX || 'demo/media',
     },
   }),
 );
