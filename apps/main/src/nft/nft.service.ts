@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { OwnedNftsResponse } from 'alchemy-sdk';
 import { isZeroAddress } from 'ethereumjs-util';
 import {
   DeepPartial,
@@ -7,8 +12,6 @@ import {
   FindOptionsWhere,
   In,
 } from 'typeorm';
-import { MarketSmartContractService } from '~/main/blockchain/market-smart-contracts.service';
-import { SignerService } from '~/main/blockchain/signer.service';
 import { NftStorageService } from '~/main/shared/nft-storage.service';
 import { StorageService } from '~/main/storage/storage.service';
 import { StorageLabel } from '~/main/storage/types';
@@ -20,9 +23,11 @@ import { ContextUser } from '~/main/types/user-request';
 import { NftSmartContractService } from '../blockchain/nft-smart-contracts.service';
 import { Erc721TransferEvent } from '../blockchain/types/event';
 import { randomUnit256 } from '../lib';
+import { AlchemyNftService } from '../shared/alchemy-nft.service';
 import { UserService } from '../user/user.service';
 import { CreateNftDto } from './dto/create-nft.dto';
 import { FilterNftParam } from './dto/filter-nft.param';
+import { ImportNftsDto } from './dto/import-nfts.dto';
 import { SearchNftDto } from './dto/search-nft.dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
 import { NftEntity } from './entity/nft.entity';
@@ -33,12 +38,11 @@ import { NftImmutable } from './types';
 export class NftService {
   constructor(
     private readonly nftRepository: NftRepository,
-    private readonly signerService: SignerService,
     private readonly userService: UserService,
     private readonly storageService: StorageService,
     private readonly nftStorageService: NftStorageService,
     private readonly nftSmartContractService: NftSmartContractService,
-    private readonly marketSmartContractService: MarketSmartContractService,
+    private readonly alchemyNftService: AlchemyNftService,
   ) {}
 
   async search(
@@ -70,6 +74,27 @@ export class NftService {
       searchNftDto.pagination,
     );
     return result;
+  }
+
+  async importNfts(importNftsDto: ImportNftsDto, wallet: string) {
+    const userEntity = await this.userService.findOrCreateOneByWallet(wallet);
+
+    const doImportNfts = async (nfts: OwnedNftsResponse) => {
+      return this.nftRepository.createFromOwnedNfts(
+        importNftsDto.network,
+        nfts.ownedNfts,
+        userEntity,
+      );
+    };
+
+    await this.alchemyNftService.getNftsForOwnerByContractAddress(
+      importNftsDto.network,
+      wallet,
+      importNftsDto.address,
+      doImportNfts,
+    );
+
+    console.log('Imported NFTs');
   }
 
   private _generateFindOptions(filterParam: FilterNftParam = {}) {
@@ -128,12 +153,15 @@ export class NftService {
     scAddress: string,
     tokenId: string,
   ) {
-    const nft = await this.nftRepository.findOneByOrFail({
+    const nftEntity = await this.nftRepository.getNftByNetworkAddressTokenId(
       network,
       scAddress,
       tokenId,
-    });
-    return nft;
+    );
+    if (!nftEntity) {
+      throw new NotFoundException();
+    }
+    return nftEntity;
   }
 
   async createNft(

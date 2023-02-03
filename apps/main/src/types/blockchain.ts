@@ -1,3 +1,4 @@
+import { Network } from 'alchemy-sdk';
 import { BigNumber, BigNumberish, ethers, TypedDataField } from 'ethers';
 
 export enum BlockchainNetwork {
@@ -32,6 +33,7 @@ export interface ContractInfo {
 interface BlockchainConfig {
   enabled: boolean;
   chainId: number;
+  alchemyNetwork?: Network;
   name: string;
   endpoints: readonly string[];
   explorer: string;
@@ -48,6 +50,7 @@ export const BLOCKCHAIN_INFO: {
   [BlockchainNetwork.POLYGON_MUMBAI]: {
     enabled: true,
     chainId: 80001,
+    alchemyNetwork: Network.MATIC_MUMBAI,
     name: 'Polygon Testnet - Mumbai',
     endpoints: ['https://rpc-mumbai.maticvigil.com'],
     explorer: 'https://mumbai.polygonscan.com',
