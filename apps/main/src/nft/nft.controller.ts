@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -14,6 +15,7 @@ import { BlockchainNetwork } from '~/main/types/blockchain';
 import { formatResponse, ResponseData } from '~/main/types/response-data';
 import { UserRequest } from '~/main/types/user-request';
 import { CreateNftDto } from './dto/create-nft.dto';
+import { ImportNftsDto } from './dto/import-nfts.dto';
 import { SearchNftDto } from './dto/search-nft.dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
 import { NftEntity } from './entity/nft.entity';
@@ -58,6 +60,39 @@ export class NftController {
         page: result.page,
       },
     });
+  }
+
+  @Public()
+  @Post('import')
+  async immportNftTest(
+    @Body() importNftsDto: ImportNftsDto,
+  ): Promise<ResponseData<any>> {
+    if (!importNftsDto.owner) {
+      throw new BadRequestException('Missing owner');
+    }
+
+    const result = await this.nftService.importNfts(
+      importNftsDto,
+      importNftsDto.owner,
+    );
+    return formatResponse(result);
+  }
+
+  @Post('import/mine')
+  @ApiBearerAuth()
+  async immportNft(
+    @Request() request: UserRequest,
+    @Body() importNftsDto: ImportNftsDto,
+  ): Promise<ResponseData<any>> {
+    if (!request.user.wallet) {
+      throw new BadRequestException();
+    }
+
+    const result = await this.nftService.importNfts(
+      importNftsDto,
+      request.user.wallet,
+    );
+    return formatResponse(result);
   }
 
   @Public()

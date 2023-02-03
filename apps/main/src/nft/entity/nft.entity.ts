@@ -117,9 +117,9 @@ export class NftEntity extends BaseElement {
 
   async generateMetadata(): Promise<Record<string, unknown>> {
     return {
+      ...this.rawMetadata,
       name: this.name,
       description: this.description,
-      ...this.rawMetadata,
     };
   }
 

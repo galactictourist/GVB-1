@@ -16,6 +16,9 @@ export interface IServiceConfig {
     secretKey: string;
     pathPrefix: string;
   };
+  alchemy: {
+    apiKey: string;
+  };
 }
 
 export const serviceConfig = registerAs(
@@ -36,6 +39,9 @@ export const serviceConfig = registerAs(
       accessKey: process.env.AWS_S3_ACCESS_KEY || 'demo_key',
       secretKey: process.env.AWS_S3_SECRET_KEY || 'demo_secret_key',
       pathPrefix: process.env.AWS_S3_PATH_PREFIX || 'demo/media',
+    },
+    alchemy: {
+      apiKey: process.env.AWS_ALCHEMY_API_KEY || '',
     },
   }),
 );
