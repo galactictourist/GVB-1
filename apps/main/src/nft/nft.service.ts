@@ -83,7 +83,11 @@ export class NftService {
       return this.nftRepository.createFromOwnedNfts(
         importNftsDto.network,
         nfts.ownedNfts,
-        userEntity,
+        {
+          ownerId: userEntity.id,
+          immutable: NftImmutable.YES,
+          isImmutable: true,
+        },
       );
     };
 

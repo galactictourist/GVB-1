@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { NftTokenType, OwnedNft } from 'alchemy-sdk';
-import { DataSource } from 'typeorm';
+import { DataSource, DeepPartial } from 'typeorm';
 import { BaseRepository } from '~/main/lib/database/base-repository';
 import { BlockchainNetwork } from '~/main/types/blockchain';
-import { UserEntity } from '~/main/user/entity/user.entity';
 import { NftEntity } from '../entity/nft.entity';
 import { NftStatus } from '../types';
 
@@ -25,11 +24,11 @@ export class NftRepository extends BaseRepository<NftEntity> {
   async createFromOwnedNfts(
     network: BlockchainNetwork,
     ownedNfts: OwnedNft[],
-    user: UserEntity,
+    defaults: DeepPartial<NftEntity>,
   ) {
     return Promise.allSettled(
       ownedNfts.map((ownedNft) => {
-        return this.createFromOwnedNft(network, ownedNft, user);
+        return this.createFromOwnedNft(network, ownedNft, defaults);
       }),
     );
   }
@@ -37,7 +36,7 @@ export class NftRepository extends BaseRepository<NftEntity> {
   async createFromOwnedNft(
     network: BlockchainNetwork,
     ownedNft: OwnedNft,
-    user: UserEntity,
+    defaults: DeepPartial<NftEntity>,
   ) {
     if (!this.checkNftTokenTypeSupported(ownedNft.tokenType)) {
       throw new Error('Token standard is not supported');
@@ -66,11 +65,11 @@ export class NftRepository extends BaseRepository<NftEntity> {
     }
 
     this.merge(nftEntity, {
+      ...defaults,
       status: NftStatus.ACTIVE,
       name: ownedNft.title,
       description: ownedNft.description,
       rawMetadata: raw,
-      ownerId: user.id,
       attributes: ownedNft.rawMetadata?.attributes,
     });
 
