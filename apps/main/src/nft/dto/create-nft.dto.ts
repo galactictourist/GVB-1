@@ -82,7 +82,6 @@ export class CreateNftDto {
   description?: string;
 
   @ApiProperty()
-  @IsOptional()
   @IsNumber()
   @Max(8000)
   royalty: number;
