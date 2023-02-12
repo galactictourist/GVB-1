@@ -216,8 +216,6 @@ export class NftService {
     }
     nftEntity.name = updateNftDto.name || nftEntity.name;
     nftEntity.description = updateNftDto.description || nftEntity.description;
-    nftEntity.royalty = updateNftDto.royalty || nftEntity.royalty;
-    nftEntity.network = updateNftDto.network || nftEntity.network;
 
     await nftEntity.save();
     return nftEntity;
