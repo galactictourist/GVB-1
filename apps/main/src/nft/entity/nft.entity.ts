@@ -100,8 +100,8 @@ export class NftEntity extends BaseElement {
   @Column({ length: 50, nullable: true })
   creatorWallet?: string;
 
-  @Column('int', { nullable: true })
-  royalty?: number;
+  @Column('int', { default: 0 })
+  royalty: number;
 
   isActive() {
     return this.status === NftStatus.ACTIVE;
