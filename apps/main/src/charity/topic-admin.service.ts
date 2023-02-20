@@ -1,15 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateTopicAdminDto } from './dto/create-topic-admin.dto';
 import { UpdateTopicAdminDto } from './dto/update-topic-admin.dto';
-import { CharityTopicRepository } from './repository/charity-topic.repository';
 import { TopicRepository } from './repository/topic.repository';
 
 @Injectable()
 export class TopicAdminService {
-  constructor(
-    private readonly topicRepository: TopicRepository,
-    private readonly charityTopicRepository: CharityTopicRepository,
-  ) {}
+  constructor(private readonly topicRepository: TopicRepository) {}
 
   async getTopics() {
     const [data, total] = await this.topicRepository.findAndCountBy({});

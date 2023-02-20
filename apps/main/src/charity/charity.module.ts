@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { StorageModule } from '../storage/storage.module';
 import { CharityAdminController } from './charity-admin.controller';
 import { CharityAdminService } from './charity-admin.service';
 import { CharityController } from './charity.controller';
@@ -12,7 +13,7 @@ import { TopicController } from './topic.controller';
 import { TopicService } from './topic.service';
 
 @Module({
-  imports: [],
+  imports: [StorageModule],
   providers: [
     CharityService,
     CharityRepository,

@@ -13,6 +13,7 @@ import {
   Max,
   ValidateNested,
 } from 'class-validator';
+import { StorageLabel } from '~/main/storage/types';
 import { IsStorageId } from '~/main/storage/validator/is-storage-id.validator';
 import { BlockchainNetwork } from '~/main/types/blockchain';
 import { IsActiveNetwork } from '~/main/types/validator/is-active-network.validator';
@@ -100,6 +101,6 @@ export class CreateNftDto {
   @ApiProperty({ nullable: true, required: false })
   @IsOptional()
   @IsUUID()
-  @IsStorageId()
+  @IsStorageId({ label: StorageLabel.NFT_IMAGE })
   imageStorageId?: string;
 }

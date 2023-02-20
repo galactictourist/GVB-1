@@ -8,7 +8,6 @@ import {
   ParseFilePipe,
   Post,
   Put,
-  Request,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -25,7 +24,6 @@ import { appConfig } from '../config/app.config';
 import { StorageEntity } from '../storage/entity/storage.entity';
 import { StorageService } from '../storage/storage.service';
 import { StorageLabel } from '../storage/types';
-import { AdminRequest } from '../types/admin-request';
 import { CreateTopicAdminDto } from './dto/create-topic-admin.dto';
 import { UpdateTopicAdminDto } from './dto/update-topic-admin.dto';
 import { UploadTopicImageDto } from './dto/upload-topic-image.dto';
@@ -86,10 +84,8 @@ export class TopicAdminController {
       }),
     )
     file: Express.Multer.File,
-    @Request() request: AdminRequest,
   ): Promise<ResponseData<StorageEntity>> {
     const storage = await this.storageService.storePublicReadFile(file, {
-      ownerId: request.user.id,
       label: StorageLabel.TOPIC_IMAGE,
     });
     return formatResponse(storage);
