@@ -1,21 +1,34 @@
 import {
   Body,
   Controller,
+  FileTypeValidator,
   Get,
+  MaxFileSizeValidator,
   Param,
+  ParseFilePipe,
   Post,
   Put,
+  Request,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Public } from '~/main/auth/decorator/public.decorator';
 import { Roles } from '~/main/auth/decorator/roles.decorator';
 import { JwtAdminAuthGuard } from '~/main/auth/guard/jwt-admin-auth.guard';
 import { RolesGuard } from '~/main/auth/guard/roles.guard';
-import { formatResponse } from '~/main/types/response-data';
+import { formatResponse, ResponseData } from '~/main/types/response-data';
 import { AdminRole } from '~/main/user/types';
+import { appConfig } from '../config/app.config';
+import { StorageEntity } from '../storage/entity/storage.entity';
+import { StorageService } from '../storage/storage.service';
+import { StorageLabel } from '../storage/types';
+import { AdminRequest } from '../types/admin-request';
 import { CreateTopicAdminDto } from './dto/create-topic-admin.dto';
 import { UpdateTopicAdminDto } from './dto/update-topic-admin.dto';
+import { UploadTopicImageDto } from './dto/upload-topic-image.dto';
 import { TopicAdminService } from './topic-admin.service';
 
 @Controller('admin/topics')
@@ -25,7 +38,10 @@ import { TopicAdminService } from './topic-admin.service';
 @ApiBearerAuth()
 @ApiTags('topic', 'admin', 'admin/topic')
 export class TopicAdminController {
-  constructor(private readonly topicAdminService: TopicAdminService) {}
+  constructor(
+    private readonly topicAdminService: TopicAdminService,
+    private readonly storageService: StorageService,
+  ) {}
 
   @Get('')
   async getTopicList() {
@@ -49,5 +65,33 @@ export class TopicAdminController {
       updateTopicAdminDto,
     );
     return formatResponse(topic);
+  }
+
+  @Post('image')
+  @ApiBearerAuth()
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    type: UploadTopicImageDto,
+  })
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadTopicImage(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: new RegExp('.(jpg|jpeg|png)$') }),
+          new MaxFileSizeValidator({
+            maxSize: appConfig().maxFileUploadSize,
+          }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+    @Request() request: AdminRequest,
+  ): Promise<ResponseData<StorageEntity>> {
+    const storage = await this.storageService.storePublicReadFile(file, {
+      ownerId: request.user.id,
+      label: StorageLabel.TOPIC_IMAGE,
+    });
+    return formatResponse(storage);
   }
 }
