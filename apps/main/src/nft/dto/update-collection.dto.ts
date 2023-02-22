@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString, IsUUID } from 'class-validator';
+import { StorageLabel } from '~/main/storage/types';
 import { IsStorageId } from '~/main/storage/validator/is-storage-id.validator';
 
 export class UpdateCollectionDto {
@@ -14,7 +15,7 @@ export class UpdateCollectionDto {
   @ApiProperty({ nullable: true, required: false })
   @IsOptional()
   @IsUUID()
-  @IsStorageId()
+  @IsStorageId({ label: StorageLabel.COLLECTION_IMAGE })
   imageStorageId?: string;
 
   @ApiProperty({ nullable: true, required: false })

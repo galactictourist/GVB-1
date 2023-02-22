@@ -5,4 +5,5 @@ export enum StorageLocation {
 export enum StorageLabel {
   NFT_IMAGE = 'nft_image',
   COLLECTION_IMAGE = 'collection_image',
+  TOPIC_IMAGE = 'topic_image',
 }
