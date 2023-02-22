@@ -9,7 +9,6 @@ import { AuthAdminController } from './auth-admin.controller';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { NonceRepository } from './repository/nonce.repository';
-import { SignatureVerifierService } from './signature-verifier.service';
 import { JwtAdminStrategy } from './strategy/jwt-admin.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { LocalAdminStrategy } from './strategy/local-admin.strategy';
@@ -47,7 +46,6 @@ import { Web3Strategy } from './strategy/web3.strategy';
     JwtStrategy,
     JwtAdminStrategy,
     LocalAdminStrategy,
-    SignatureVerifierService,
   ],
   exports: [NonceRepository],
 })

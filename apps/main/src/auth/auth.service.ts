@@ -1,16 +1,15 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { ethers } from 'ethers';
 import { IJwtConfig } from '~/main/config/jwt.config';
 import { ContextAdmin } from '~/main/types/admin-request';
 import { ConfigNamespace } from '~/main/types/config';
 import { ContextUser } from '~/main/types/user-request';
-import { AdminService } from '~/main/user/admin.service';
 import { UserEntity } from '~/main/user/entity/user.entity';
 import { UserService } from '~/main/user/user.service';
 import { CreateNonceDto } from './dto/create-nonce.dto';
 import { NonceRepository } from './repository/nonce.repository';
-import { SignatureVerifierService } from './signature-verifier.service';
 import { JwtPurpose } from './types';
 
 @Injectable()
@@ -20,8 +19,6 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly nonceRepository: NonceRepository,
     private readonly userService: UserService,
-    private readonly adminUserService: AdminService,
-    private readonly signatureVerifierService: SignatureVerifierService,
   ) {}
 
   async signIn(type: string, user: ContextUser) {
@@ -70,11 +67,9 @@ export class AuthService {
       throw new UnauthorizedException();
     }
     await this.nonceRepository.delete({ id: nonce.id });
-    const valid = await this.signatureVerifierService.verify(
-      nonce.data,
-      wallet,
-      signature,
-    );
+    const valid =
+      wallet.toLowerCase() ===
+      ethers.utils.verifyMessage(nonce.data, signature).toLowerCase();
     if (!valid) {
       throw new UnauthorizedException('Invalid signature');
     }
