@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDefined, IsEnum, IsEthereumAddress, IsUUID } from 'class-validator';
-import { CountryCode } from '~/main/types/country';
+import { IsDefined, IsEthereumAddress, IsUUID } from 'class-validator';
 
 export class CreateCharityTopicAdminDto {
   @ApiProperty()
@@ -8,10 +7,10 @@ export class CreateCharityTopicAdminDto {
   @IsUUID()
   topicId: string;
 
-  @ApiProperty({ enum: CountryCode })
-  @IsDefined()
-  @IsEnum(CountryCode)
-  countryCode: CountryCode;
+  // @ApiProperty({ enum: CountryCode })
+  // @IsDefined()
+  // @IsEnum(CountryCode)
+  // countryCode: CountryCode;
 
   @ApiProperty()
   @IsDefined()
