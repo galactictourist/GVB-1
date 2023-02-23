@@ -21,9 +21,10 @@ export class CreateTopicAdminDto {
   @IsUUID('4')
   parentId?: string;
 
-  @ApiProperty({ enum: TopicStatus })
+  @ApiProperty({ enum: TopicStatus, nullable: true, required: false })
+  @IsOptional()
   @IsEnum(TopicStatus)
-  status: TopicStatus;
+  status?: TopicStatus;
 
   @ApiProperty({ nullable: true, required: false })
   @IsOptional()

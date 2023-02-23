@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { BaseRepository } from '~/main/lib/database/base-repository';
-import { CountryCode } from '~/main/types/country';
 import { CharityTopicEntity } from '../entity/charity-topic.entity';
 
 @Injectable()
@@ -13,12 +12,12 @@ export class CharityTopicRepository extends BaseRepository<CharityTopicEntity> {
   async findOneByCharityTopicCountry(
     charityId: string,
     topicId: string,
-    countryCode: CountryCode,
+    // countryCode: CountryCode,
   ) {
     const user = await this.findOneBy({
       topicId,
       charityId,
-      countryCode,
+      // countryCode,
     });
     return user;
   }

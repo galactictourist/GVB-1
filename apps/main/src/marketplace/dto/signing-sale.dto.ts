@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEnum,
   IsNumber,
+  IsOptional,
   IsPositive,
   IsUUID,
   Max,
@@ -16,9 +17,10 @@ export class SigningSaleDto {
   @IsUUID('4')
   nftId: string;
 
-  @ApiProperty({ enum: CountryCode })
+  @ApiProperty({ enum: CountryCode, nullable: true, required: false })
+  @IsOptional()
   @IsEnum(CountryCode)
-  countryCode: CountryCode;
+  countryCode?: CountryCode;
 
   @ApiProperty()
   @IsUUID('4')

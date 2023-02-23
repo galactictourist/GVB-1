@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { FindOptionsWhere } from 'typeorm';
+import { TopicEntity } from './entity/topic.entity';
 import { CharityTopicRepository } from './repository/charity-topic.repository';
 import { TopicRepository } from './repository/topic.repository';
+import { TopicStatus } from './types';
 
 @Injectable()
 export class TopicService {
@@ -9,8 +12,15 @@ export class TopicService {
     private readonly charityTopicRepository: CharityTopicRepository,
   ) {}
 
-  async getTopics() {
-    const [data, total] = await this.topicRepository.findAndCountBy({});
+  async getTopics(where: FindOptionsWhere<TopicEntity> = {}) {
+    const [data, total] = await this.topicRepository.findAndCountBy(where);
+    return { data, total };
+  }
+
+  async getActiveTopics() {
+    const [data, total] = await this.topicRepository.findAndCountBy({
+      status: TopicStatus.ACTIVE,
+    });
     return { data, total };
   }
 

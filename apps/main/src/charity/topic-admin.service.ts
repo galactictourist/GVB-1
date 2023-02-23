@@ -4,6 +4,7 @@ import { StorageLabel } from '../storage/types';
 import { CreateTopicAdminDto } from './dto/create-topic-admin.dto';
 import { UpdateTopicAdminDto } from './dto/update-topic-admin.dto';
 import { TopicRepository } from './repository/topic.repository';
+import { TopicStatus } from './types';
 
 @Injectable()
 export class TopicAdminService {
@@ -37,7 +38,7 @@ export class TopicAdminService {
       parentId: createTopicDto.parentId,
       imageStorageId: createTopicDto.imageStorageId,
       imageUrl,
-      status: createTopicDto.status,
+      status: createTopicDto.status || TopicStatus.ACTIVE,
     });
     await topic.save();
     return topic;
@@ -61,7 +62,9 @@ export class TopicAdminService {
     const topicEntity = await this.topicRepository.findOneByOrFail({ id });
     topicEntity.name = updateTopicDto.name;
     topicEntity.parentId = updateTopicDto.parentId;
-    topicEntity.status = updateTopicDto.status;
+    if (updateTopicDto.status) {
+      topicEntity.status = updateTopicDto.status;
+    }
     if (updateTopicDto.imageStorageId) {
       topicEntity.imageStorageId = updateTopicDto.imageStorageId;
       topicEntity.imageUrl = imageUrl;

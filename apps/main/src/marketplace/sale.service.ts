@@ -262,10 +262,20 @@ export class SaleService {
       throw new BadRequestException('Currency is not supported');
     }
     // validate charity and country and topic
+    const charity = await this.charityService.getCharity(
+      signingSaleDto.charityId,
+    );
+    if (!charity) {
+      throw new BadRequestException('Charity is invalid');
+    }
+    if (!charity.isActive()) {
+      throw new BadRequestException('Charity is not active');
+    }
+    // validate charity and country and topic
     const charityTopic = await this.charityService.getCharityTopic(
       signingSaleDto.charityId,
       signingSaleDto.topicId,
-      signingSaleDto.countryCode,
+      // signingSaleDto.countryCode,
     );
     if (!charityTopic) {
       throw new BadRequestException('Charity and topic are not matched');

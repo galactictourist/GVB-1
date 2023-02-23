@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CountryCode } from '../types/country';
 import { CharityTopicEntity } from './entity/charity-topic.entity';
 import { CharityTopicRepository } from './repository/charity-topic.repository';
 import { CharityRepository } from './repository/charity.repository';
@@ -20,7 +19,7 @@ export class CharityService {
   }
 
   async getCharity(charityId: string) {
-    const charity = await this.charityRepository.findOneByOrFail({
+    const charity = await this.charityRepository.findOneBy({
       id: charityId,
     });
     return charity;
@@ -45,7 +44,7 @@ export class CharityService {
   async getCharityTopic(
     charityId: string,
     topicId: string,
-    countryCode: CountryCode,
+    // countryCode: CountryCode,
   ): Promise<CharityTopicEntity | null> {
     const entity = await this.charityTopicRepository.findOne({
       relationLoadStrategy: 'query',
@@ -55,7 +54,7 @@ export class CharityService {
       where: {
         charityId,
         topicId,
-        countryCode,
+        // countryCode,
       },
     });
     return entity;

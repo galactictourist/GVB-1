@@ -1,9 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDefined, IsString } from 'class-validator';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { CharityStatus } from '../types';
 
 export class UpdateCharityAdminDto {
   @ApiProperty()
-  @IsDefined()
+  @IsOptional()
   @IsString()
-  name: string;
+  name?: string;
+
+  @ApiProperty({ enum: CharityStatus, nullable: true, required: false })
+  @IsOptional()
+  @IsEnum(CharityStatus)
+  status?: CharityStatus;
 }
