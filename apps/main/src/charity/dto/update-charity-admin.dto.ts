@@ -8,7 +8,7 @@ export class UpdateCharityAdminDto {
   @IsString()
   name?: string;
 
-  @ApiProperty({ enum: CharityStatus })
+  @ApiProperty({ enum: CharityStatus, nullable: true, required: false })
   @IsOptional()
   @IsEnum(CharityStatus)
   status?: CharityStatus;
