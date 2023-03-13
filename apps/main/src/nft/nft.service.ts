@@ -1,7 +1,7 @@
 import {
   BadRequestException,
   Injectable,
-  NotFoundException,
+  NotFoundException
 } from '@nestjs/common';
 import { OwnedNftsResponse } from 'alchemy-sdk';
 import { isZeroAddress } from 'ethereumjs-util';
@@ -10,14 +10,14 @@ import {
   FindManyOptions,
   FindOneOptions,
   FindOptionsWhere,
-  In,
+  In
 } from 'typeorm';
 import { NftStorageService } from '~/main/shared/nft-storage.service';
 import { StorageService } from '~/main/storage/storage.service';
 import { StorageLabel } from '~/main/storage/types';
 import {
   BlockchainNetwork,
-  getErc721SmartContract,
+  getErc721SmartContract
 } from '~/main/types/blockchain';
 import { ContextUser } from '~/main/types/user-request';
 import { NftSmartContractService } from '../blockchain/nft-smart-contracts.service';
@@ -76,7 +76,7 @@ export class NftService {
     return result;
   }
 
-  async importNfts(importNftsDto: ImportNftsDto, wallet: string) {
+  async importNfts(importNftsDto: ImportNftsDto, wallet: string, collectionId?: string) {
     const userEntity = await this.userService.findOrCreateOneByWallet(wallet);
 
     const doImportNfts = async (nfts: OwnedNftsResponse) => {
@@ -88,13 +88,14 @@ export class NftService {
           immutable: NftImmutable.YES,
           isImmutable: true,
         },
+        collectionId,
       );
     };
 
     await this.alchemyNftService.getNftsForOwnerByContractAddress(
       importNftsDto.network,
       wallet,
-      importNftsDto.address,
+      importNftsDto.nftContractAddress,
       doImportNfts,
     );
 
@@ -155,7 +156,7 @@ export class NftService {
   async getNftByNetworkAddressTokenId(
     network: BlockchainNetwork,
     scAddress: string,
-    tokenId: string,
+    tokenId: number,
   ) {
     const nftEntity = await this.nftRepository.getNftByNetworkAddressTokenId(
       network,
@@ -194,7 +195,7 @@ export class NftService {
       royalty: createNftDto.royalty,
       network: createNftDto.network,
       scAddress: getErc721SmartContract(createNftDto.network).address,
-      tokenId: randomUnit256(),
+      tokenId: Number(randomUnit256()),
       imageStorageId: createNftDto.imageStorageId,
       rawMetadata: createNftDto.metadata,
       imageUrl,
@@ -331,7 +332,7 @@ export class NftService {
       const nft = await this.nftRepository.findOneByOrFail({
         network,
         scAddress: event.blockchainEvent.address.toLowerCase(),
-        tokenId: event.tokenId.toString(),
+        tokenId: Number(event.tokenId),
       });
 
       const owner = await this.userService.findOrCreateOneByWallet(event.to);

@@ -1,5 +1,4 @@
 import { faker } from '@faker-js/faker';
-import { slice } from 'lodash';
 import { Command, CommandRunner } from 'nest-commander';
 import { NonceRepository } from '~/main/auth/repository/nonce.repository';
 import { CharityTopicEntity } from '~/main/charity/entity/charity-topic.entity';
@@ -9,17 +8,13 @@ import { CharityRepository } from '~/main/charity/repository/charity.repository'
 import { TopicRepository } from '~/main/charity/repository/topic.repository';
 import { CollectionRepository } from '~/main/nft/repository/collection.repository';
 import { NftRepository } from '~/main/nft/repository/nft.repository';
-import { BlockchainNetwork } from '~/main/types/blockchain';
 import { AdminRepository } from '~/main/user/repository/admin.repository';
-import { AdminRole, AdminStatus, UserStatus } from '~/main/user/types';
+import { AdminRole, AdminStatus } from '~/main/user/types';
 import { UserRepository } from '../user/repository/user.repository';
 import { createAdminEntities, createAdminEntity } from './seeds/admin.seed';
 import { createCharityTopic } from './seeds/charity-topic.seed';
 import { createCharityEntities } from './seeds/charity.seed';
-import { createCollectionEntities } from './seeds/collection.seed';
-import { createNftEntities } from './seeds/nft.seed';
-import { createTopicEntities } from './seeds/topic.seed';
-import { createUserEntities } from './seeds/user.seed';
+import { createTopicEntities, createTopicEntity } from './seeds/topic.seed';
 
 @Command({ name: 'db:seed', description: 'Seed database' })
 export class DatabaseSeedCommand extends CommandRunner {
@@ -54,33 +49,47 @@ export class DatabaseSeedCommand extends CommandRunner {
 
   async seed() {
     faker.seed(2345);
-    const userEntities = await createUserEntities(
-      { status: UserStatus.ACTIVE },
-      100,
-    );
-    const userList1 = slice(userEntities, 0, 20);
-    await Promise.all(
-      userList1.map(async (user) => {
-        const collectionEntities = await createCollectionEntities(
-          { ownerId: user.id },
-          20,
-        );
-        await Promise.all(
-          collectionEntities.map(async (collectionEntity) => {
-            const nftEntities = await createNftEntities(
-              {
-                network: BlockchainNetwork.POLYGON_MUMBAI,
-                ownerId: user.id,
-                collectionId: collectionEntity.id,
-              },
-              10,
-            );
-            return nftEntities;
-          }),
-        );
-      }),
-    );
-    const topicEntities = await createTopicEntities({}, 5);
+    // const userEntities = await createUserEntities(
+    //   { status: UserStatus.ACTIVE },
+    //   100,
+    // );
+    // const userList1 = slice(userEntities, 0, 20);
+    // await Promise.all(
+    //   userList1.map(async (user) => {
+    //     const collectionEntities = await createCollectionEntities(
+    //       { ownerId: user.id },
+    //       20,
+    //     );
+    //     await Promise.all(
+    //       collectionEntities.map(async (collectionEntity) => {
+    //         const nftEntities = await createNftEntities(
+    //           {
+    //             network: BlockchainNetwork.POLYGON_MUMBAI,
+    //             ownerId: user.id,
+    //             collectionId: collectionEntity.id,
+    //           },
+    //           10,
+    //         );
+    //         return nftEntities;
+    //       }),
+    //     );
+    //   }),
+    // );
+    // const topicEntities = await createTopicEntities({}, 6);
+    const causeNameList = [
+      'Education', 
+      'Health', 
+      'Animal Welfare', 
+      'Human Services', 
+      'Art & Culture',
+      'Environment'
+    ]
+    let topicEntities: any[] = [];
+    for (const causeName of causeNameList) {
+      const causeTopicEntity = await createTopicEntity({name: causeName, isParent: true});
+      topicEntities.push(causeTopicEntity);
+    }
+    
     const childrenTopicEntities = await Promise.all(
       topicEntities.map(async (topicEntity) => {
         return await createTopicEntities({ parentId: topicEntity.id }, 5);

@@ -15,6 +15,12 @@ export class TopicEntity extends BaseElement {
   @Column('uuid', { nullable: true })
   parentId?: string;
 
+  @Column({
+    nullable: false,
+    default: false, 
+  })
+  isParent: boolean;
+
   @ManyToOne(() => TopicEntity, (topic) => topic.id, { nullable: true })
   parent?: TopicEntity;
 

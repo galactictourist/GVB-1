@@ -5,7 +5,7 @@ import { NftEntity } from '~/main/nft/entity/nft.entity';
 import { NftStatus } from '~/main/nft/types';
 import {
   BlockchainNetwork,
-  getErc721SmartContract,
+  getErc721SmartContract
 } from '~/main/types/blockchain';
 
 export function createNft(oriData: DeepPartial<NftEntity> = {}) {
@@ -18,7 +18,7 @@ export function createNft(oriData: DeepPartial<NftEntity> = {}) {
   data.scAddress =
     data.scAddress ?? getErc721SmartContract(data.network).address;
   data.tokenId =
-    data.tokenId ?? getTokenId(data.network, data.scAddress).toString();
+    data.tokenId ?? getTokenId(data.network, data.scAddress);
   data.status =
     data.status ?? faker.helpers.arrayElement(Object.values(NftStatus));
   data.royalty = data.royalty ?? faker.datatype.number({ min: 0, max: 5000 });

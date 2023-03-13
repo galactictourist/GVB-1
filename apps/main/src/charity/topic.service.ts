@@ -17,6 +17,20 @@ export class TopicService {
     return { data, total };
   }
 
+  async getTopParentTopics() {
+    const topParents = await this.topicRepository.find({
+      select: {
+        id: true,
+        name: true
+      },
+      where: {
+        isParent: true,
+        status: TopicStatus.ACTIVE
+      }
+    });
+    return topParents;
+  }
+
   async getActiveTopics() {
     const [data, total] = await this.topicRepository.findAndCountBy({
       status: TopicStatus.ACTIVE,

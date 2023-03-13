@@ -8,7 +8,7 @@ import { BaseRepository } from '~/main/lib/database/base-repository';
 import {
   getMarketplaceSmartContract,
   getNetworkConfig,
-  parseCryptoAmount,
+  parseCryptoAmount
 } from '~/main/types/blockchain';
 import { SaleEntity } from '../entity/sale.entity';
 import { SaleData } from '../types/sale-data';
@@ -51,8 +51,8 @@ export class SaleRepository extends BaseRepository<SaleEntity> {
       nftContract: sale.nft.scAddress,
       itemType: ItemType.ERC721,
       seller: sale.user.wallet,
-      isMinted: sale.nft.isMinted(),
-      tokenId: sale.nft.tokenId,
+      isMinted: sale.nft.isMinted,
+      tokenId: String(sale.nft.tokenId),
       tokenURI: sale.nft.getMetadataUrl(),
       quantity: sale.quantity,
       itemPrice: parseCryptoAmount(

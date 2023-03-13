@@ -6,7 +6,7 @@ import { TopicEntity } from '~/main/charity/entity/topic.entity';
 export function createTopic(oriData: DeepPartial<TopicEntity> = {}) {
   const data: DeepPartial<TopicEntity> = { ...oriData };
   data.id = data.id ?? faker.datatype.uuid();
-  data.name = data.name ?? faker.lorem.words();
+  data.name = data.name ?? faker.word.noun();
   return TopicEntity.create<TopicEntity>(data);
 }
 

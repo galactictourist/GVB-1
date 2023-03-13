@@ -5,10 +5,12 @@ import { TopicEntity } from '../charity/entity/topic.entity';
 import { TopicService } from '../charity/topic.service';
 import { StorageService } from '../storage/storage.service';
 import { StorageLabel } from '../storage/types';
+import { BlockchainNetwork } from '../types/blockchain';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { FilterCollectionDto } from './dto/filter-collection.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
 import { CollectionEntity } from './entity/collection.entity';
+import { NftService } from './nft.service';
 import { CollectionRepository } from './repository/collection.repository';
 import { NftRepository } from './repository/nft.repository';
 import { CollectionStatus } from './types';
@@ -20,26 +22,31 @@ export class CollectionService {
     private readonly storageService: StorageService,
     private readonly nftRepository: NftRepository,
     private readonly topicService: TopicService,
+    private readonly nftService: NftService,
   ) {}
 
   async createCollection(
+    file: Express.Multer.File,
     createCollectionDto: CreateCollectionDto,
     defaults: DeepPartial<CollectionEntity>,
     user: ContextUser,
   ) {
-    let imageUrl: string | undefined;
-    if (createCollectionDto.imageStorageId) {
-      try {
-        const storage = await this.storageService.getStorage({
-          id: createCollectionDto.imageStorageId,
-          ownerId: user.id,
-          label: StorageLabel.COLLECTION_IMAGE,
-        });
-        imageUrl = storage.url;
-      } catch (e) {
-        throw new BadRequestException('Invalid file');
-      }
-    }
+    // if (createCollectionDto.imageStorageId) {
+    //   try {
+    //     const storage = await this.storageService.getStorage({
+    //       id: createCollectionDto.imageStorageId,
+    //       ownerId: user.id,
+    //       label: StorageLabel.COLLECTION_IMAGE,
+    //     });
+    //     imageUrl = storage.url;
+    //   } catch (e) {
+    //     throw new BadRequestException('Invalid file');
+    //   }
+    // }
+    const storage = await this.storageService.storePublicReadFile(file, {
+      ownerId: user.id,
+      label: StorageLabel.COLLECTION_IMAGE,
+    });
 
     let topic: TopicEntity | undefined;
     if (createCollectionDto.topicId) {
@@ -53,13 +60,26 @@ export class CollectionService {
       ...defaults,
       name: createCollectionDto.name,
       description: createCollectionDto.description,
-      imageStorageId: createCollectionDto.imageStorageId,
-      imageUrl,
+      imageStorageId: storage.id,
+      imageUrl: storage.url,
       topicId: topic ? topic.id : undefined,
     });
 
     await collectionEntity.save();
     console.log('collectionEntity', collectionEntity);
+
+    await this.nftService.importNfts(
+      {
+        network: BlockchainNetwork.POLYGON_MUMBAI,
+        nftContractAddress: createCollectionDto.contractAddress,
+        owner: user.wallet,
+      }, 
+      String(user.wallet), 
+      collectionEntity.id
+    );
+
+    console.log('hello is over');
+    
     return collectionEntity;
   }
 

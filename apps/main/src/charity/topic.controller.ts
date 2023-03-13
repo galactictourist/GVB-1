@@ -17,6 +17,13 @@ export class TopicController {
   }
 
   @Public()
+  @Get('causes')
+  async getCauses() {
+    const causes = await this.topicService.getTopParentTopics();
+    return formatResponse(causes);
+  }
+
+  @Public()
   @Get(':topicId')
   async getTopicDetails(@Param('topicId') topicId: string) {
     const topic = await this.topicService.getTopic(topicId);

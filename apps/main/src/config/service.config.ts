@@ -33,7 +33,7 @@ export const serviceConfig = registerAs(
         process.env.AWS_S3_ENDPOINT || 'https://sgp1.digitaloceanspaces.com',
       publicUrlPrefix:
         process.env.AWS_S3_PUBLIC_URL_PREFIX ||
-        'https://demo.sgp1.digitaloceanspaces.com',
+        'https://demo.sgp1.digitaloceanspaces.com/',
       bucket: process.env.AWS_S3_BUCKET || 'demo',
       region: process.env.AWS_S3_REGION || 'sgp1',
       accessKey: process.env.AWS_S3_ACCESS_KEY || 'demo_key',

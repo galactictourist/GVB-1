@@ -1,16 +1,24 @@
 import {
   Body,
   Controller,
+  FileTypeValidator,
   Get,
+  MaxFileSizeValidator,
   Param,
+  ParseFilePipe,
   Post,
   Put,
   Request,
+  UploadedFile,
+  UseInterceptors
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from '~/main/auth/decorator/public.decorator';
 import { formatResponse, ResponseData } from '~/main/types/response-data';
 import { UserRequest } from '~/main/types/user-request';
+import { appConfig } from '../config/app.config';
+import { StorageService } from '../storage/storage.service';
 import { CollectionService } from './collection.service';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { FilterCollectionDto } from './dto/filter-collection.dto';
@@ -20,7 +28,10 @@ import { CollectionStatus } from './types';
 @Controller('collections')
 @ApiTags('collection')
 export class CollectionController {
-  constructor(private readonly collectionService: CollectionService) {}
+  constructor(
+    private readonly collectionService: CollectionService,
+    private readonly storageService: StorageService
+  ) {}
 
   @Public()
   @Post('_search')
@@ -49,11 +60,24 @@ export class CollectionController {
 
   @Post('')
   @ApiBearerAuth()
+  @UseInterceptors(FileInterceptor('file'))
   async createCollection(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: new RegExp('.(jpg|jpeg|png)$') }),
+          new MaxFileSizeValidator({
+            maxSize: appConfig().maxFileUploadSize,
+          }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
     @Request() request: UserRequest,
     @Body() createCollectionDto: CreateCollectionDto,
   ): Promise<ResponseData<any>> {
     const collection = await this.collectionService.createCollection(
+      file,
       createCollectionDto,
       { ownerId: request.user.id, status: CollectionStatus.PUBLISHED },
       request.user,

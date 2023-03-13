@@ -7,7 +7,7 @@ import {
   Param,
   Post,
   Put,
-  Request,
+  Request
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from '~/main/auth/decorator/public.decorator';
@@ -105,7 +105,7 @@ export class NftController {
     const nft = await this.nftService.getNftByNetworkAddressTokenId(
       network as BlockchainNetwork,
       scAddress,
-      tokenId,
+      Number(tokenId),
     );
     return formatResponse(nft);
   }
@@ -120,7 +120,7 @@ export class NftController {
     const nft = await this.nftService.getNftByNetworkAddressTokenId(
       network as BlockchainNetwork,
       scAddress,
-      tokenId,
+      Number(tokenId),
     );
     return nft.generateMetadata();
   }

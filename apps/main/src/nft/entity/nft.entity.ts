@@ -1,4 +1,4 @@
-import { Column, Entity, Index, ManyToOne, Unique } from 'typeorm';
+import { Column, Entity, Index, ManyToOne } from 'typeorm';
 import { BaseElement } from '~/main/lib/database/base-element';
 import { StorageEntity } from '~/main/storage/entity/storage.entity';
 import { BlockchainNetwork } from '../../types/blockchain';
@@ -8,11 +8,11 @@ import { CollectionEntity } from './collection.entity';
 
 @Entity({ name: 'nft' })
 @Index('nft_uq', { synchronize: false }) // https://typeorm.io/indices#disabling-synchronization
-@Unique('nft_network_mintedTxId_uq', ['network', 'mintedTxId'])
 @Index('nft_ownerId_idx', ['ownerId'])
 @Index('nft_collectionId_idx', ['collectionId'])
 @Index('nft_status_idx', ['status'])
 @Index('nft_imageStorageId_idx', ['imageStorageId'])
+@Index(['name', 'isMinted', 'tokenUri'])
 export class NftEntity extends BaseElement {
   @Column({
     type: 'varchar',
@@ -29,10 +29,10 @@ export class NftEntity extends BaseElement {
   scAddress?: string;
 
   @Column({
-    length: 200,
-    nullable: true,
+    nullable: false,
+    default: 0
   })
-  tokenId?: string;
+  tokenId: number;
 
   @Column({ length: 200 })
   name: string;
@@ -89,7 +89,7 @@ export class NftEntity extends BaseElement {
   @Column({
     type: 'varchar',
     enum: NftImmutable,
-    default: NftImmutable.NO,
+    default: NftImmutable.YES,
     length: 10,
   })
   immutable: NftImmutable;
@@ -103,12 +103,20 @@ export class NftEntity extends BaseElement {
   @Column('int', { default: 0 })
   royalty: number;
 
+  @Column({ 
+    nullable: false,
+    default: '',
+  })
+  tokenUri?: string;
+  
+  @Column({ 
+    nullable: false,
+    default: false,
+  })
+  isMinted: boolean;
+
   isActive() {
     return this.status === NftStatus.ACTIVE;
-  }
-
-  isMinted() {
-    return !!this.mintedTxId;
   }
 
   isImmutable() {

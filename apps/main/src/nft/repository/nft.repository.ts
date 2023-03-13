@@ -25,10 +25,11 @@ export class NftRepository extends BaseRepository<NftEntity> {
     network: BlockchainNetwork,
     ownedNfts: OwnedNft[],
     defaults: DeepPartial<NftEntity>,
+    collectionId?: string,
   ) {
     return Promise.allSettled(
       ownedNfts.map((ownedNft) => {
-        return this.createFromOwnedNft(network, ownedNft, defaults);
+        return this.createFromOwnedNft(network, ownedNft, defaults, collectionId);
       }),
     );
   }
@@ -37,51 +38,60 @@ export class NftRepository extends BaseRepository<NftEntity> {
     network: BlockchainNetwork,
     ownedNft: OwnedNft,
     defaults: DeepPartial<NftEntity>,
+    collectionId?: string,
   ) {
     if (!this.checkNftTokenTypeSupported(ownedNft.tokenType)) {
       throw new Error('Token standard is not supported');
     }
-
     const scAddress = ownedNft.contract.address.toLowerCase();
-    const tokenId = ownedNft.tokenId;
+    const tokenId = Number(ownedNft.tokenId);
 
     let raw;
     if (ownedNft.rawMetadata) {
-      const { name, description, ...rawMetadata } = ownedNft.rawMetadata;
+      const { name, description, attributes, image, ...rawMetadata } = ownedNft.rawMetadata;
       raw = rawMetadata;
-    }
-
-    let nftEntity = await this.getNftByNetworkAddressTokenId(
-      network,
-      scAddress,
-      tokenId,
-    );
-    if (!nftEntity) {
-      nftEntity = this.create({
+      let nftEntity = await this.getNftByNetworkAddressTokenId(
         network,
         scAddress,
         tokenId,
-      });
+      );
+      if (!nftEntity) {
+        nftEntity = this.create({
+          ...defaults,
+          network,
+          scAddress,
+          tokenId: tokenId,
+          collectionId,
+          status: NftStatus.ACTIVE,
+          name: ownedNft.title,
+          description: ownedNft.description,
+          rawMetadata: raw,
+          attributes: attributes,
+          isMinted: true,
+          tokenUri: ownedNft.tokenUri?.raw,
+          imageUrl: image
+        });
+  
+        await nftEntity.save();
+    
+        return nftEntity;
+      }
+  
+      // this.merge(nftEntity, {
+      //   ...defaults,
+      //   status: NftStatus.ACTIVE,
+      //   name: ownedNft.title,
+      //   description: ownedNft.description,
+      //   rawMetadata: raw,
+      //   attributes: attributes,
+      // });
     }
-
-    this.merge(nftEntity, {
-      ...defaults,
-      status: NftStatus.ACTIVE,
-      name: ownedNft.title,
-      description: ownedNft.description,
-      rawMetadata: raw,
-      attributes: ownedNft.rawMetadata?.attributes,
-    });
-
-    await nftEntity.save();
-
-    return nftEntity;
   }
 
   async getNftByNetworkAddressTokenId(
     network: BlockchainNetwork,
     scAddress: string,
-    tokenId: string,
+    tokenId: number,
   ): Promise<NftEntity | null> {
     const nft = await this.findOneBy({
       network,

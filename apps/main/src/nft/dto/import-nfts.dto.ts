@@ -11,10 +11,10 @@ export class ImportNftsDto {
 
   @ApiProperty()
   @IsEthereumAddress()
-  address: string;
+  nftContractAddress: string;
 
   @ApiProperty()
   @IsOptional()
   @IsEthereumAddress()
-  owner: string;
+  owner?: string;
 }
