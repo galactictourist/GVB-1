@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from '~/main/auth/decorator/public.decorator';
 import { formatResponse } from '~/main/types/response-data';
@@ -19,7 +19,14 @@ export class TopicController {
   @Public()
   @Get('causes')
   async getCauses() {
-    const causes = await this.topicService.getTopParentTopics();
+    const causes = await this.topicService.getCauseTopics();
+    return formatResponse(causes);
+  }
+  
+  @Public()
+  @Get('causes/childs')
+  async getCauseChilds() {
+    const causes = await this.topicService.getCauseChilds();
     return formatResponse(causes);
   }
 
@@ -35,5 +42,12 @@ export class TopicController {
   async getTopicCharities(@Param('topicId') topicId: string) {
     const charities = await this.topicService.getTopicCharities(topicId);
     return formatResponse(charities.data);
+  }
+
+  @Public()
+  @Post('causes/collections')
+  async getTopicCollectionDetails(@Body('topicId') topicId?: string) {
+    const topicData = await this.topicService.getCollectionDetails(topicId);
+    return formatResponse(topicData);
   }
 }

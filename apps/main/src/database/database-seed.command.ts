@@ -92,7 +92,7 @@ export class DatabaseSeedCommand extends CommandRunner {
     
     const childrenTopicEntities = await Promise.all(
       topicEntities.map(async (topicEntity) => {
-        return await createTopicEntities({ parentId: topicEntity.id }, 5);
+        return await createTopicEntities({ parentId: topicEntity.id }, 2);
       }),
     );
     const childrenTopicEntitiesFlat: TopicEntity[] = [];
@@ -105,7 +105,7 @@ export class DatabaseSeedCommand extends CommandRunner {
     const charityEntitiesChunk1 = charityEntities.slice(0, 20);
     charityEntitiesChunk1.forEach((charity) => {
       faker.helpers
-        .arrayElements(childrenTopicEntitiesFlat, 5)
+        .arrayElements(childrenTopicEntitiesFlat, 2)
         .forEach((childTopic) => {
           charityTopicEntities.push(
             createCharityTopic({
@@ -118,7 +118,7 @@ export class DatabaseSeedCommand extends CommandRunner {
     const charityEntitiesChunk2 = charityEntities.slice(20, 40);
     charityEntitiesChunk2.forEach((charity) => {
       faker.helpers
-        .arrayElements(childrenTopicEntitiesFlat, 10)
+        .arrayElements(childrenTopicEntitiesFlat, 2)
         .forEach((childTopic) => {
           charityTopicEntities.push(
             createCharityTopic({
@@ -131,7 +131,7 @@ export class DatabaseSeedCommand extends CommandRunner {
     const charityEntitiesChunk3 = charityEntities.slice(40, 60);
     charityEntitiesChunk3.forEach((charity) => {
       faker.helpers
-        .arrayElements(childrenTopicEntitiesFlat, 15)
+        .arrayElements(childrenTopicEntitiesFlat, 2)
         .forEach((childTopic) => {
           charityTopicEntities.push(
             createCharityTopic({
@@ -144,7 +144,7 @@ export class DatabaseSeedCommand extends CommandRunner {
     const charityEntitiesChunk4 = charityEntities.slice(60, 80);
     charityEntitiesChunk4.forEach((charity) => {
       faker.helpers
-        .arrayElements(childrenTopicEntitiesFlat, 25)
+        .arrayElements(childrenTopicEntitiesFlat, 2)
         .forEach((childTopic) => {
           charityTopicEntities.push(
             createCharityTopic({

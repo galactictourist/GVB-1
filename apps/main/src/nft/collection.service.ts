@@ -68,7 +68,7 @@ export class CollectionService {
     await collectionEntity.save();
     console.log('collectionEntity', collectionEntity);
 
-    await this.nftService.importNfts(
+    this.nftService.importNfts(
       {
         network: BlockchainNetwork.POLYGON_MUMBAI,
         nftContractAddress: createCollectionDto.contractAddress,
@@ -77,8 +77,6 @@ export class CollectionService {
       String(user.wallet), 
       collectionEntity.id
     );
-
-    console.log('hello is over');
     
     return collectionEntity;
   }

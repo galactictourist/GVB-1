@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { CollectionRepository } from '../nft/repository/collection.repository';
 import { StorageModule } from '../storage/storage.module';
 import { CharityAdminController } from './charity-admin.controller';
 import { CharityAdminService } from './charity-admin.service';
@@ -22,6 +23,7 @@ import { TopicService } from './topic.service';
     TopicRepository,
     TopicAdminService,
     CharityTopicRepository,
+    CollectionRepository,
   ],
   controllers: [
     CharityController,
@@ -37,6 +39,7 @@ import { TopicService } from './topic.service';
     TopicAdminService,
     TopicRepository,
     CharityTopicRepository,
+    CollectionRepository,
   ],
 })
 export class CharityModule {}
