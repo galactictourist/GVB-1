@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { FindOptionsWhere } from 'typeorm';
+import { FindOptionsWhere, In } from 'typeorm';
+import { CollectionRepository } from '../nft/repository/collection.repository';
 import { TopicEntity } from './entity/topic.entity';
 import { CharityTopicRepository } from './repository/charity-topic.repository';
 import { TopicRepository } from './repository/topic.repository';
@@ -10,6 +11,7 @@ export class TopicService {
   constructor(
     private readonly topicRepository: TopicRepository,
     private readonly charityTopicRepository: CharityTopicRepository,
+    private readonly collectionRepository: CollectionRepository
   ) {}
 
   async getTopics(where: FindOptionsWhere<TopicEntity> = {}) {
@@ -17,15 +19,36 @@ export class TopicService {
     return { data, total };
   }
 
-  async getTopParentTopics() {
+  async getCauseTopics() {
     const topParents = await this.topicRepository.find({
       select: {
         id: true,
-        name: true
+        name: true,
       },
       where: {
         isParent: true,
-        status: TopicStatus.ACTIVE
+        status: TopicStatus.ACTIVE,
+      }
+    });
+    return topParents;
+  }
+
+  async getCauseChilds() {
+    const topParents = await this.topicRepository.find({
+      select: {
+        id: true,
+        name: true,
+        children: {
+          id: true,
+          name: true,
+        }
+      },
+      relations: {
+        children: true,
+      },
+      where: {
+        isParent: true,
+        status: TopicStatus.ACTIVE,
       }
     });
     return topParents;
@@ -43,6 +66,58 @@ export class TopicService {
       id: topicId,
     });
     return topic;
+  }
+
+  async getCollectionDetails(topicId?: string) {
+    let topicCollectionData: any[] = [];
+    let whereQuery: any = {
+      status: TopicStatus.ACTIVE,
+      isParent: true
+    };
+    if (topicId) {
+      whereQuery['id'] = topicId;
+    }
+    const topicData = await this.topicRepository.find({
+      select: {
+        id: true,
+        name: true,
+        children: {
+          id: true,
+          name: true,
+        },
+      },
+      relations: {
+        children: true,
+      },
+      where: whereQuery
+    });
+    if (topicData && topicData.length) {
+      for(const topic of topicData) {
+        let topicIdAry: any[] = [];
+        for (const childTopic of topic.children) {
+          topicIdAry.push(childTopic.id);
+        }
+        const collectionData = await this.collectionRepository.find({
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            imageUrl: true,
+          },
+          where: {
+            topicId: In([...topicIdAry])
+          }
+        });
+        topicCollectionData.push({
+          id: topic.id,
+          name: topic.name,
+          collections: collectionData
+        })
+      }
+      return topicCollectionData;
+    } else {
+      return [];
+    }
   }
 
   async getTopicCharities(topicId: string) {
