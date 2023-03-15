@@ -38,7 +38,7 @@ export class CollectionController {
   async search(
     @Body() searchCollectionDto: FilterCollectionDto,
   ): Promise<ResponseData<any[]>> {
-    const collections = await this.collectionService.search(
+    const collections = await this.collectionService.searchCollectionByOwners(
       searchCollectionDto,
       { status: CollectionStatus.PUBLISHED },
     );
@@ -47,6 +47,15 @@ export class CollectionController {
         total: collections.total,
       },
     });
+  }
+
+  @Public()
+  @Get(':collection_id')
+  async getCollection(
+    @Param('collection_id') collectionId: string,
+  ) {
+    const collectionObject = await this.collectionService.searchCollectionByCollectionId(collectionId);
+    return formatResponse(collectionObject);
   }
 
   @Public()

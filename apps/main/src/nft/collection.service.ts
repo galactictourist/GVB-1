@@ -128,7 +128,15 @@ export class CollectionService {
     return collectionEntity;
   }
 
-  async search(
+  async searchCollectionByCollectionId(collectionId: string) {
+    const collection = await this.collectionRepository.findOneByOrFail({
+      id: collectionId,
+      status: CollectionStatus.PUBLISHED
+    });
+    return collection;
+  }
+
+  async searchCollectionByOwners(
     searchCollectionDto: FilterCollectionDto,
     defaults: FindOptionsWhere<CollectionEntity>,
   ) {
