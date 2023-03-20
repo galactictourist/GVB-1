@@ -137,6 +137,18 @@ export class NftController {
     throw new NotFoundException();
   }
 
+  @Public()
+  @Get(':nftId')
+  async getNft(
+    @Param('nftId') nftId: string,
+  ): Promise<ResponseData<NftEntity>> {
+    const nft = await this.nftService.findById(nftId);
+    if (!nft) {
+      throw new NotFoundException();
+    }
+    return formatResponse(nft);
+  }
+
   @Post('')
   @ApiBearerAuth()
   async createNft(
