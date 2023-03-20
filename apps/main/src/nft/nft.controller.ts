@@ -142,7 +142,12 @@ export class NftController {
   async getNft(
     @Param('nftId') nftId: string,
   ): Promise<ResponseData<NftEntity>> {
-    const nft = await this.nftService.findById(nftId);
+    const nft = await this.nftService.findById(
+      nftId, 
+      {
+        relations: { owner: true, collection: true },
+      }
+    );
     if (!nft) {
       throw new NotFoundException();
     }
