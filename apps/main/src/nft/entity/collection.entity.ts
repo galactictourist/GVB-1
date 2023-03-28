@@ -52,6 +52,12 @@ export class CollectionEntity extends BaseElement {
   })
   topic?: TopicEntity;
 
+  @Column({ 
+    nullable: false, 
+    default: ''
+  })
+  artistAddress: string;
+
   isPublished() {
     return this.status === CollectionStatus.PUBLISHED;
   }

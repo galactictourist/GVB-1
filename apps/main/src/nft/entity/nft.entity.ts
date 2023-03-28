@@ -1,5 +1,6 @@
-import { Column, Entity, Index, ManyToOne } from 'typeorm';
+import { Column, Entity, Index, ManyToOne, OneToMany } from 'typeorm';
 import { BaseElement } from '~/main/lib/database/base-element';
+import { SaleEntity } from '~/main/marketplace/entity/sale.entity';
 import { StorageEntity } from '~/main/storage/entity/storage.entity';
 import { BlockchainNetwork } from '../../types/blockchain';
 import { UserEntity } from '../../user/entity/user.entity';
@@ -77,6 +78,9 @@ export class NftEntity extends BaseElement {
 
   @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
   owner?: UserEntity;
+
+  @OneToMany(() => SaleEntity, (saleEntity) => saleEntity.nft)
+  sales: SaleEntity[];
 
   @Column({
     type: 'varchar',

@@ -26,6 +26,7 @@ export interface SaleContractData extends Record<string, any> {
   nftContract: string;
   itemType: ItemType;
   seller: string;
+  artist: string;
   isMinted: boolean;
   tokenId: string;
   tokenURI: string;

@@ -14,7 +14,12 @@ import { SaleController } from './sale.controller';
 import { SaleService } from './sale.service';
 
 @Module({
-  imports: [NftModule, BlockchainModule, CharityModule, UserModule],
+  imports: [
+    NftModule, 
+    BlockchainModule, 
+    CharityModule, 
+    UserModule
+  ],
   controllers: [
     SaleController,
     OrderController,

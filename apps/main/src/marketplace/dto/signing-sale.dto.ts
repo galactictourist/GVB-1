@@ -6,7 +6,7 @@ import {
   IsPositive,
   IsUUID,
   Max,
-  Min,
+  Min
 } from 'class-validator';
 import { BlockchainNetwork, CryptoCurrency } from '~/main/types/blockchain';
 import { CountryCode } from '~/main/types/country';
@@ -24,6 +24,7 @@ export class SigningSaleDto {
 
   @ApiProperty()
   @IsUUID('4')
+  @IsOptional()
   topicId: string;
 
   @ApiProperty()

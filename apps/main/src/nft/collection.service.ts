@@ -63,6 +63,7 @@ export class CollectionService {
       imageStorageId: storage.id,
       imageUrl: storage.url,
       topicId: topic ? topic.id : undefined,
+      artistAddress: createCollectionDto.artistAddress,
     });
 
     await collectionEntity.save();
@@ -115,6 +116,7 @@ export class CollectionService {
       throw new BadRequestException('Collection owner mismatch');
     }
     collectionEntity.name = updateCollectionDto.name;
+    collectionEntity.artistAddress = updateCollectionDto.artistAddress;
     collectionEntity.description = updateCollectionDto.description;
     if (updateCollectionDto.imageStorageId) {
       collectionEntity.imageStorageId = updateCollectionDto.imageStorageId;

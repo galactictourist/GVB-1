@@ -24,6 +24,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       entities: entities,
       migrations: [__dirname + '/migrations/*.{ts,js}'],
       logger: databaseConfig.logging,
+      // synchronize: true,
     };
   }
 }

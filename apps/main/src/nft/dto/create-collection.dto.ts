@@ -25,4 +25,9 @@ export class CreateCollectionDto {
   // @IsOptional()
   @IsUUID('4')
   topicId?: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsEthereumAddress({ message: 'Not a valid Ethereum address.' })
+  artistAddress: string;
 }

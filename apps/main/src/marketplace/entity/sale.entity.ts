@@ -8,7 +8,7 @@ import { CountryCode } from '~/main/types/country';
 import {
   BlockchainNetwork,
   CryptoCurrency,
-  mulCryptoAmount,
+  mulCryptoAmount
 } from '../../types/blockchain';
 import { UserEntity } from '../../user/entity/user.entity';
 import { SaleStatus } from '../types';
@@ -49,7 +49,7 @@ export class SaleEntity extends BaseElement {
   @Column('uuid')
   nftId: string;
 
-  @ManyToOne(() => NftEntity, (nft) => nft.id)
+  @ManyToOne(() => NftEntity, (nft) => nft.sales)
   nft: NftEntity;
 
   @Column('uuid', { nullable: true })

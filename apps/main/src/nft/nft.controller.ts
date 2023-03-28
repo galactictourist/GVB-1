@@ -145,7 +145,7 @@ export class NftController {
     const nft = await this.nftService.findById(
       nftId, 
       {
-        relations: { owner: true, collection: true },
+        relations: { owner: true, collection: true, sales: true},
       }
     );
     if (!nft) {

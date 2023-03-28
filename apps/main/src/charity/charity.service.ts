@@ -43,17 +43,17 @@ export class CharityService {
 
   async getCharityTopic(
     charityId: string,
-    topicId: string,
+    // topicId: string,
     // countryCode: CountryCode,
   ): Promise<CharityTopicEntity | null> {
     const entity = await this.charityTopicRepository.findOne({
-      relationLoadStrategy: 'query',
-      relations: {
-        topic: true,
-      },
+      // relationLoadStrategy: 'query',
+      // relations: {
+      //   topic: true,
+      // },
       where: {
         charityId,
-        topicId,
+        // topicId,
         // countryCode,
       },
     });

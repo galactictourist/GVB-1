@@ -5,7 +5,7 @@ import { FindManyOptions, FindOptionsWhere, In } from 'typeorm';
 import { NftService } from '~/main/nft/nft.service';
 import {
   BlockchainNetwork,
-  isCryptoCurrencyEnabled,
+  isCryptoCurrencyEnabled
 } from '~/main/types/blockchain';
 import { ContextUser } from '~/main/types/user-request';
 import { MarketSmartContractService } from '../blockchain/market-smart-contracts.service';
@@ -120,12 +120,12 @@ export class SaleService {
     signingSaleDto: SigningSaleDto,
     user: ContextUser,
   ): Promise<SigningData> {
-    const saleEntity = await this._createSaleEntity(signingSaleDto, user);
-
+    const {saleEntity, artistAddress} = await this._createSaleEntity(signingSaleDto, user);
     const saleData = this.saleRepository.generateSaleData(saleEntity);
     const signingData = this.saleRepository.generateTypedData(
       saleEntity,
       saleData.salt,
+      artistAddress
     );
     const rawSigningData: RawSigningData = {
       saleData,
@@ -168,7 +168,7 @@ export class SaleService {
       throw new BadRequestException('Invalid sale data');
     }
     const nft = await this.nftService.findById(saleData.nftId, {
-      relations: { owner: true },
+      relations: { owner: true, collection: true },
     });
     if (!nft) {
       throw new BadRequestException('NFT is not found');
@@ -200,7 +200,7 @@ export class SaleService {
 
     // generate signedData
     const signedData: TypedData<SaleContractData> =
-      this.saleRepository.generateTypedData(sale, saleData.salt);
+      this.saleRepository.generateTypedData(sale, saleData.salt, String(nft.collection?.artistAddress));
     sale.signedData = signedData;
     sale.hash = _TypedDataEncoder
       .from(signedData.types)
@@ -230,7 +230,7 @@ export class SaleService {
   ) {
     // checking NFT
     const nft = await this.nftService.findById(signingSaleDto.nftId, {
-      relations: { owner: true },
+      relations: { owner: true, collection: true },
     });
     if (!nft) {
       throw new BadRequestException('NFT is invalid');
@@ -274,7 +274,7 @@ export class SaleService {
     // validate charity and country and topic
     const charityTopic = await this.charityService.getCharityTopic(
       signingSaleDto.charityId,
-      signingSaleDto.topicId,
+      // signingSaleDto.topicId,
       // signingSaleDto.countryCode,
     );
     if (!charityTopic) {
@@ -314,14 +314,17 @@ export class SaleService {
       countryCode: signingSaleDto.countryCode,
       charityShare: signingSaleDto.charityShare,
       charityWallet: charityTopic.wallet,
-      topicId: signingSaleDto.topicId,
+      topicId: charityTopic.topicId,
       charityId: signingSaleDto.charityId,
       quantity: signingSaleDto.quantity,
       remainingQuantity: signingSaleDto.quantity,
       expiredAt,
     });
 
-    return saleEntity;
+    return {
+      saleEntity, 
+      artistAddress: String(nft.collection?.artistAddress)
+    };
   }
 
   async processCancelledSales(

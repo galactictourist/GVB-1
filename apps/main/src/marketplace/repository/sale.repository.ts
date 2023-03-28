@@ -22,6 +22,7 @@ export class SaleRepository extends BaseRepository<SaleEntity> {
   generateTypedData(
     sale: SaleEntity,
     salt: string,
+    artistAddress: string
   ): TypedData<SaleContractData> {
     const marketplaceSC = getMarketplaceSmartContract(sale.network);
     if (!marketplaceSC.types || !marketplaceSC.version) {
@@ -33,9 +34,9 @@ export class SaleRepository extends BaseRepository<SaleEntity> {
       !sale.nft.scAddress ||
       !sale.expiredAt ||
       !sale.charityWallet ||
-      !sale.charityShare ||
-      !sale.nft.royalty ||
-      !sale.nft.tokenId
+      !('charityShare' in sale) ||
+      !('royalty' in sale.nft) ||
+      !('tokenId' in sale.nft)
     ) {
       throw new Error('Invalid sale information');
     }
@@ -51,6 +52,7 @@ export class SaleRepository extends BaseRepository<SaleEntity> {
       nftContract: sale.nft.scAddress,
       itemType: ItemType.ERC721,
       seller: sale.user.wallet,
+      artist: artistAddress,
       isMinted: sale.nft.isMinted,
       tokenId: String(sale.nft.tokenId),
       tokenURI: sale.nft.getMetadataUrl(),
@@ -61,7 +63,7 @@ export class SaleRepository extends BaseRepository<SaleEntity> {
         sale.price,
       ).toString(),
       charityAddress: sale.charityWallet,
-      charityShare: sale.charityShare,
+      charityShare: Number(sale.charityShare),
       royaltyFee: sale.nft.royalty,
       deadline: DateTime.fromJSDate(sale.expiredAt).toUnixInteger(),
       salt,

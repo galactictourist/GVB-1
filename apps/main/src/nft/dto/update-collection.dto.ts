@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsEthereumAddress, IsOptional, IsString, IsUUID } from 'class-validator';
 import { StorageLabel } from '~/main/storage/types';
 import { IsStorageId } from '~/main/storage/validator/is-storage-id.validator';
 
@@ -11,6 +11,11 @@ export class UpdateCollectionDto {
   @ApiProperty()
   @IsString()
   description: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsEthereumAddress({ message: 'Not a valid Ethereum address.' })
+  artistAddress: string;
 
   @ApiProperty({ nullable: true, required: false })
   @IsOptional()
