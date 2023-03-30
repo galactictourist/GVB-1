@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Bytes, utils, Wallet } from 'ethers';
 import { IBlockchainConfig } from '~/main/config/blockchain.config';
 import { ConfigNamespace } from '~/main/types/config';
-import { TypedData } from './types';
+import { SaleContractData, TypedData } from './types';
 
 @Injectable()
 export class SignerService {
@@ -16,7 +16,13 @@ export class SignerService {
     const wallet = new Wallet(blockchainConfig.verifier.pk);
     return wallet;
   }
-
+  
+  getAdminSellerWallet() {
+    const ADMIN_SELLR_PK = String(process.env.ADMIN_SELLR_PK);
+    const wallet = new Wallet(ADMIN_SELLR_PK);
+    return wallet;
+  }
+  
   // private async signMarket(
   //   network: BlockchainNetwork,
   //   types: Record<string, Array<TypedDataField>>,
@@ -64,6 +70,16 @@ export class SignerService {
   async signByVerifier(message: Bytes | string): Promise<string> {
     const wallet = this.getSignerWallet();
     const signature = await wallet.signMessage(message);
+    return signature;
+  }
+
+  async signBySeller(signData: TypedData<SaleContractData>): Promise<string> {
+    const wallet = this.getAdminSellerWallet();
+    const signature = await wallet._signTypedData(
+      signData.domain,
+      signData.types,
+      signData.message
+    );
     return signature;
   }
 

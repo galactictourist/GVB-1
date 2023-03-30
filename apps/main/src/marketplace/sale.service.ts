@@ -2,13 +2,15 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { _TypedDataEncoder } from 'ethers/lib/utils';
 import { DateTime } from 'luxon';
 import { FindManyOptions, FindOptionsWhere, In } from 'typeorm';
+import { randomUnit256 } from '~/main/lib';
 import { NftService } from '~/main/nft/nft.service';
 import {
   BlockchainNetwork,
-  isCryptoCurrencyEnabled
+  CryptoCurrency, getMarketplaceSmartContract, isCryptoCurrencyEnabled
 } from '~/main/types/blockchain';
 import { ContextUser } from '~/main/types/user-request';
 import { MarketSmartContractService } from '../blockchain/market-smart-contracts.service';
+import { NftSmartContractService } from '../blockchain/nft-smart-contracts.service';
 import { SignerService } from '../blockchain/signer.service';
 import { SaleContractData, TypedData } from '../blockchain/types';
 import { SaleCancelledEvent } from '../blockchain/types/event';
@@ -16,6 +18,7 @@ import { CharityService } from '../charity/charity.service';
 import { UserService } from '../user/user.service';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { FilterSaleParam } from './dto/filter-sale.param';
+import { ListNftsDto } from './dto/list-nft.dto';
 import { SearchSaleDto } from './dto/search-sale.dto';
 import { SigningSaleDto } from './dto/signing-sale.dto';
 import { SaleEntity } from './entity/sale.entity';
@@ -32,6 +35,7 @@ export class SaleService {
     private readonly charityService: CharityService,
     private readonly userService: UserService,
     private readonly marketSmartContractService: MarketSmartContractService,
+    private readonly nftMarketplaceContractService: NftSmartContractService
   ) {}
 
   async search(
@@ -149,6 +153,116 @@ export class SaleService {
     };
   }
 
+  async listNftsByAdmin(listNftsDto: ListNftsDto) {
+    const ADMIN_SELLR_ADDRESS = String(process.env.ADMIN_SELLR_ADDRESS);
+    const owner = await this.userService.findUserByWallet(ADMIN_SELLR_ADDRESS);
+    if (!owner) {
+      throw new BadRequestException('Invalid owner');
+    }
+    const nfts = await this.nftService.findNfts(
+      listNftsDto.collectionId,
+      listNftsDto.nftTokenId,
+      listNftsDto.listNftQuantity,
+      owner.id
+    );
+    if (!nfts) {
+      throw new BadRequestException('Cannot find nfts');
+    }
+    const charity = await this.charityService.getCharity(
+      listNftsDto.charityId,
+    );
+    if (!charity) {
+      throw new BadRequestException('Charity is invalid');
+    }
+    const charityTopic = await this.charityService.getCharityTopic(
+      listNftsDto.charityId,
+    );
+    if (!charityTopic) {
+      throw new BadRequestException('Charity and topic are not matched');
+    }
+    if (!charityTopic.wallet) {
+      throw new BadRequestException('Charity wallet is invalid');
+    }
+
+    const isApprovedForAll = await this.nftMarketplaceContractService.isApprovedForAll(
+      listNftsDto.network,
+      String(nfts[0].scAddress),
+      ADMIN_SELLR_ADDRESS,
+      getMarketplaceSmartContract(listNftsDto.network).address
+    );
+    if (!isApprovedForAll) {
+      await this.nftMarketplaceContractService.setApprovalForAllByAdmin(
+        listNftsDto.network,
+        String(nfts[0].scAddress),
+        getMarketplaceSmartContract(listNftsDto.network).address
+      )
+    }
+
+    for(const nft of nfts) {
+      const countExistingSale = await this.count(
+        {
+          userIds: [String(nft.owner?.id)],
+          nftIds: [String(nft.id)],
+          statuses: [SaleStatus.LISTING],
+        },
+        { take: 1 },
+      );
+      if (countExistingSale > 0) {
+        console.log(`nftId=${nft.id} is on sale`);
+        continue;
+      }
+      const expiredAt = DateTime.now()
+      .plus({
+        minutes: listNftsDto.expiryInMinutes,
+      })
+      .toJSDate();
+
+      // create sale entity from sale data
+      const sale = this.saleRepository.create({
+        user: nft.owner,
+        nft: nft,
+        network: listNftsDto.network || BlockchainNetwork.POLYGON_MUMBAI,
+        price: String(listNftsDto.price),
+        currency: CryptoCurrency.NATIVE_CURRENCY,
+        charityShare: listNftsDto.charityShare,
+        charityWallet: charityTopic.wallet,
+        topicId: charityTopic.topicId,
+        charityId: listNftsDto.charityId,
+        quantity: 1,
+        expiredAt: expiredAt,
+      });
+      const salt = randomUnit256();
+      const signData = this.saleRepository.generateTypedData(
+        sale,
+        salt,
+        String(nft.collection?.artistAddress)
+      );
+      const sellerSignature = await this.signerService.signBySeller(signData);
+
+      sale.signature = sellerSignature;
+      sale.status = SaleStatus.LISTING;
+      sale.signedData = signData;
+      sale.hash = _TypedDataEncoder
+        .from(signData.types)
+        .hash(signData.message)
+        .toLowerCase();
+
+      // verify clientSignature with signedData
+      if (
+        !this.signerService.verifyTypedData(
+          signData,
+          sellerSignature,
+          ADMIN_SELLR_ADDRESS,
+        )
+      ) {
+        throw new BadRequestException('Invalid seller signature');
+      }
+
+      // save sale entity
+      await sale.save();
+    };
+  }
+
   async createSale(
     createSaleDto: CreateSaleDto,
     contextUser: ContextUser,
@@ -187,7 +301,7 @@ export class SaleService {
       network: saleData.network,
       price: saleData.price,
       currency: saleData.currency,
-      countryCode: saleData.countryCode,
+      // countryCode: saleData.countryCode,
       charityShare: saleData.charityShare,
       charityWallet: saleData.charityWallet,
       topicId: saleData.topicId,
@@ -338,7 +452,6 @@ export class SaleService {
       fromBlock,
       toBlock,
     );
-
     const result = await Promise.allSettled(
       events.map((event) => {
         return this.cancelSalesByHashes(network, event);

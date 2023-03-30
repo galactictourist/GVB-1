@@ -10,9 +10,7 @@ import { SaleService } from '~/main/marketplace/sale.service';
 import { NftService } from '~/main/nft/nft.service';
 import {
   BlockchainNetwork,
-  getEnabledBlockchainNetworks,
-  getErc721SmartContract,
-  getMarketplaceSmartContract,
+  getEnabledBlockchainNetworks, getMarketplaceSmartContract
 } from '~/main/types/blockchain';
 import { ConfigNamespace } from '~/main/types/config';
 
@@ -76,62 +74,62 @@ export class CronService {
   //   return result;
   // }
 
-  @Cron('*/15 * * * * *', { name: 'processTransferedNfts' })
-  async processTransferedNfts() {
-    console.log('processTransferedNfts: Running at', new Date());
-    const job = this.schedulerRegistry.getCronJob('processTransferedNfts');
-    console.log('last date', job.lastDate());
+  // @Cron('*/15 * * * * *', { name: 'processTransferedNfts' })
+  // async processTransferedNfts() {
+  //   console.log('processTransferedNfts: Running at', new Date());
+  //   const job = this.schedulerRegistry.getCronJob('processTransferedNfts');
+  //   console.log('last date', job.lastDate());
 
-    const eventName = 'Transfer';
-    const networks = getEnabledBlockchainNetworks();
-    const result = Promise.allSettled(
-      Object.keys(networks).map(
-        async (network: keyof typeof BlockchainNetwork) => {
-          try {
-            const scAddress = getErc721SmartContract(
-              BlockchainNetwork[network],
-            ).address;
-            const eventProcess = await this.eventProcessService.getEventProcess(
-              BlockchainNetwork[network],
-              scAddress,
-              eventName,
-              ContractStandard.ERC721,
-            );
-            if (eventProcess && eventProcess.isActive()) {
-              const blockNumber =
-                await this.marketSmartContractService.getCurrentBlockNumber(
-                  BlockchainNetwork[network],
-                );
-              const startBlockNumber =
-                eventProcess.endBlockNumber ||
-                eventProcess.beginBlockNumber ||
-                blockNumber - 1;
-              const endBlockNumber = Math.min(
-                startBlockNumber + this.MAX_BLOCK,
-                blockNumber,
-              );
-              const result = await this.nftService.processTransferedNfts(
-                BlockchainNetwork[network],
-                startBlockNumber + 1,
-                endBlockNumber,
-              );
-              await this.eventProcessService.updateEventProcess(
-                eventProcess.id,
-                eventProcess.endBlockNumber,
-                endBlockNumber,
-              );
-              return result;
-            }
-          } catch (e: unknown) {
-            console.error('Error', e);
-            throw e;
-          }
-        },
-      ),
-    );
+  //   const eventName = 'Transfer';
+  //   const networks = getEnabledBlockchainNetworks();
+  //   const result = Promise.allSettled(
+  //     Object.keys(networks).map(
+  //       async (network: keyof typeof BlockchainNetwork) => {
+  //         try {
+  //           const scAddress = getErc721SmartContract(
+  //             BlockchainNetwork[network],
+  //           ).address;
+  //           const eventProcess = await this.eventProcessService.getEventProcess(
+  //             BlockchainNetwork[network],
+  //             scAddress,
+  //             eventName,
+  //             ContractStandard.ERC721,
+  //           );
+  //           if (eventProcess && eventProcess.isActive()) {
+  //             const blockNumber =
+  //               await this.marketSmartContractService.getCurrentBlockNumber(
+  //                 BlockchainNetwork[network],
+  //               );
+  //             const startBlockNumber =
+  //               eventProcess.endBlockNumber ||
+  //               eventProcess.beginBlockNumber ||
+  //               blockNumber - 1;
+  //             const endBlockNumber = Math.min(
+  //               startBlockNumber + this.MAX_BLOCK,
+  //               blockNumber,
+  //             );
+  //             const result = await this.nftService.processTransferedNfts(
+  //               BlockchainNetwork[network],
+  //               startBlockNumber + 1,
+  //               endBlockNumber,
+  //             );
+  //             await this.eventProcessService.updateEventProcess(
+  //               eventProcess.id,
+  //               eventProcess.endBlockNumber,
+  //               endBlockNumber,
+  //             );
+  //             return result;
+  //           }
+  //         } catch (e: unknown) {
+  //           console.error('Error', e);
+  //           throw e;
+  //         }
+  //       },
+  //     ),
+  //   );
 
-    return result;
-  }
+  //   return result;
+  // }
 
   @Cron('*/15 * * * * *', { name: 'processCancelledSales' })
   async processCancelledSales() {

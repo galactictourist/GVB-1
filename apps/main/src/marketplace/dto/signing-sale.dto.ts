@@ -33,9 +33,9 @@ export class SigningSaleDto {
 
   @ApiProperty()
   @IsNumber()
-  @Min(0)
+  @Min(1000)
   @Max(10000)
-  charityShare?: number;
+  charityShare: number;
 
   @ApiProperty()
   @IsNumber()

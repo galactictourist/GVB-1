@@ -4,8 +4,9 @@ import { FindOptionsWhere, In, MoreThanOrEqual } from 'typeorm';
 import { MarketSmartContractService } from '../blockchain/market-smart-contracts.service';
 import {
   OrderCompletedEvent,
-  OrderCompletedEventV1,
+  OrderCompletedEventV1
 } from '../blockchain/types/event';
+import { NftService } from '../nft/nft.service';
 import { BlockchainNetwork } from '../types/blockchain';
 import { UserService } from '../user/user.service';
 import { SearchOrderDto } from './dto/search-order.dto';
@@ -22,6 +23,7 @@ export class OrderService {
     private readonly saleRepository: SaleRepository,
     private readonly userService: UserService,
     private readonly marketSmartContractService: MarketSmartContractService,
+    private readonly nftService: NftService
   ) {}
 
   async search(
@@ -64,7 +66,6 @@ export class OrderService {
         fromBlock,
         toBlock,
       );
-
     const result = await Promise.allSettled(
       events.map((event) => {
         return this.completeOrders(
@@ -178,6 +179,12 @@ export class OrderService {
       },
     );
 
+    await this.nftService.nftTransfer(
+      saleEntity.network,
+      saleEntity.nftId,
+      String(buyer.wallet),
+    );
+    
     const order = await this.orderRepository
       .create({
         sellerId: saleEntity.userId,

@@ -15,6 +15,11 @@ export class UserService {
     return user;
   }
 
+  async findUserByWallet(wallet: string) {
+    const user = await this.userRepository.findOneBy({ wallet: wallet });
+    return user;
+  }
+  
   async validateUser(id: string) {
     const user = await this.userRepository.findOneByOrFail({ id });
     if (!user.isActive()) {

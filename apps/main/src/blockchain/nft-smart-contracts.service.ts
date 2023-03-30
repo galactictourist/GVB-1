@@ -4,15 +4,19 @@ import { BigNumber, Event } from 'ethers';
 import { Interface } from 'ethers/lib/utils';
 import {
   BlockchainNetwork,
-  getErc721SmartContract,
+  getErc721SmartContract
 } from '~/main/types/blockchain';
 import NftAbi from './abi/nft.json';
 import { BaseSmartContractService } from './base-smart-contract.service';
+import { SignerService } from './signer.service';
 import { Erc721TransferEvent } from './types/event';
 
 @Injectable()
 export class NftSmartContractService extends BaseSmartContractService {
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly signerService: SignerService
+  ) {
     super();
     this.abi = new Interface(NftAbi);
   }
@@ -30,6 +34,36 @@ export class NftSmartContractService extends BaseSmartContractService {
       address,
     ]);
     return balance;
+  }
+
+  async isApprovedForAll(
+    network: BlockchainNetwork, 
+    nftContractAddress: string,
+    nftOwner: string,
+    nftOperator: string
+  ) {
+    const contract = this.getContract(
+      network,
+      nftContractAddress,
+    );
+
+    return await contract.isApprovedForAll(nftOwner, nftOperator);
+  }
+
+  async setApprovalForAllByAdmin(
+    network: BlockchainNetwork, 
+    nftContractAddress: string,
+    operator: string
+  ) {
+    const adminSellerWallet = this.signerService.getAdminSellerWallet();
+    const contract = this.getContract(
+      network,
+      nftContractAddress,
+    );
+    await contract.connect(adminSellerWallet).setApprovalForAll(
+      operator,
+      true
+    );
   }
 
   async getTransferEvents(

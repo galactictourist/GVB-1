@@ -52,7 +52,7 @@ export const BLOCKCHAIN_INFO: {
     chainId: 80001,
     alchemyNetwork: Network.MATIC_MUMBAI,
     name: 'Polygon Testnet - Mumbai',
-    endpoints: ['https://rpc-mumbai.maticvigil.com'],
+    endpoints: ['https://polygon-mumbai.g.alchemy.com/v2/2nMHQF5YQQybtCijNX-tNWi9qo7PObMx'],
     explorer: 'https://mumbai.polygonscan.com',
     constract: {
       erc721: {
@@ -60,7 +60,7 @@ export const BLOCKCHAIN_INFO: {
         name: 'GBCollection',
       } as const,
       marketplace: {
-        address: '0xf36ce999ee23beff2dc48095fc22e11f02029e40',
+        address: '0x307fC6Ecf3CA18153C451B30DFA2Db1334DF6B53',
         name: 'GBMarketplace',
         version: '1.0.0',
         types: {
@@ -93,6 +93,10 @@ export const BLOCKCHAIN_INFO: {
             },
             {
               name: 'seller',
+              type: 'address',
+            },
+            {
+              name: 'artist',
               type: 'address',
             },
             { name: 'isMinted', type: 'bool' },

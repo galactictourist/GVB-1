@@ -4,14 +4,14 @@ import { BigNumber, Event } from 'ethers';
 import { Interface } from 'ethers/lib/utils';
 import {
   BlockchainNetwork,
-  getMarketplaceSmartContract,
+  getMarketplaceSmartContract
 } from '~/main/types/blockchain';
-import MarketAbi from './abi/market.json';
+import MarketAbi from "./abi/market.json";
 import { BaseSmartContractService } from './base-smart-contract.service';
 import {
   OrderCompletedEvent,
   OrderCompletedEventV1,
-  SaleCancelledEvent,
+  SaleCancelledEvent
 } from './types/event';
 
 @Injectable()
@@ -51,12 +51,11 @@ export class MarketSmartContractService extends BaseSmartContractService {
     return events.map((e) => this.formatSaleCancelledEvent(e));
   }
 
-  private formatSaleCancelledEvent(event: Event): SaleCancelledEvent {
-    const parsedEvent = this.abi.parseLog(event);
+  private formatSaleCancelledEvent(event: any): SaleCancelledEvent {
     return {
-      cancelResults: parsedEvent.args.cancelResults,
-      cancelStatus: parsedEvent.args.cancelStatus,
-      ordersHash: parsedEvent.args.ordersHash,
+      cancelResults: event.args.cancelResults,
+      cancelStatus: event.args.cancelStatus,
+      ordersHash: event.args.ordersHash,
       blockchainEvent: event,
     };
   }
@@ -83,13 +82,13 @@ export class MarketSmartContractService extends BaseSmartContractService {
     };
   }
 
-  private formatOrderCompletedEvent(event: Event): OrderCompletedEvent {
-    const parsedEvent = this.abi.parseLog(event);
+  private formatOrderCompletedEvent(event: any): OrderCompletedEvent {
+    console.log(JSON.stringify(event, null, 2));
+    // const parsedEvent = this.abi.parseLog(event);
     return {
-      ordersHash: parsedEvent.args.ordersHash,
-      ordersResult: parsedEvent.args.ordersResult,
-      ordersStatus: parsedEvent.args.ordersStatus,
-      orders: parsedEvent.args.orders,
+      ordersHash: event.args.ordersHash,
+      ordersResult: event.args.ordersResult,
+      ordersStatus: event.args.ordersStatus,
       blockchainEvent: event,
     };
   }

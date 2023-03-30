@@ -32,7 +32,7 @@ import { SearchNftDto } from './dto/search-nft.dto';
 import { UpdateNftDto } from './dto/update-nft.dto';
 import { NftEntity } from './entity/nft.entity';
 import { NftRepository } from './repository/nft.repository';
-import { NftImmutable } from './types';
+import { NftImmutable, NftStatus } from './types';
 
 @Injectable()
 export class NftService {
@@ -346,6 +346,60 @@ export class NftService {
       return true;
     } catch (e) {
       console.error('processNftTransfer failed', e);
+      return false;
+    }
+  }
+
+  async nftTransfer(
+    network: BlockchainNetwork,
+    nftId: string,
+    to: string
+  ) {
+    try {
+      const nft = await this.nftRepository.findOneByOrFail({
+        id: nftId,
+        network,
+      });
+
+      const owner = await this.userService.findOrCreateOneByWallet(to);
+
+      nft.ownerId = owner.id;
+      // if (isZeroAddress(from)) {
+      //   nft.mintedTxId = event.blockchainEvent.transactionHash;
+      // }
+      await this.nftRepository.save(nft);
+
+      return true;
+    } catch (e) {
+      console.error('nftTransfer failed', e);
+      return false;
+    }
+  }
+
+  async findNfts(
+    collectionId: string,
+    nftTokenId: number,
+    nftQuantityForList: number,
+    ownerId: string
+  ) {
+    try {
+      const nfts = await this.nftRepository.find({
+        where: {
+          collectionId: collectionId,
+          ownerId: ownerId,
+          isMinted: true,
+          status: NftStatus.ACTIVE
+        },
+        relations: {
+          owner: true,
+          collection: true
+        },
+        skip: nftTokenId,
+        take: nftQuantityForList,
+      });
+      return nfts;
+    } catch(e) {
+      console.error('FindNfts failed', e);
       return false;
     }
   }

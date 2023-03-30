@@ -1,13 +1,12 @@
 import { SaleContractData, TypedData } from '~/main/blockchain/types';
 import { BlockchainNetwork, CryptoCurrency } from '~/main/types/blockchain';
-import { CountryCode } from '~/main/types/country';
 
 export class SaleData {
   userId: string;
 
   nftId: string;
 
-  countryCode: CountryCode;
+  // countryCode: CountryCode;
 
   topicId: string;
 

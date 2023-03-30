@@ -24,7 +24,6 @@ export interface OrderCompletedEvent {
   ordersHash: string[];
   ordersResult: boolean[];
   ordersStatus: string[];
-  orders: any[];
   blockchainEvent: Event;
 }
 

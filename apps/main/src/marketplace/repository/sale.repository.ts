@@ -81,7 +81,7 @@ export class SaleRepository extends BaseRepository<SaleEntity> {
 
   generateSaleData(sale: SaleEntity): SaleData {
     if (
-      !sale.countryCode ||
+      // !sale.countryCode ||
       !sale.topicId ||
       !sale.charityId ||
       !sale.charityShare ||
@@ -96,7 +96,7 @@ export class SaleRepository extends BaseRepository<SaleEntity> {
     const saleData: SaleData = {
       userId: sale.userId,
       nftId: sale.nftId,
-      countryCode: sale.countryCode,
+      // countryCode: sale.countryCode,
       topicId: sale.topicId,
       charityId: sale.charityId,
       charityShare: sale.charityShare,

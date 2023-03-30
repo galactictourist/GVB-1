@@ -5,6 +5,7 @@ import { Public } from '~/main/auth/decorator/public.decorator';
 import { formatResponse, ResponseData } from '~/main/types/response-data';
 import { UserRequest } from '~/main/types/user-request';
 import { CreateSaleDto } from './dto/create-sale.dto';
+import { ListNftsDto } from './dto/list-nft.dto';
 import { SearchSaleDto } from './dto/search-sale.dto';
 import { SigningSaleDto } from './dto/signing-sale.dto';
 import { SaleEntity } from './entity/sale.entity';
@@ -78,6 +79,14 @@ export class SaleController {
       createSaleDto,
       request.user,
     );
+    return formatResponse(entity);
+  }
+
+  @Post('')
+  async listNftsByAdmin(
+    @Body() listNftsDto: ListNftsDto,
+  ): Promise<ResponseData<any>> {
+    const entity = await this.saleService.listNftsByAdmin(listNftsDto);
     return formatResponse(entity);
   }
 }
