@@ -60,7 +60,7 @@ export const BLOCKCHAIN_INFO: {
         name: 'GBCollection',
       } as const,
       marketplace: {
-        address: '0x307fC6Ecf3CA18153C451B30DFA2Db1334DF6B53',
+        address: '0x9bFe84A3c26dAFf7aD67E9ab1Cfc9C36C961AE51',
         name: 'GBMarketplace',
         version: '1.0.0',
         types: {

@@ -64,7 +64,7 @@ export class CollectionController {
     @Param('id') collectionId: string,
   ): Promise<ResponseData<any[]>> {
     const nfts = await this.collectionService.getNftsInCollection(collectionId);
-    return formatResponse(nfts.data);
+    return formatResponse(nfts);
   }
 
   @Post('')

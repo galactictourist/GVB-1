@@ -158,11 +158,19 @@ export class CollectionService {
       id: collectionId,
     });
     if (collection.status === CollectionStatus.PUBLISHED) {
-      const [data, total] = await this.nftRepository.findAndCountBy({
-        collectionId: collection.id,
+      // const [data, total] = await this.nftRepository.findAndCountBy({
+      //   collectionId: collection.id,
+      // });
+      const nfts = await this.nftRepository.find({
+        where: {
+          collectionId: collection.id,
+        },
+        order: {
+          tokenId: 'ASC'
+        }
       });
-      return { data, total };
+      return nfts;
     }
-    return { data: [], total: 0 };
+    return [];
   }
 }
