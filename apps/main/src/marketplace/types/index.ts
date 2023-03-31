@@ -8,3 +8,8 @@ export enum SaleStatus {
   CANCELLED = 'CANCELLED',
   FULFILLED = 'FULFILLED',
 }
+
+export enum CheckSale {
+  UNLIST = 'UNLIST',
+  BUY = 'BUY',
+}

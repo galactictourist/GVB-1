@@ -15,7 +15,9 @@ import { SignerService } from '../blockchain/signer.service';
 import { SaleContractData, TypedData } from '../blockchain/types';
 import { SaleCancelledEvent } from '../blockchain/types/event';
 import { CharityService } from '../charity/charity.service';
+import { NftStatus } from '../nft/types';
 import { UserService } from '../user/user.service';
+import { CheckSaleDto } from './dto/check-sale.dto';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { FilterSaleParam } from './dto/filter-sale.param';
 import { ListNftsDto } from './dto/list-nft.dto';
@@ -23,7 +25,7 @@ import { SearchSaleDto } from './dto/search-sale.dto';
 import { SigningSaleDto } from './dto/signing-sale.dto';
 import { SaleEntity } from './entity/sale.entity';
 import { SaleRepository } from './repository/sale.repository';
-import { SaleStatus } from './types';
+import { CheckSale, SaleStatus } from './types';
 import { RawSigningData, SaleData, SigningData } from './types/sale-data';
 
 @Injectable()
@@ -197,7 +199,6 @@ export class SaleService {
         getMarketplaceSmartContract(listNftsDto.network).address
       )
     }
-
     for(const nft of nfts) {
       const countExistingSale = await this.count(
         {
@@ -522,5 +523,40 @@ export class SaleService {
     await this.saleRepository.save(saleEntity);
 
     return saleEntity;
+  }
+
+  async checkSaleStatus(userId: string, checkSaleDto: CheckSaleDto) {
+    if (checkSaleDto.actionStatus == CheckSale.UNLIST) {
+      const saleEntity = await this.saleRepository.findOne({
+        where: {
+          userId: userId,
+          nftId: checkSaleDto.nftId,
+          status: SaleStatus.CANCELLED
+        }
+      });
+      if (saleEntity) {
+        return true;
+      }
+    } else if (checkSaleDto.actionStatus == CheckSale.BUY) {
+      const saleEntity = await this.saleRepository.findOne({
+        where: {
+          nftId: checkSaleDto.nftId,
+          status: SaleStatus.FULFILLED,
+          nft: {
+            status: NftStatus.ACTIVE,
+            isMinted: true,
+            ownerId: userId
+          }
+        },
+        relations: {
+          nft: true
+        }
+      });
+
+      if (saleEntity) {
+        return true;
+      }
+    }
+    return false;
   }
 }

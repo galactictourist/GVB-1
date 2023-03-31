@@ -1,13 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Bytes, utils, Wallet } from 'ethers';
+import { Bytes, providers, utils, Wallet } from 'ethers';
 import { IBlockchainConfig } from '~/main/config/blockchain.config';
 import { ConfigNamespace } from '~/main/types/config';
+import {
+  BlockchainNetwork,
+  getAllBlockchainNetworks
+} from '../types/blockchain';
 import { SaleContractData, TypedData } from './types';
 
 @Injectable()
 export class SignerService {
   constructor(private readonly configService: ConfigService) {}
+
+  protected getProvider(network: BlockchainNetwork) {
+    return new providers.JsonRpcProvider(
+      getAllBlockchainNetworks()[network].endpoints[0],
+    );
+  }
 
   private getSignerWallet() {
     const blockchainConfig = this.configService.getOrThrow<IBlockchainConfig>(
@@ -17,10 +27,13 @@ export class SignerService {
     return wallet;
   }
   
-  getAdminSellerWallet() {
+  getAdminSellerWallet(network?: BlockchainNetwork) {
     const ADMIN_SELLR_PK = String(process.env.ADMIN_SELLR_PK);
-    const wallet = new Wallet(ADMIN_SELLR_PK);
-    return wallet;
+    if(network) {
+      return new Wallet(ADMIN_SELLR_PK, this.getProvider(network));
+    } else {
+      return new Wallet(ADMIN_SELLR_PK);
+    }
   }
   
   // private async signMarket(

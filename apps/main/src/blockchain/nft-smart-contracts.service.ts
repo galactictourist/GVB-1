@@ -55,7 +55,7 @@ export class NftSmartContractService extends BaseSmartContractService {
     nftContractAddress: string,
     operator: string
   ) {
-    const adminSellerWallet = this.signerService.getAdminSellerWallet();
+    const adminSellerWallet = this.signerService.getAdminSellerWallet(network);
     const contract = this.getContract(
       network,
       nftContractAddress,

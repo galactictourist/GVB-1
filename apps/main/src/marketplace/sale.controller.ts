@@ -4,6 +4,7 @@ import { MoreThan } from 'typeorm';
 import { Public } from '~/main/auth/decorator/public.decorator';
 import { formatResponse, ResponseData } from '~/main/types/response-data';
 import { UserRequest } from '~/main/types/user-request';
+import { CheckSaleDto } from './dto/check-sale.dto';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { ListNftsDto } from './dto/list-nft.dto';
 import { SearchSaleDto } from './dto/search-sale.dto';
@@ -82,11 +83,21 @@ export class SaleController {
     return formatResponse(entity);
   }
 
-  @Post('')
+  @Public()
+  @Post('list/admin')
   async listNftsByAdmin(
     @Body() listNftsDto: ListNftsDto,
   ): Promise<ResponseData<any>> {
     const entity = await this.saleService.listNftsByAdmin(listNftsDto);
+    return formatResponse(entity);
+  }
+
+  @Post('check/tx_status')
+  async checkSaleStatus(
+    @Request() request: UserRequest,
+    @Body() checkSaleDto: CheckSaleDto,
+  ): Promise<ResponseData<any>> {
+    const entity = await this.saleService.checkSaleStatus(request.user.id, checkSaleDto);
     return formatResponse(entity);
   }
 }

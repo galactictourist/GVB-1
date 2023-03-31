@@ -2,7 +2,7 @@ import { BigNumberish, Contract, providers, Wallet } from 'ethers';
 import { Interface } from 'ethers/lib/utils';
 import {
   BlockchainNetwork,
-  getAllBlockchainNetworks,
+  getAllBlockchainNetworks
 } from '~/main/types/blockchain';
 
 interface Overrides {
