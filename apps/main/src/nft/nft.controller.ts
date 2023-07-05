@@ -7,12 +7,12 @@ import {
   Param,
   Post,
   Put,
-  Request
+  Request,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from '~/main/auth/decorator/public.decorator';
 import { BlockchainNetwork } from '~/main/types/blockchain';
-import { formatResponse, ResponseData } from '~/main/types/response-data';
+import { ResponseData, formatResponse } from '~/main/types/response-data';
 import { UserRequest } from '~/main/types/user-request';
 import { CreateNftDto } from './dto/create-nft.dto';
 import { ImportNftsDto } from './dto/import-nfts.dto';
@@ -142,12 +142,9 @@ export class NftController {
   async getNft(
     @Param('nftId') nftId: string,
   ): Promise<ResponseData<NftEntity>> {
-    const nft = await this.nftService.findById(
-      nftId, 
-      {
-        relations: { owner: true, collection: true, sales: true},
-      }
-    );
+    const nft = await this.nftService.findById(nftId, {
+      relations: { owner: true, collection: true, sales: true },
+    });
     if (!nft) {
       throw new NotFoundException();
     }

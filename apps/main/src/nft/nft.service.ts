@@ -1,7 +1,7 @@
 import {
   BadRequestException,
   Injectable,
-  NotFoundException
+  NotFoundException,
 } from '@nestjs/common';
 import { OwnedNftsResponse } from 'alchemy-sdk';
 import { isZeroAddress } from 'ethereumjs-util';
@@ -10,14 +10,14 @@ import {
   FindManyOptions,
   FindOneOptions,
   FindOptionsWhere,
-  In
+  In,
 } from 'typeorm';
 import { NftStorageService } from '~/main/shared/nft-storage.service';
 import { StorageService } from '~/main/storage/storage.service';
 import { StorageLabel } from '~/main/storage/types';
 import {
   BlockchainNetwork,
-  getErc721SmartContract
+  getErc721SmartContract,
 } from '~/main/types/blockchain';
 import { ContextUser } from '~/main/types/user-request';
 import { NftSmartContractService } from '../blockchain/nft-smart-contracts.service';
@@ -76,7 +76,11 @@ export class NftService {
     return result;
   }
 
-  async importNfts(importNftsDto: ImportNftsDto, wallet: string, collectionId?: string) {
+  async importNfts(
+    importNftsDto: ImportNftsDto,
+    wallet: string,
+    collectionId?: string,
+  ) {
     const userEntity = await this.userService.findOrCreateOneByWallet(wallet);
 
     const doImportNfts = async (nfts: OwnedNftsResponse) => {
@@ -350,11 +354,7 @@ export class NftService {
     }
   }
 
-  async nftTransfer(
-    network: BlockchainNetwork,
-    nftId: string,
-    to: string
-  ) {
+  async nftTransfer(network: BlockchainNetwork, nftId: string, to: string) {
     try {
       const nft = await this.nftRepository.findOneByOrFail({
         id: nftId,
@@ -380,7 +380,7 @@ export class NftService {
     collectionId: string,
     nftTokenId: number,
     nftQuantityForList: number,
-    ownerId: string
+    ownerId: string,
   ) {
     try {
       const nfts = await this.nftRepository.find({
@@ -388,17 +388,17 @@ export class NftService {
           collectionId: collectionId,
           ownerId: ownerId,
           isMinted: true,
-          status: NftStatus.ACTIVE
+          status: NftStatus.ACTIVE,
         },
         relations: {
           owner: true,
-          collection: true
+          collection: true,
         },
         skip: nftTokenId,
         take: nftQuantityForList,
       });
       return nfts;
-    } catch(e) {
+    } catch (e) {
       console.error('FindNfts failed', e);
       return false;
     }

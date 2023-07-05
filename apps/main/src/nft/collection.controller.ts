@@ -10,12 +10,12 @@ import {
   Put,
   Request,
   UploadedFile,
-  UseInterceptors
+  UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from '~/main/auth/decorator/public.decorator';
-import { formatResponse, ResponseData } from '~/main/types/response-data';
+import { ResponseData, formatResponse } from '~/main/types/response-data';
 import { UserRequest } from '~/main/types/user-request';
 import { appConfig } from '../config/app.config';
 import { StorageService } from '../storage/storage.service';
@@ -30,7 +30,7 @@ import { CollectionStatus } from './types';
 export class CollectionController {
   constructor(
     private readonly collectionService: CollectionService,
-    private readonly storageService: StorageService
+    private readonly storageService: StorageService,
   ) {}
 
   @Public()
@@ -51,10 +51,9 @@ export class CollectionController {
 
   @Public()
   @Get(':collection_id')
-  async getCollection(
-    @Param('collection_id') collectionId: string,
-  ) {
-    const collectionObject = await this.collectionService.searchCollectionByCollectionId(collectionId);
+  async getCollection(@Param('collection_id') collectionId: string) {
+    const collectionObject =
+      await this.collectionService.searchCollectionByCollectionId(collectionId);
     return formatResponse(collectionObject);
   }
 

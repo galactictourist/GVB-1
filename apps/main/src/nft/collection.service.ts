@@ -74,11 +74,11 @@ export class CollectionService {
         network: BlockchainNetwork.POLYGON_MUMBAI,
         nftContractAddress: createCollectionDto.contractAddress,
         owner: user.wallet,
-      }, 
-      String(user.wallet), 
-      collectionEntity.id
+      },
+      String(user.wallet),
+      collectionEntity.id,
     );
-    
+
     return collectionEntity;
   }
 
@@ -131,10 +131,20 @@ export class CollectionService {
   }
 
   async searchCollectionByCollectionId(collectionId: string) {
-    const collection = await this.collectionRepository.findOneByOrFail({
-      id: collectionId,
-      status: CollectionStatus.PUBLISHED
+    const collection = await this.collectionRepository.findOne({
+      where: {
+        id: collectionId,
+        status: CollectionStatus.PUBLISHED,
+      },
+      relations: {
+        topic: true,
+      },
     });
+    const causeId = collection?.topic?.parentId;
+    if (causeId) {
+      const topic = await this.topicService.getTopic(causeId);
+      return { ...collection, ...{ cause: topic.name } };
+    }
     return collection;
   }
 
@@ -166,8 +176,8 @@ export class CollectionService {
           collectionId: collection.id,
         },
         order: {
-          tokenId: 'ASC'
-        }
+          tokenId: 'ASC',
+        },
       });
       return nfts;
     }
