@@ -82,6 +82,11 @@ export class CreateNftDto {
   @IsString()
   description?: string;
 
+  @ApiProperty({ nullable: true, required: true })
+  @IsOptional()
+  @IsString()
+  collectionId?: string;
+
   @ApiProperty()
   @IsNumber()
   @Max(8000)

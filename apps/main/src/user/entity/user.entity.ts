@@ -19,6 +19,9 @@ export class UserEntity extends BaseElement {
   @Column({ nullable: true, length: 100 })
   name?: string;
 
+  @Column({ nullable: true, length: 300 })
+  description?: string;
+
   @Column({ type: 'varchar', enum: CountryCode, nullable: true, length: 2 })
   countryCode?: CountryCode;
 
@@ -38,6 +41,9 @@ export class UserEntity extends BaseElement {
     length: 20,
   })
   status: UserStatus;
+
+  @Column('jsonb', { nullable: true })
+  socialMedia?: object;
 
   isActive() {
     return this.status === UserStatus.ACTIVE;

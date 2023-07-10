@@ -22,6 +22,7 @@ import {
 import { ContextUser } from '~/main/types/user-request';
 import { NftSmartContractService } from '../blockchain/nft-smart-contracts.service';
 import { Erc721TransferEvent } from '../blockchain/types/event';
+import { TopicService } from '../charity/topic.service';
 import { randomUnit256 } from '../lib';
 import { AlchemyNftService } from '../shared/alchemy-nft.service';
 import { UserService } from '../user/user.service';
@@ -43,6 +44,7 @@ export class NftService {
     private readonly nftStorageService: NftStorageService,
     private readonly nftSmartContractService: NftSmartContractService,
     private readonly alchemyNftService: AlchemyNftService,
+    private readonly topicService: TopicService,
   ) {}
 
   async search(
@@ -124,6 +126,22 @@ export class NftService {
     return where;
   }
 
+  async findNft(nftId: string, { relations }: FindOneOptions<NftEntity> = {}) {
+    const nft = await this.nftRepository.findOne({
+      where: { id: nftId },
+      relationLoadStrategy: 'query',
+      relations,
+    });
+    if (nft && nft.collection && nft.collection.topicId) {
+      const topic = await this.topicService.getTopic(nft?.collection?.topicId);
+      if (topic && topic.parentId) {
+        const cause = await this.topicService.getTopic(topic.parentId);
+        return { ...nft, ...{ cause: cause } };
+      }
+    }
+    return nft;
+  }
+
   async findById(
     nftId: string,
     { relations }: FindOneOptions<NftEntity> = {},
@@ -202,6 +220,7 @@ export class NftService {
       tokenId: Number(randomUnit256()),
       imageStorageId: createNftDto.imageStorageId,
       rawMetadata: createNftDto.metadata,
+      collectionId: createNftDto.collectionId,
       imageUrl,
     });
 

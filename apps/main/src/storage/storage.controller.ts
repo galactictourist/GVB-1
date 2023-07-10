@@ -6,11 +6,11 @@ import {
   Post,
   Request,
   UploadedFile,
-  UseInterceptors
+  UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { formatResponse, ResponseData } from '~/main/types/response-data';
+import { ResponseData, formatResponse } from '~/main/types/response-data';
 import { UserRequest } from '~/main/types/user-request';
 import { appConfig } from '../config/app.config';
 import { UploadCollectionImageDto } from './dto/upload-collection-image.dto';
@@ -76,6 +76,34 @@ export class StorageController {
     const storage = await this.storageService.storePublicReadFile(file, {
       ownerId: request.user.id,
       label: StorageLabel.COLLECTION_IMAGE,
+    });
+    return formatResponse(storage);
+  }
+
+  @Post('profile/image')
+  @ApiBearerAuth()
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    type: UploadNftImageDto,
+  })
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadProfileImage(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: new RegExp('.(jpg|jpeg|png)$') }),
+          new MaxFileSizeValidator({
+            maxSize: appConfig().maxFileUploadSize,
+          }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+    @Request() request: UserRequest,
+  ): Promise<ResponseData<StorageEntity>> {
+    const storage = await this.storageService.storePublicReadFile(file, {
+      ownerId: request.user.id,
+      label: StorageLabel.PROFILE_IMAGE,
     });
     return formatResponse(storage);
   }
