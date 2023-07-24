@@ -11,7 +11,7 @@ export class TopicService {
   constructor(
     private readonly topicRepository: TopicRepository,
     private readonly charityTopicRepository: CharityTopicRepository,
-    private readonly collectionRepository: CollectionRepository
+    private readonly collectionRepository: CollectionRepository,
   ) {}
 
   async getTopics(where: FindOptionsWhere<TopicEntity> = {}) {
@@ -28,7 +28,7 @@ export class TopicService {
       where: {
         isParent: true,
         status: TopicStatus.ACTIVE,
-      }
+      },
     });
     return topParents;
   }
@@ -41,7 +41,7 @@ export class TopicService {
         children: {
           id: true,
           name: true,
-        }
+        },
       },
       relations: {
         children: true,
@@ -49,7 +49,7 @@ export class TopicService {
       where: {
         isParent: true,
         status: TopicStatus.ACTIVE,
-      }
+      },
     });
     return topParents;
   }
@@ -72,7 +72,7 @@ export class TopicService {
     let topicCollectionData: any[] = [];
     let whereQuery: any = {
       status: TopicStatus.ACTIVE,
-      isParent: true
+      isParent: true,
     };
     if (topicId) {
       whereQuery['id'] = topicId;
@@ -89,10 +89,10 @@ export class TopicService {
       relations: {
         children: true,
       },
-      where: whereQuery
+      where: whereQuery,
     });
     if (topicData && topicData.length) {
-      for(const topic of topicData) {
+      for (const topic of topicData) {
         let topicIdAry: any[] = [];
         for (const childTopic of topic.children) {
           topicIdAry.push(childTopic.id);
@@ -105,14 +105,14 @@ export class TopicService {
             imageUrl: true,
           },
           where: {
-            topicId: In([...topicIdAry])
-          }
+            topicId: In([...topicIdAry]),
+          },
         });
         topicCollectionData.push({
           id: topic.id,
           name: topic.name,
-          collections: collectionData
-        })
+          collections: collectionData,
+        });
       }
       return topicCollectionData;
     } else {

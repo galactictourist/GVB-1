@@ -14,6 +14,7 @@ import { Public } from '~/main/auth/decorator/public.decorator';
 import { BlockchainNetwork } from '~/main/types/blockchain';
 import { ResponseData, formatResponse } from '~/main/types/response-data';
 import { UserRequest } from '~/main/types/user-request';
+import { CollectionService } from './collection.service';
 import { CreateNftDto } from './dto/create-nft.dto';
 import { ImportNftsDto } from './dto/import-nfts.dto';
 import { SearchNftDto } from './dto/search-nft.dto';
@@ -25,7 +26,10 @@ import { NftStatus } from './types';
 @Controller('nfts')
 @ApiTags('nft')
 export class NftController {
-  constructor(private readonly nftService: NftService) {}
+  constructor(
+    private readonly nftService: NftService,
+    private collectionService: CollectionService,
+  ) {}
 
   @Public()
   @Post('_search')
@@ -60,6 +64,34 @@ export class NftController {
         page: result.page,
       },
     });
+  }
+
+  @Post('_search/causes')
+  @ApiBearerAuth()
+  async searchMyCauses(@Request() request: UserRequest) {
+    const result = await this.nftService.search(
+      {},
+      {
+        ownerId: request.user.id,
+      },
+    );
+
+    const collectionIds = [];
+    const causes = [];
+    for (const res of result.data || []) {
+      if (res.collectionId && collectionIds.indexOf(res.collectionId) == -1)
+        collectionIds.push(res.collectionId);
+    }
+
+    for (let collectionId of collectionIds) {
+      const collection: any =
+        await this.collectionService.searchCollectionByCollectionId(
+          collectionId,
+        );
+      causes.push(collection);
+    }
+
+    return formatResponse(causes);
   }
 
   @Public()

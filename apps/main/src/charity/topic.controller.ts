@@ -22,7 +22,7 @@ export class TopicController {
     const causes = await this.topicService.getCauseTopics();
     return formatResponse(causes);
   }
-  
+
   @Public()
   @Get('causes/childs')
   async getCauseChilds() {

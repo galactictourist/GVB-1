@@ -31,7 +31,7 @@ export class NftEntity extends BaseElement {
 
   @Column({
     nullable: false,
-    default: 0
+    default: 0,
   })
   tokenId: number;
 
@@ -107,13 +107,13 @@ export class NftEntity extends BaseElement {
   @Column('int', { default: 0 })
   royalty: number;
 
-  @Column({ 
+  @Column({
     nullable: false,
     default: '',
   })
   tokenUri?: string;
-  
-  @Column({ 
+
+  @Column({
     nullable: false,
     default: false,
   })
