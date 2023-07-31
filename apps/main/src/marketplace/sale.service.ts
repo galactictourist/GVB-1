@@ -6,7 +6,9 @@ import { randomUnit256 } from '~/main/lib';
 import { NftService } from '~/main/nft/nft.service';
 import {
   BlockchainNetwork,
-  CryptoCurrency, getMarketplaceSmartContract, isCryptoCurrencyEnabled
+  CryptoCurrency,
+  getMarketplaceSmartContract,
+  isCryptoCurrencyEnabled,
 } from '~/main/types/blockchain';
 import { ContextUser } from '~/main/types/user-request';
 import { MarketSmartContractService } from '../blockchain/market-smart-contracts.service';
@@ -37,7 +39,7 @@ export class SaleService {
     private readonly charityService: CharityService,
     private readonly userService: UserService,
     private readonly marketSmartContractService: MarketSmartContractService,
-    private readonly nftMarketplaceContractService: NftSmartContractService
+    private readonly nftMarketplaceContractService: NftSmartContractService,
   ) {}
 
   async search(
@@ -126,12 +128,15 @@ export class SaleService {
     signingSaleDto: SigningSaleDto,
     user: ContextUser,
   ): Promise<SigningData> {
-    const {saleEntity, artistAddress} = await this._createSaleEntity(signingSaleDto, user);
+    const { saleEntity, artistAddress } = await this._createSaleEntity(
+      signingSaleDto,
+      user,
+    );
     const saleData = this.saleRepository.generateSaleData(saleEntity);
     const signingData = this.saleRepository.generateTypedData(
       saleEntity,
       saleData.salt,
-      artistAddress
+      artistAddress,
     );
     const rawSigningData: RawSigningData = {
       saleData,
@@ -165,14 +170,12 @@ export class SaleService {
       listNftsDto.collectionId,
       listNftsDto.nftTokenId,
       listNftsDto.listNftQuantity,
-      owner.id
+      owner.id,
     );
     if (!nfts) {
       throw new BadRequestException('Cannot find nfts');
     }
-    const charity = await this.charityService.getCharity(
-      listNftsDto.charityId,
-    );
+    const charity = await this.charityService.getCharity(listNftsDto.charityId);
     if (!charity) {
       throw new BadRequestException('Charity is invalid');
     }
@@ -186,20 +189,21 @@ export class SaleService {
       throw new BadRequestException('Charity wallet is invalid');
     }
 
-    const isApprovedForAll = await this.nftMarketplaceContractService.isApprovedForAll(
-      listNftsDto.network,
-      String(nfts[0].scAddress),
-      ADMIN_SELLR_ADDRESS,
-      getMarketplaceSmartContract(listNftsDto.network).address
-    );
+    const isApprovedForAll =
+      await this.nftMarketplaceContractService.isApprovedForAll(
+        listNftsDto.network,
+        String(nfts[0].scAddress),
+        ADMIN_SELLR_ADDRESS,
+        getMarketplaceSmartContract(listNftsDto.network).address,
+      );
     if (!isApprovedForAll) {
       await this.nftMarketplaceContractService.setApprovalForAllByAdmin(
         listNftsDto.network,
         String(nfts[0].scAddress),
-        getMarketplaceSmartContract(listNftsDto.network).address
-      )
+        getMarketplaceSmartContract(listNftsDto.network).address,
+      );
     }
-    for(const nft of nfts) {
+    for (const nft of nfts) {
       const countExistingSale = await this.count(
         {
           userIds: [String(nft.owner?.id)],
@@ -213,10 +217,10 @@ export class SaleService {
         continue;
       }
       const expiredAt = DateTime.now()
-      .plus({
-        minutes: listNftsDto.expiryInMinutes,
-      })
-      .toJSDate();
+        .plus({
+          minutes: listNftsDto.expiryInMinutes,
+        })
+        .toJSDate();
 
       // create sale entity from sale data
       const sale = this.saleRepository.create({
@@ -236,7 +240,7 @@ export class SaleService {
       const signData = this.saleRepository.generateTypedData(
         sale,
         salt,
-        String(nft.collection?.artistAddress)
+        String(nft.collection?.artistAddress),
       );
       const sellerSignature = await this.signerService.signBySeller(signData);
 
@@ -261,7 +265,7 @@ export class SaleService {
 
       // save sale entity
       await sale.save();
-    };
+    }
   }
 
   async createSale(
@@ -315,7 +319,11 @@ export class SaleService {
 
     // generate signedData
     const signedData: TypedData<SaleContractData> =
-      this.saleRepository.generateTypedData(sale, saleData.salt, String(nft.collection?.artistAddress));
+      this.saleRepository.generateTypedData(
+        sale,
+        saleData.salt,
+        String(nft.collection?.artistAddress),
+      );
     sale.signedData = signedData;
     sale.hash = _TypedDataEncoder
       .from(signedData.types)
@@ -437,8 +445,8 @@ export class SaleService {
     });
 
     return {
-      saleEntity, 
-      artistAddress: String(nft.collection?.artistAddress)
+      saleEntity,
+      artistAddress: String(nft.collection?.artistAddress),
     };
   }
 
@@ -531,8 +539,8 @@ export class SaleService {
         where: {
           userId: userId,
           nftId: checkSaleDto.nftId,
-          status: SaleStatus.CANCELLED
-        }
+          status: SaleStatus.CANCELLED,
+        },
       });
       if (saleEntity) {
         return true;
@@ -545,12 +553,12 @@ export class SaleService {
           nft: {
             status: NftStatus.ACTIVE,
             isMinted: true,
-            ownerId: userId
-          }
+            ownerId: userId,
+          },
         },
         relations: {
-          nft: true
-        }
+          nft: true,
+        },
       });
 
       if (saleEntity) {

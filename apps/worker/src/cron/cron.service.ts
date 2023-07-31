@@ -10,7 +10,8 @@ import { SaleService } from '~/main/marketplace/sale.service';
 import { NftService } from '~/main/nft/nft.service';
 import {
   BlockchainNetwork,
-  getEnabledBlockchainNetworks, getMarketplaceSmartContract
+  getEnabledBlockchainNetworks,
+  getMarketplaceSmartContract,
 } from '~/main/types/blockchain';
 import { ConfigNamespace } from '~/main/types/config';
 
@@ -146,37 +147,40 @@ export class CronService {
             const scAddress = getMarketplaceSmartContract(
               BlockchainNetwork[network],
             ).address;
-            const eventProcess = await this.eventProcessService.getEventProcess(
-              BlockchainNetwork[network],
-              scAddress,
-              eventName,
-              ContractStandard.GAB_MARKETPLACE_V1,
-            );
-            if (eventProcess && eventProcess.isActive()) {
-              const blockNumber =
-                await this.marketSmartContractService.getCurrentBlockNumber(
-                  BlockchainNetwork[network],
-                );
-              const startBlockNumber =
-                eventProcess.endBlockNumber ||
-                eventProcess.beginBlockNumber ||
-                blockNumber - 1;
-              const endBlockNumber = Math.min(
-                startBlockNumber + this.MAX_BLOCK,
-                blockNumber,
-              );
-              const result = await this.saleService.processCancelledSales(
+            console.log('address', scAddress);
+            // const eventProcess = await this.eventProcessService.getEventProcess(
+            //   BlockchainNetwork[network],
+            //   scAddress,
+            //   eventName,
+            //   ContractStandard.GAB_MARKETPLACE_V1,
+            // );
+            // console.log(eventProcess);
+            // if (eventProcess && eventProcess.isActive()) {
+            const blockNumber =
+              await this.marketSmartContractService.getCurrentBlockNumber(
                 BlockchainNetwork[network],
-                startBlockNumber + 1,
-                endBlockNumber,
               );
-              await this.eventProcessService.updateEventProcess(
-                eventProcess.id,
-                eventProcess.endBlockNumber,
-                endBlockNumber,
-              );
-              return result;
-            }
+            const startBlockNumber =
+              // eventProcess.endBlockNumber ||
+              // eventProcess.beginBlockNumber ||
+              blockNumber - 1;
+            const endBlockNumber = Math.min(
+              startBlockNumber + this.MAX_BLOCK,
+              blockNumber,
+            );
+            const result = await this.saleService.processCancelledSales(
+              BlockchainNetwork[network],
+              startBlockNumber + 1,
+              endBlockNumber,
+            );
+            console.log(result, blockNumber, startBlockNumber, endBlockNumber);
+            // await this.eventProcessService.updateEventProcess(
+            //   eventProcess.id,
+            //   eventProcess.endBlockNumber,
+            //   endBlockNumber,
+            // );
+            return result;
+            // }
           } catch (e: unknown) {
             console.error('Error', e);
             throw e;
