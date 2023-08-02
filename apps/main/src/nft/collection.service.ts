@@ -104,7 +104,7 @@ export class CollectionService {
     let topic: TopicEntity | undefined;
     if (updateCollectionDto.topicId) {
       topic = await this.topicService.getTopic(updateCollectionDto.topicId);
-      if (!topic || topic.parentId) {
+      if (!topic || topic.isParent) {
         throw new BadRequestException('Topic is invalid');
       }
     }

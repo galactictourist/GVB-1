@@ -52,9 +52,9 @@ export class CollectionEntity extends BaseElement {
   })
   topic?: TopicEntity;
 
-  @Column({ 
-    nullable: false, 
-    default: ''
+  @Column({
+    nullable: false,
+    default: '',
   })
   artistAddress: string;
 

@@ -1,5 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEthereumAddress, IsOptional, IsString, IsUUID } from 'class-validator';
+import {
+  IsEthereumAddress,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 import { StorageLabel } from '~/main/storage/types';
 import { IsStorageId } from '~/main/storage/validator/is-storage-id.validator';
 
