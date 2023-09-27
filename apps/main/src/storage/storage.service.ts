@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DeepPartial, FindOptionsWhere } from 'typeorm';
+import { DataSource, DeepPartial, FindOptionsWhere } from 'typeorm';
 import { uuid } from '~/main/lib';
 import { cleanUpFilename } from '~/main/lib/file';
 import { S3Service } from '~/main/shared/s3.service';
@@ -12,6 +12,7 @@ export class StorageService {
   constructor(
     private readonly storageRepository: StorageRepository,
     private readonly s3Service: S3Service,
+    private readonly dataSource: DataSource,
   ) {}
 
   private generatePath(originalname: string, uuidName?: string) {
@@ -54,5 +55,35 @@ export class StorageService {
     });
     await storageEntity.save();
     return storageEntity;
+  }
+
+  async storePublicFiles(
+    files: Array<Express.Multer.File>,
+    defaults?: DeepPartial<StorageEntity>,
+  ): Promise<StorageEntity[]> {
+    const storageEntities: StorageEntity[] = [];
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const uuidName = uuid();
+      const s3Info = await this.s3Service.uploadPublicRead(
+        this.generatePath(file.originalname, uuidName),
+        file.buffer,
+      );
+      console.log(s3Info);
+      const storageEntity: StorageEntity = this.storageRepository.create({
+        ...defaults,
+        id: uuidName,
+        url: s3Info.url,
+        path: s3Info.storagePath,
+        location: StorageLocation.S3,
+        size: file.size,
+        mimetype: file.mimetype,
+        originalname: file.originalname,
+      });
+      storageEntities.push(storageEntity);
+      console.log(storageEntity);
+    }
+    console.log(storageEntities);
+    return await this.dataSource.manager.save(storageEntities);
   }
 }

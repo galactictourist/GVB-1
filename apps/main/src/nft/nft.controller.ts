@@ -198,11 +198,28 @@ export class NftController {
     return formatResponse(nft);
   }
 
+  @Post('bulk')
+  @ApiBearerAuth()
+  async uploadBulkNfts(
+    @Request() request: UserRequest,
+    @Body() createNftDto: CreateNftDto[],
+  ): Promise<ResponseData<NftEntity[]>> {
+    console.log(createNftDto);
+    const nft = await this.nftService.bulkUpload(
+      createNftDto,
+      {
+        ownerId: request.user.id,
+        status: NftStatus.ACTIVE,
+      },
+      request.user,
+    );
+    return formatResponse(nft);
+  }
   // @Post(':id/mint')
   // @ApiBearerAuth()
   // async generateSignature(
   //   @Param('id') id: string,
-  //   @Body() mintNftDto: MintNftDto,
+  //   @Body() mintNftDto: MintNftDto
   //   @Request() request: UserRequest,
   // ): Promise<ResponseData<object>> {
   //   const result = await this.nftService.mint(id, mintNftDto, request.user);

@@ -6,6 +6,7 @@ import {
 import { OwnedNftsResponse } from 'alchemy-sdk';
 import { isZeroAddress } from 'ethereumjs-util';
 import {
+  DataSource,
   DeepPartial,
   FindManyOptions,
   FindOneOptions,
@@ -45,6 +46,7 @@ export class NftService {
     private readonly nftSmartContractService: NftSmartContractService,
     private readonly alchemyNftService: AlchemyNftService,
     private readonly topicService: TopicService,
+    private readonly dataSource: DataSource,
   ) {}
 
   async search(
@@ -226,6 +228,47 @@ export class NftService {
 
     await nftEntity.save();
     return nftEntity;
+  }
+
+  async bulkUpload(
+    createNftDto: CreateNftDto[],
+    defaults: DeepPartial<NftEntity>,
+    user: ContextUser,
+  ) {
+    const nfts: NftEntity[] = [];
+    for (let i = 0; i < createNftDto.length; i++) {
+      let imageUrl: string | undefined;
+      const nftdto = createNftDto[i];
+      if (nftdto.imageStorageId) {
+        try {
+          const storage = await this.storageService.getStorage({
+            id: nftdto.imageStorageId,
+            ownerId: user.id,
+            label: StorageLabel.NFT_IMAGE,
+          });
+          imageUrl = storage.url;
+        } catch (e) {
+          throw new BadRequestException('Invalid file');
+        }
+      }
+
+      const nftEntity = this.nftRepository.create({
+        ...defaults,
+        name: nftdto.name,
+        description: nftdto.description,
+        royalty: nftdto.royalty,
+        network: nftdto.network,
+        scAddress: getErc721SmartContract(nftdto.network).address,
+        tokenId: Number(randomUnit256()),
+        imageStorageId: nftdto.imageStorageId,
+        rawMetadata: nftdto.metadata,
+        collectionId: nftdto.collectionId,
+        imageUrl,
+      });
+
+      nfts.push(nftEntity);
+    }
+    return await this.dataSource.manager.save(nfts);
   }
 
   async updateNft(id: string, updateNftDto: UpdateNftDto, user: ContextUser) {

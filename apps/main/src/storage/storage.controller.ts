@@ -6,9 +6,10 @@ import {
   Post,
   Request,
   UploadedFile,
+  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { ResponseData, formatResponse } from '~/main/types/response-data';
 import { UserRequest } from '~/main/types/user-request';
@@ -23,6 +24,21 @@ import { StorageLabel } from './types';
 @ApiTags('storage')
 export class StorageController {
   constructor(private readonly storageService: StorageService) {}
+
+  @Post('nft/images')
+  @ApiBearerAuth()
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(AnyFilesInterceptor())
+  async uploadImages(
+    @UploadedFiles() files: Array<Express.Multer.File>,
+    @Request() request: UserRequest,
+  ) {
+    const storage = await this.storageService.storePublicFiles(files, {
+      ownerId: request.user.id,
+      label: StorageLabel.NFT_IMAGE,
+    });
+    return formatResponse(storage);
+  }
 
   @Post('nft/image')
   @ApiBearerAuth()
