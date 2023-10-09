@@ -2,6 +2,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as bodyParser from 'body-parser';
 import { useContainer } from 'class-validator';
 import { AppModule } from './app.module';
 import { IAppConfig } from './config/app.config';
@@ -27,6 +28,8 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({ forbidUnknownValues: true, whitelist: true }),
   );
+
+  app.use(bodyParser.json({ limit: '50mb' }));
 
   const swaggerConfig = configService.getOrThrow<ISwaggerConfig>(
     ConfigNamespace.SWAGGER,
