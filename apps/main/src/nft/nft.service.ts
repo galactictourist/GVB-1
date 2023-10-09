@@ -256,6 +256,7 @@ export class NftService {
         ...defaults,
         name: nftdto.name,
         description: nftdto.description,
+        attributes: nftdto.attributes,
         royalty: nftdto.royalty,
         network: nftdto.network,
         scAddress: getErc721SmartContract(nftdto.network).address,

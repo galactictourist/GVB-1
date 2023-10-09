@@ -108,4 +108,10 @@ export class CreateNftDto {
   @IsUUID()
   @IsStorageId({ label: StorageLabel.NFT_IMAGE })
   imageStorageId?: string;
+
+  @ApiProperty({ nullable: true, required: false })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => MetadataAttributeDto)
+  attributes?: MetadataAttributeDto[];
 }
