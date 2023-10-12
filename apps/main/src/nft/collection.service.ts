@@ -72,7 +72,7 @@ export class CollectionService {
     this.nftService.importNfts(
       {
         network: BlockchainNetwork.POLYGON_MUMBAI,
-        nftContractAddress: createCollectionDto.contractAddress,
+        nftContractAddress: process.env.CONTRACT_ADDRESS?.toString() || '',
         owner: user.wallet,
       },
       String(user.wallet),
