@@ -10,11 +10,6 @@ export class CreateCollectionDto {
   @IsString()
   description: string;
 
-  @ApiProperty()
-  @IsString()
-  @IsEthereumAddress({ message: 'Not a valid Ethereum address.' })
-  contractAddress: string;
-
   // @ApiProperty({ nullable: true, required: false })
   // @IsOptional()
   // @IsUUID()

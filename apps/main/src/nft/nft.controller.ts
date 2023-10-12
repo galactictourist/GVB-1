@@ -8,12 +8,14 @@ import {
   Post,
   Put,
   Request,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { Public } from '~/main/auth/decorator/public.decorator';
 import { BlockchainNetwork } from '~/main/types/blockchain';
 import { ResponseData, formatResponse } from '~/main/types/response-data';
 import { UserRequest } from '~/main/types/user-request';
+import { JwtAdminAuthGuard } from '../auth/guard/jwt-admin-auth.guard';
 import { CollectionService } from './collection.service';
 import { CreateNftDto } from './dto/create-nft.dto';
 import { ImportNftsDto } from './dto/import-nfts.dto';
@@ -48,8 +50,9 @@ export class NftController {
     });
   }
 
+  @Public()
   @Post('_search/mine')
-  @ApiBearerAuth()
+  @UseGuards(JwtAdminAuthGuard)
   async searchMine(
     @Request() request: UserRequest,
     @Body() searchNftDto: SearchNftDto,
@@ -66,8 +69,9 @@ export class NftController {
     });
   }
 
+  @Public()
   @Post('_search/causes')
-  @ApiBearerAuth()
+  @UseGuards(JwtAdminAuthGuard)
   async searchMyCauses(@Request() request: UserRequest) {
     const result = await this.nftService.search(
       {},
@@ -110,8 +114,9 @@ export class NftController {
     return formatResponse(result);
   }
 
+  @Public()
   @Post('import/mine')
-  @ApiBearerAuth()
+  @UseGuards(JwtAdminAuthGuard)
   async immportNft(
     @Request() request: UserRequest,
     @Body() importNftsDto: ImportNftsDto,
@@ -181,8 +186,9 @@ export class NftController {
     return formatResponse(nft);
   }
 
+  @Public()
   @Post('')
-  @ApiBearerAuth()
+  @UseGuards(JwtAdminAuthGuard)
   async createNft(
     @Request() request: UserRequest,
     @Body() createNftDto: CreateNftDto,
@@ -198,8 +204,9 @@ export class NftController {
     return formatResponse(nft);
   }
 
+  @Public()
   @Post('bulk')
-  @ApiBearerAuth()
+  @UseGuards(JwtAdminAuthGuard)
   async uploadBulkNfts(
     @Request() request: UserRequest,
     @Body() createNftDto: CreateNftDto[],
@@ -215,6 +222,7 @@ export class NftController {
     );
     return formatResponse(nft);
   }
+
   // @Post(':id/mint')
   // @ApiBearerAuth()
   // async generateSignature(
@@ -230,8 +238,9 @@ export class NftController {
   //   });
   // }
 
+  @Public()
   @Put(':id/immutable')
-  @ApiBearerAuth()
+  @UseGuards(JwtAdminAuthGuard)
   async setImmutable(
     @Param('id') id: string,
     @Request() request: UserRequest,
@@ -240,8 +249,9 @@ export class NftController {
     return formatResponse(result);
   }
 
+  @Public()
   @Put(':id')
-  @ApiBearerAuth()
+  @UseGuards(JwtAdminAuthGuard)
   async updateNft(
     @Param('id') id: string,
     @Request() request: UserRequest,
