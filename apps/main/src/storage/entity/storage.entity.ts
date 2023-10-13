@@ -1,6 +1,6 @@
 import { Column, Entity, Index, ManyToOne } from 'typeorm';
 import { BaseElement } from '~/main/lib/database/base-element';
-import { UserEntity } from '../../user/entity/user.entity';
+import { AdminEntity } from '~/main/user/entity/admin.entity';
 import { StorageLabel, StorageLocation } from '../types';
 
 @Entity({ name: 'storage' })
@@ -9,8 +9,8 @@ export class StorageEntity extends BaseElement {
   @Column('uuid', { nullable: true })
   ownerId: string | null;
 
-  @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
-  owner: UserEntity | null;
+  @ManyToOne(() => AdminEntity, (admin) => admin.id, { nullable: true })
+  owner: AdminEntity | null;
 
   @Column({
     type: 'varchar',

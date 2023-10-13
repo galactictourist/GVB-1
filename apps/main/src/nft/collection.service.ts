@@ -67,7 +67,6 @@ export class CollectionService {
     });
 
     await collectionEntity.save();
-    console.log('collectionEntity', collectionEntity);
 
     this.nftService.importNfts(
       {

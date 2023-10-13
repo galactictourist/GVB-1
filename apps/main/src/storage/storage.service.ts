@@ -69,7 +69,7 @@ export class StorageService {
         this.generatePath(file.originalname, uuidName),
         file.buffer,
       );
-      console.log(s3Info);
+
       const storageEntity: StorageEntity = this.storageRepository.create({
         ...defaults,
         id: uuidName,
@@ -81,9 +81,8 @@ export class StorageService {
         originalname: file.originalname,
       });
       storageEntities.push(storageEntity);
-      console.log(storageEntity);
     }
-    console.log(storageEntities);
+
     return await this.dataSource.manager.save(storageEntities);
   }
 }
