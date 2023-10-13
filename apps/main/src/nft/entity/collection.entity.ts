@@ -2,7 +2,7 @@ import { Column, Entity, Index, ManyToOne, OneToMany } from 'typeorm';
 import { TopicEntity } from '~/main/charity/entity/topic.entity';
 import { BaseElement } from '~/main/lib/database/base-element';
 import { StorageEntity } from '~/main/storage/entity/storage.entity';
-import { AdminEntity } from '~/main/user/entity/admin.entity';
+import { UserEntity } from '~/main/user/entity/user.entity';
 import { CollectionStatus } from '../types';
 import { NftEntity } from './nft.entity';
 
@@ -21,8 +21,8 @@ export class CollectionEntity extends BaseElement {
   @Column('uuid')
   ownerId: string;
 
-  @ManyToOne(() => AdminEntity, (admin) => admin.id)
-  owner: AdminEntity;
+  @ManyToOne(() => UserEntity, (user) => user.id)
+  owner: UserEntity;
 
   @Column('uuid', { nullable: true })
   imageStorageId: string | null;
