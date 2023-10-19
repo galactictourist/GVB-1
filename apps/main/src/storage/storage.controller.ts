@@ -14,7 +14,6 @@ import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { ResponseData, formatResponse } from '~/main/types/response-data';
 import { UserRequest } from '~/main/types/user-request';
-import { Public } from '../auth/decorator/public.decorator';
 import { JwtAdminAuthGuard } from '../auth/guard/jwt-admin-auth.guard';
 import { appConfig } from '../config/app.config';
 import { UploadCollectionImageDto } from './dto/upload-collection-image.dto';
@@ -28,9 +27,8 @@ import { StorageLabel } from './types';
 export class StorageController {
   constructor(private storageService: StorageService) {}
 
-  @Public()
   @Post('nft/images')
-  @UseGuards(JwtAdminAuthGuard)
+  @ApiBearerAuth()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(AnyFilesInterceptor())
   async uploadImages(
