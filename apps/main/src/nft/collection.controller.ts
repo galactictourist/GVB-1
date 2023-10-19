@@ -14,7 +14,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from '~/main/auth/decorator/public.decorator';
 import { ResponseData, formatResponse } from '~/main/types/response-data';
 import { UserRequest } from '~/main/types/user-request';
@@ -68,9 +68,8 @@ export class CollectionController {
     return formatResponse(nfts);
   }
 
-  @Public()
   @Post('')
-  @UseGuards(JwtAdminAuthGuard)
+  @ApiBearerAuth()
   @UseInterceptors(FileInterceptor('file'))
   async createCollection(
     @UploadedFile(
@@ -87,6 +86,7 @@ export class CollectionController {
     @Request() request: UserRequest,
     @Body() createCollectionDto: CreateCollectionDto,
   ): Promise<ResponseData<any>> {
+    console.log(request.user);
     const collection = await this.collectionService.createCollection(
       file,
       createCollectionDto,
