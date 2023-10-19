@@ -211,7 +211,6 @@ export class NftController {
     @Request() request: UserRequest,
     @Body() createNftDto: CreateNftDto[],
   ): Promise<ResponseData<NftEntity[]>> {
-    console.log(createNftDto);
     const nft = await this.nftService.bulkUpload(
       createNftDto,
       {

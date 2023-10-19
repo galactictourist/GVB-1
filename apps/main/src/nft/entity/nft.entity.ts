@@ -53,6 +53,9 @@ export class NftEntity extends BaseElement {
   @Column({ nullable: true })
   description?: string;
 
+  @Column({ nullable: true })
+  type?: string;
+
   @Column('jsonb', { nullable: true })
   attributes?: MetadataAttribute[];
 

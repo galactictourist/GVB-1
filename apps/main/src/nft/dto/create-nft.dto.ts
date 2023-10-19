@@ -17,7 +17,7 @@ import { StorageLabel } from '~/main/storage/types';
 import { IsStorageId } from '~/main/storage/validator/is-storage-id.validator';
 import { BlockchainNetwork } from '~/main/types/blockchain';
 import { IsActiveNetwork } from '~/main/types/validator/is-active-network.validator';
-import { DisplayType, MetadataAttribute } from '../types';
+import { DisplayType, MetadataAttribute, NftType } from '../types';
 
 class MetadataAttributeDto implements MetadataAttribute {
   @ApiProperty({ nullable: true, required: false })
@@ -85,6 +85,11 @@ export class CreateNftDto {
   @ApiProperty({ nullable: true, required: true })
   @IsOptional()
   @IsString()
+  url?: string;
+
+  @ApiProperty({ nullable: true, required: true })
+  @IsOptional()
+  @IsString()
   collectionId?: string;
 
   @ApiProperty()
@@ -108,6 +113,11 @@ export class CreateNftDto {
   @IsUUID()
   @IsStorageId({ label: StorageLabel.NFT_IMAGE })
   imageStorageId?: string;
+
+  @ApiProperty({ enum: NftType, nullable: true, required: false })
+  @IsOptional()
+  @IsString()
+  type?: string;
 
   @ApiProperty({ nullable: true, required: false })
   @IsOptional()
