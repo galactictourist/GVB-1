@@ -10,7 +10,7 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from '~/main/auth/decorator/public.decorator';
 import { BlockchainNetwork } from '~/main/types/blockchain';
 import { ResponseData, formatResponse } from '~/main/types/response-data';
@@ -204,9 +204,8 @@ export class NftController {
     return formatResponse(nft);
   }
 
-  @Public()
   @Post('bulk')
-  @UseGuards(JwtAdminAuthGuard)
+  @ApiBearerAuth()
   async uploadBulkNfts(
     @Request() request: UserRequest,
     @Body() createNftDto: CreateNftDto[],
