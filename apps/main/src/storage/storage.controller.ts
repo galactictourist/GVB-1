@@ -7,12 +7,15 @@ import {
   Request,
   UploadedFile,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { ResponseData, formatResponse } from '~/main/types/response-data';
 import { UserRequest } from '~/main/types/user-request';
+import { Public } from '../auth/decorator/public.decorator';
+import { JwtAdminAuthGuard } from '../auth/guard/jwt-admin-auth.guard';
 import { appConfig } from '../config/app.config';
 import { UploadCollectionImageDto } from './dto/upload-collection-image.dto';
 import { UploadNftImageDto } from './dto/upload-nft-image.dto';
@@ -23,17 +26,18 @@ import { StorageLabel } from './types';
 @Controller('storage')
 @ApiTags('storage')
 export class StorageController {
-  constructor(private readonly storageService: StorageService) {}
+  constructor(private storageService: StorageService) {}
 
+  @Public()
   @Post('nft/images')
-  @ApiBearerAuth()
+  @UseGuards(JwtAdminAuthGuard)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(AnyFilesInterceptor())
   async uploadImages(
-    @UploadedFiles() files: Array<Express.Multer.File>,
+    @UploadedFiles() rawFiles: Array<Express.Multer.File>,
     @Request() request: UserRequest,
   ) {
-    const storage = await this.storageService.storePublicFiles(files, {
+    const storage = await this.storageService.storePublicFiles(rawFiles, {
       ownerId: request.user.id,
       label: StorageLabel.NFT_IMAGE,
     });
@@ -41,7 +45,7 @@ export class StorageController {
   }
 
   @Post('nft/image')
-  @ApiBearerAuth()
+  @UseGuards(JwtAdminAuthGuard)
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     type: UploadNftImageDto,

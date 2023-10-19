@@ -16,7 +16,7 @@ export async function readFile(path: string) {
 export function randomUnit256() {
   const heads = '123456789';
   const tails = '0123456789';
-  const length = 76;
+  const length = 7;
   let randomStr = '';
 
   for (let i = 0; i < length; i++) {

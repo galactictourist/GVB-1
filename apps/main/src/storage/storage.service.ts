@@ -83,6 +83,6 @@ export class StorageService {
       storageEntities.push(storageEntity);
     }
 
-    return await this.dataSource.manager.save(storageEntities);
+    return this.dataSource.manager.save(storageEntities);
   }
 }

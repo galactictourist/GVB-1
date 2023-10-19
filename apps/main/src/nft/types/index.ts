@@ -13,6 +13,11 @@ export enum NftImmutable {
   YES = 'YES',
 }
 
+export enum NftType {
+  IMAGE = 'IMAGE',
+  VIDEO = 'VIDEO',
+}
+
 export enum DisplayType {
   BOOST_NUMBER = 'boost_number',
   BOOST_PERCENTAGE = 'boost_percentage',

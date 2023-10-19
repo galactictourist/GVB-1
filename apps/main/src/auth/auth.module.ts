@@ -47,6 +47,6 @@ import { Web3Strategy } from './strategy/web3.strategy';
     JwtAdminStrategy,
     LocalAdminStrategy,
   ],
-  exports: [NonceRepository],
+  exports: [AuthService, NonceRepository],
 })
 export class AuthModule {}

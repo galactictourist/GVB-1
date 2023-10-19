@@ -174,9 +174,6 @@ export class CollectionService {
         where: {
           collectionId: collection.id,
         },
-        order: {
-          tokenId: 'ASC',
-        },
       });
       return nfts;
     }
