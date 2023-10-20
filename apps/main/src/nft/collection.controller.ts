@@ -14,11 +14,12 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { Public } from '~/main/auth/decorator/public.decorator';
 import { ResponseData, formatResponse } from '~/main/types/response-data';
 import { UserRequest } from '~/main/types/user-request';
 import { JwtAdminAuthGuard } from '../auth/guard/jwt-admin-auth.guard';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { appConfig } from '../config/app.config';
 import { StorageService } from '../storage/storage.service';
 import { CollectionService } from './collection.service';
@@ -69,7 +70,7 @@ export class CollectionController {
   }
 
   @Post('')
-  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file'))
   async createCollection(
     @UploadedFile(
