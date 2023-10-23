@@ -12,10 +12,12 @@ import {
 } from '@nestjs/common';
 import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { File } from 'nft.storage';
 import { ResponseData, formatResponse } from '~/main/types/response-data';
 import { UserRequest } from '~/main/types/user-request';
 import { JwtAdminAuthGuard } from '../auth/guard/jwt-admin-auth.guard';
 import { appConfig } from '../config/app.config';
+import { NftStorageService } from '../shared/nft-storage.service';
 import { UploadCollectionImageDto } from './dto/upload-collection-image.dto';
 import { UploadNftImageDto } from './dto/upload-nft-image.dto';
 import { StorageEntity } from './entity/storage.entity';
@@ -25,7 +27,10 @@ import { StorageLabel } from './types';
 @Controller('storage')
 @ApiTags('storage')
 export class StorageController {
-  constructor(private storageService: StorageService) {}
+  constructor(
+    private storageService: StorageService,
+    private nftStorageService: NftStorageService,
+  ) {}
 
   @Post('nft/images')
   @ApiBearerAuth()
@@ -35,11 +40,22 @@ export class StorageController {
     @UploadedFiles() rawFiles: Array<Express.Multer.File>,
     @Request() request: UserRequest,
   ) {
-    const storage = await this.storageService.storePublicFiles(rawFiles, {
-      ownerId: request.user.id,
-      label: StorageLabel.NFT_IMAGE,
+    const files = rawFiles.map((rawFile) => {
+      return new File([rawFile.buffer], rawFile.originalname, {
+        type: rawFile.mimetype,
+      });
     });
-    return formatResponse(storage);
+
+    const ipfsUrl = await this.nftStorageService.uploadFiles(files);
+    const storageEntities = await this.storageService.storePublicFiles(
+      rawFiles,
+      {
+        ownerId: request.user.id,
+        label: StorageLabel.NFT_IMAGE,
+      },
+    );
+
+    return formatResponse({ storageEntities, ipfsUrl });
   }
 
   @Post('nft/image')

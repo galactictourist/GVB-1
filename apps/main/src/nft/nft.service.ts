@@ -259,6 +259,7 @@ export class NftService {
           rawMetadata: nftdto.metadata,
           collectionId: nftdto.collectionId,
           imageUrl: nftdto.url,
+          imageIpfsUrl: nftdto.imageIpfsUrl,
         });
 
         nfts.push(nftEntity);
@@ -293,7 +294,7 @@ export class NftService {
     }
     if (!nftEntity.isImmutable()) {
       const metadata = await nftEntity.generateMetadata();
-      const cid = await this.nftStorageService.upload(metadata);
+      const cid = await this.nftStorageService.uploadMetadata(metadata);
       nftEntity.immutable = NftImmutable.YES;
       nftEntity.metadataIpfsUrl = nftEntity.getMetadataIpfsPath(cid.toString());
       await nftEntity.save();

@@ -114,6 +114,11 @@ export class CreateNftDto {
   @IsStorageId({ label: StorageLabel.NFT_IMAGE })
   imageStorageId?: string;
 
+  @ApiProperty({ nullable: true, required: false })
+  @IsOptional()
+  @IsString()
+  imageIpfsUrl?: string;
+
   @ApiProperty({ enum: NftType, nullable: true, required: false })
   @IsOptional()
   @IsString()
