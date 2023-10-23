@@ -14,11 +14,10 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from '~/main/auth/decorator/public.decorator';
 import { ResponseData, formatResponse } from '~/main/types/response-data';
 import { UserRequest } from '~/main/types/user-request';
-import { JwtAdminAuthGuard } from '../auth/guard/jwt-admin-auth.guard';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { appConfig } from '../config/app.config';
 import { StorageService } from '../storage/storage.service';
@@ -35,6 +34,22 @@ export class CollectionController {
     private readonly collectionService: CollectionService,
     private readonly storageService: StorageService,
   ) {}
+
+  @Public()
+  @Post('all')
+  async getAllCollection(
+    @Body() searchCollectionDto: FilterCollectionDto,
+  ): Promise<ResponseData<any[]>> {
+    const collections = await this.collectionService.searchCollectionByOwners(
+      searchCollectionDto,
+      {},
+    );
+    return formatResponse(collections.data, {
+      pagination: {
+        total: collections.total,
+      },
+    });
+  }
 
   @Public()
   @Post('_search')
@@ -91,15 +106,14 @@ export class CollectionController {
     const collection = await this.collectionService.createCollection(
       file,
       createCollectionDto,
-      { ownerId: request.user.id, status: CollectionStatus.PUBLISHED },
+      { ownerId: request.user.id, status: CollectionStatus.DRAFT },
       request.user,
     );
     return formatResponse(collection);
   }
 
-  @Public()
   @Put(':id')
-  @UseGuards(JwtAdminAuthGuard)
+  @ApiBearerAuth()
   async updateCollection(
     @Param('id') collectionId: string,
     @Request() request: UserRequest,

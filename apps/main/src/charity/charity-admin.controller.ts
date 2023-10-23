@@ -15,9 +15,8 @@ import { RolesGuard } from '~/main/auth/guard/roles.guard';
 import { formatResponse } from '~/main/types/response-data';
 import { AdminRole } from '~/main/user/types';
 import { CharityAdminService } from './charity-admin.service';
-import { CreateCharityAdminDto } from './dto/create-charity-admin.dto';
+import { CharityDto } from './dto/charity.dto';
 import { CreateCharityTopicAdminDto } from './dto/create-charity-topic-admin.dto';
-import { UpdateCharityAdminDto } from './dto/update-charity-admin.dto';
 
 @Controller('admin/charities')
 @Public()
@@ -35,21 +34,19 @@ export class CharityAdminController {
   }
 
   @Post('')
-  async createCharity(@Body() createCharityAdminDto: CreateCharityAdminDto) {
-    const charity = await this.charityAdminService.createCharity(
-      createCharityAdminDto,
-    );
+  async createCharity(@Body() charityDto: CharityDto) {
+    const charity = await this.charityAdminService.createCharity(charityDto);
     return formatResponse(charity);
   }
 
   @Put(':charityId')
   async updateCharity(
     @Param('charityId') charityId: string,
-    @Body() updateCharityAdminDto: UpdateCharityAdminDto,
+    @Body() charityDto: CharityDto,
   ) {
     const charity = await this.charityAdminService.updateCharity(
       charityId,
-      updateCharityAdminDto,
+      charityDto,
     );
     return formatResponse(charity);
   }

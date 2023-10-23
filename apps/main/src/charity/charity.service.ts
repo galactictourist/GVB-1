@@ -12,8 +12,13 @@ export class CharityService {
   ) {}
 
   async getActiveCharities() {
-    const [data, count] = await this.charityRepository.findAndCountBy({
-      status: CharityStatus.ACTIVE,
+    const [data, count] = await this.charityRepository.findAndCount({
+      relations: {
+        charityTopics: true,
+      },
+      where: {
+        status: CharityStatus.ACTIVE,
+      },
     });
     return { data, count };
   }

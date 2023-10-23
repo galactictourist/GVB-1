@@ -117,6 +117,7 @@ export class CollectionService {
     collectionEntity.name = updateCollectionDto.name;
     collectionEntity.artistAddress = updateCollectionDto.artistAddress;
     collectionEntity.description = updateCollectionDto.description;
+    collectionEntity.status = CollectionStatus[updateCollectionDto.status];
     if (updateCollectionDto.imageStorageId) {
       collectionEntity.imageStorageId = updateCollectionDto.imageStorageId;
       collectionEntity.imageUrl = imageUrl;
@@ -133,7 +134,6 @@ export class CollectionService {
     const collection = await this.collectionRepository.findOne({
       where: {
         id: collectionId,
-        status: CollectionStatus.PUBLISHED,
       },
       relations: {
         topic: true,
