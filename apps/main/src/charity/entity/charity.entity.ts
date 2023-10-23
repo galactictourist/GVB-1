@@ -20,7 +20,9 @@ export class CharityEntity extends BaseElement {
   })
   status: CharityStatus;
 
-  @OneToMany(() => CharityTopicEntity, (charityTopic) => charityTopic.charity)
+  @OneToMany(() => CharityTopicEntity, (charityTopic) => charityTopic.charity, {
+    cascade: true,
+  })
   charityTopics: CharityTopicEntity[];
 
   @OneToMany(() => SaleEntity, (nft) => nft.charity)

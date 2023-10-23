@@ -1,8 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { DeepPartial, FindOptionsWhere } from 'typeorm';
-import { CreateCharityAdminDto } from './dto/create-charity-admin.dto';
+import { CharityDto } from './dto/charity.dto';
 import { CreateCharityTopicAdminDto } from './dto/create-charity-topic-admin.dto';
-import { UpdateCharityAdminDto } from './dto/update-charity-admin.dto';
 import { CharityTopicEntity } from './entity/charity-topic.entity';
 import { CharityEntity } from './entity/charity.entity';
 import { CharityTopicRepository } from './repository/charity-topic.repository';
@@ -28,12 +27,20 @@ export class CharityAdminService {
     return { data, count };
   }
 
-  async createCharity(createCharityDto: CreateCharityAdminDto) {
+  async createCharity(charityDto: CharityDto) {
     const charity = this.charityRepository.create({
-      name: createCharityDto.name,
-      status: createCharityDto.status || CharityStatus.ACTIVE,
+      name: charityDto.name,
+      status: charityDto.status || CharityStatus.ACTIVE,
     });
     await charity.save();
+
+    const charityTopic = this.charityTopicRepository.create({
+      charityId: charity.id,
+      topicId: charityDto.causeId,
+      wallet: charityDto.wallet,
+    });
+    await charityTopic.save();
+
     return charity;
   }
 
@@ -64,15 +71,28 @@ export class CharityAdminService {
     return charityTopic;
   }
 
-  async updateCharity(id: string, updateCharityDto: UpdateCharityAdminDto) {
-    const charity = await this.charityRepository.findOneByOrFail({ id });
-    if (updateCharityDto.name) {
-      charity.name = updateCharityDto.name;
+  async updateCharity(id: string, charityDto: CharityDto) {
+    const charity = await this.charityRepository.findOne({
+      relations: {
+        charityTopics: true,
+      },
+      where: {
+        id,
+      },
+    });
+
+    if (charity) {
+      charity.name = charityDto.name;
+      charity.charityTopics[0].topicId = charityDto.causeId;
+      charity.charityTopics[0].wallet = charityDto.wallet;
+
+      if (charityDto.status) {
+        charity.status = charityDto.status;
+      }
+      await charity.save();
+      return charity;
     }
-    if (updateCharityDto.status) {
-      charity.status = updateCharityDto.status;
-    }
-    await charity.save();
-    return charity;
+
+    throw new BadRequestException('Charity is invalid');
   }
 }

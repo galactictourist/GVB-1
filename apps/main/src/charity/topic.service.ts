@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { FindOptionsWhere, In } from 'typeorm';
 import { CollectionRepository } from '../nft/repository/collection.repository';
+import { CollectionStatus } from '../nft/types';
 import { TopicEntity } from './entity/topic.entity';
 import { CharityTopicRepository } from './repository/charity-topic.repository';
 import { TopicRepository } from './repository/topic.repository';
@@ -106,6 +107,7 @@ export class TopicService {
           },
           where: {
             topicId: In([...topicIdAry]),
+            status: CollectionStatus.PUBLISHED,
           },
         });
         topicCollectionData.push({
