@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guard/jwt-auth.guard';
+import { BatchModule } from './batch/batch.module';
 import { BlockchainModule } from './blockchain/blockchain.module';
 import { CharityModule } from './charity/charity.module';
 import { configs } from './config';
@@ -24,6 +25,7 @@ import { UserModule } from './user/user.module';
     UserModule,
     AuthModule,
     NftModule,
+    BatchModule,
     CharityModule,
     MarketplaceModule,
     SharedModule,

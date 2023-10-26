@@ -26,6 +26,7 @@ import { Erc721TransferEvent } from '../blockchain/types/event';
 import { TopicService } from '../charity/topic.service';
 import { randomUnit256 } from '../lib';
 import { AlchemyNftService } from '../shared/alchemy-nft.service';
+import { AdminRepository } from '../user/repository/admin.repository';
 import { UserService } from '../user/user.service';
 import { CreateNftDto } from './dto/create-nft.dto';
 import { FilterNftParam } from './dto/filter-nft.param';
@@ -39,6 +40,7 @@ import { NftImmutable, NftStatus } from './types';
 @Injectable()
 export class NftService {
   constructor(
+    private readonly adminRepository: AdminRepository,
     private readonly nftRepository: NftRepository,
     private readonly userService: UserService,
     private readonly storageService: StorageService,
@@ -272,9 +274,9 @@ export class NftService {
     const nftEntity = await this.nftRepository.findOneByOrFail({
       id,
     });
-    if (nftEntity.ownerId !== user.id) {
-      throw new BadRequestException('NFT owner mismatch');
-    }
+
+    await this.adminRepository.findOneByOrFail({ id: user.id });
+
     if (nftEntity.isImmutable()) {
       throw new BadRequestException('NFT is immutable');
     }
@@ -289,9 +291,9 @@ export class NftService {
     const nftEntity = await this.nftRepository.findOneByOrFail({
       id,
     });
-    if (nftEntity.ownerId !== user.id) {
-      throw new BadRequestException('NFT owner mismatch');
-    }
+
+    await this.adminRepository.findOneByOrFail({ id: user.id });
+
     if (!nftEntity.isImmutable()) {
       const metadata = await nftEntity.generateMetadata();
       const cid = await this.nftStorageService.uploadMetadata(metadata);

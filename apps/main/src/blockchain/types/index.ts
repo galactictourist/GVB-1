@@ -38,3 +38,15 @@ export interface SaleContractData extends Record<string, any> {
   deadline: number;
   salt: string;
 }
+
+export interface BatchContractData extends Record<string, any> {
+  nftContract: string;
+  itemType: ItemType;
+  seller: string;
+  artist: string;
+  charityAddress: string;
+  charityShare: number;
+  royaltyFee: number;
+  deadline: number;
+  salt: string;
+}

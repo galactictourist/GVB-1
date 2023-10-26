@@ -44,6 +44,44 @@ interface BlockchainConfig {
   currency: { [key in CryptoCurrency]: TokenInfo };
 }
 
+export const batchTypes = {
+  Batch: [
+    {
+      name: 'nftContract',
+      type: 'address',
+    },
+    {
+      name: 'itemType',
+      type: 'uint256',
+    },
+    {
+      name: 'seller',
+      type: 'address',
+    },
+    {
+      name: 'artist',
+      type: 'address',
+    },
+    {
+      name: 'charityAddress',
+      type: 'address',
+    },
+    {
+      name: 'charityShare',
+      type: 'uint96',
+    },
+    {
+      name: 'royaltyFee',
+      type: 'uint96',
+    },
+    {
+      name: 'deadline',
+      type: 'uint256',
+    },
+    { name: 'salt', type: 'uint256' },
+  ],
+};
+
 export const BLOCKCHAIN_INFO: {
   [key in BlockchainNetwork]: BlockchainConfig;
 } = {
@@ -52,7 +90,9 @@ export const BLOCKCHAIN_INFO: {
     chainId: 80001,
     alchemyNetwork: Network.MATIC_MUMBAI,
     name: 'Polygon Testnet - Mumbai',
-    endpoints: ['https://polygon-mumbai.g.alchemy.com/v2/2nMHQF5YQQybtCijNX-tNWi9qo7PObMx'],
+    endpoints: [
+      'https://polygon-mumbai.g.alchemy.com/v2/2nMHQF5YQQybtCijNX-tNWi9qo7PObMx',
+    ],
     explorer: 'https://mumbai.polygonscan.com',
     constract: {
       erc721: {
