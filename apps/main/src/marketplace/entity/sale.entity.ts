@@ -1,4 +1,5 @@
 import { Column, Entity, Index, ManyToOne } from 'typeorm';
+import { BatchEntity } from '~/main/batch/entity/batch.entity';
 import { TypedData } from '~/main/blockchain/types';
 import { CharityEntity } from '~/main/charity/entity/charity.entity';
 import { TopicEntity } from '~/main/charity/entity/topic.entity';
@@ -8,7 +9,7 @@ import { CountryCode } from '~/main/types/country';
 import {
   BlockchainNetwork,
   CryptoCurrency,
-  mulCryptoAmount
+  mulCryptoAmount,
 } from '../../types/blockchain';
 import { UserEntity } from '../../user/entity/user.entity';
 import { SaleStatus } from '../types';
@@ -21,6 +22,7 @@ import { SaleStatus } from '../types';
 @Index('sale_topicId_idx', ['topicId'])
 @Index('sale_expiredAt_idx', ['expiredAt'])
 @Index('sale_status_idx', ['status'])
+@Index('sale_batch_idx', ['batchId'])
 export class SaleEntity extends BaseElement {
   @Column('uuid')
   userId: string;
@@ -65,6 +67,12 @@ export class SaleEntity extends BaseElement {
 
   @ManyToOne(() => TopicEntity, (topic) => topic.sales, { nullable: true })
   topic?: TopicEntity;
+
+  @Column('uuid', { nullable: true })
+  batchId?: string;
+
+  @ManyToOne(() => BatchEntity, (batch) => batch.nfts, { nullable: true })
+  batch?: BatchEntity;
 
   @Column({ type: 'varchar', enum: CountryCode, length: 2, nullable: true })
   countryCode?: CountryCode;

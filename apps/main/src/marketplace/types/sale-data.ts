@@ -1,4 +1,8 @@
-import { SaleContractData, TypedData } from '~/main/blockchain/types';
+import {
+  BatchContractData,
+  SaleContractData,
+  TypedData,
+} from '~/main/blockchain/types';
 import { BlockchainNetwork, CryptoCurrency } from '~/main/types/blockchain';
 
 export class SaleData {
@@ -26,7 +30,7 @@ export class SaleData {
 
   expiredAt: number;
 
-  salt: string; // 77-length number string = uint256
+  salt?: string; // 77-length number string = uint256
 }
 
 export interface RawSigningData {
@@ -34,8 +38,21 @@ export interface RawSigningData {
   saleData: SaleData;
 }
 
+export interface RawBatchData {
+  signingData: TypedData<BatchContractData>;
+  batch: Batch;
+}
+
 export interface SigningData {
   signingData: string;
   saleData: string;
   serverSignature: string;
+}
+
+export interface Batch {
+  collectionId: string;
+  charityId: string;
+  charityShare: number;
+  nfts: SaleData[];
+  salt: string;
 }

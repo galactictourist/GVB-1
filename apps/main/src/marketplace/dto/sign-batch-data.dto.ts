@@ -1,0 +1,75 @@
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsArray,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsUUID,
+  Max,
+  Min,
+} from 'class-validator';
+import { BlockchainNetwork, CryptoCurrency } from '~/main/types/blockchain';
+import { CountryCode } from '~/main/types/country';
+import { IsActiveNetwork } from '~/main/types/validator/is-active-network.validator';
+
+class NftItem {
+  @ApiProperty()
+  @IsUUID('4')
+  id: string;
+
+  @ApiProperty()
+  @IsNumber({ maxDecimalPlaces: 18 })
+  @IsPositive()
+  price: number;
+
+  @ApiProperty()
+  @IsNumber({ maxDecimalPlaces: 7 })
+  @IsPositive()
+  rank: number;
+}
+
+export class SignBatchDataDto {
+  @ApiProperty({ enum: CountryCode, nullable: true, required: false })
+  @IsOptional()
+  @IsEnum(CountryCode)
+  countryCode?: CountryCode;
+
+  @ApiProperty()
+  @IsUUID('4')
+  @IsOptional()
+  collectionId: string;
+
+  @ApiProperty()
+  @IsUUID('4')
+  @IsOptional()
+  topicId: string;
+
+  @ApiProperty()
+  @IsUUID('4')
+  charityId: string;
+
+  @ApiProperty()
+  @IsNumber()
+  @Min(1000)
+  @Max(10000)
+  charityShare: number;
+
+  @ApiProperty({ enum: BlockchainNetwork })
+  @IsEnum(BlockchainNetwork)
+  @IsActiveNetwork()
+  network: BlockchainNetwork;
+
+  @ApiProperty({ enum: CryptoCurrency })
+  @IsEnum(CryptoCurrency)
+  currency: CryptoCurrency;
+
+  @ApiProperty()
+  @IsNumber()
+  @Min(15)
+  expiryInMinutes: number;
+
+  @ApiProperty()
+  @IsArray()
+  nfts: NftItem[];
+}

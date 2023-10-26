@@ -1,4 +1,5 @@
 import { NonceEntity } from '../auth/entity/nonce.entity';
+import { BatchEntity } from '../batch/entity/batch.entity';
 import { EventProcessEntity } from '../blockchain/entity/event-process.entity';
 import { CharityTopicEntity } from '../charity/entity/charity-topic.entity';
 import { CharityEntity } from '../charity/entity/charity.entity';
@@ -24,4 +25,5 @@ export const entities = [
   StorageEntity,
   UserEntity,
   AdminEntity,
+  BatchEntity,
 ];

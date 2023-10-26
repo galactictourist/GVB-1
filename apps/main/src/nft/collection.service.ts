@@ -6,6 +6,7 @@ import { TopicService } from '../charity/topic.service';
 import { StorageService } from '../storage/storage.service';
 import { StorageLabel } from '../storage/types';
 import { BlockchainNetwork } from '../types/blockchain';
+import { AdminRepository } from '../user/repository/admin.repository';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { FilterCollectionDto } from './dto/filter-collection.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
@@ -18,6 +19,7 @@ import { CollectionStatus } from './types';
 @Injectable()
 export class CollectionService {
   constructor(
+    private readonly adminRepository: AdminRepository,
     private readonly collectionRepository: CollectionRepository,
     private readonly storageService: StorageService,
     private readonly nftRepository: NftRepository,
@@ -111,9 +113,9 @@ export class CollectionService {
     const collectionEntity = await this.collectionRepository.findOneByOrFail({
       id,
     });
-    if (collectionEntity.ownerId !== user.id) {
-      throw new BadRequestException('Collection owner mismatch');
-    }
+
+    await this.adminRepository.findOneByOrFail({ id: user.id });
+
     collectionEntity.name = updateCollectionDto.name;
     collectionEntity.artistAddress = updateCollectionDto.artistAddress;
     collectionEntity.description = updateCollectionDto.description;

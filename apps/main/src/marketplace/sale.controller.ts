@@ -2,12 +2,13 @@ import { Body, Controller, Post, Request } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { MoreThan } from 'typeorm';
 import { Public } from '~/main/auth/decorator/public.decorator';
-import { formatResponse, ResponseData } from '~/main/types/response-data';
+import { ResponseData, formatResponse } from '~/main/types/response-data';
 import { UserRequest } from '~/main/types/user-request';
 import { CheckSaleDto } from './dto/check-sale.dto';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { ListNftsDto } from './dto/list-nft.dto';
 import { SearchSaleDto } from './dto/search-sale.dto';
+import { SignBatchDataDto } from './dto/sign-batch-data.dto';
 import { SigningSaleDto } from './dto/signing-sale.dto';
 import { SaleEntity } from './entity/sale.entity';
 import { SaleService } from './sale.service';
@@ -70,6 +71,19 @@ export class SaleController {
     return formatResponse(data);
   }
 
+  @Post('signNftBatch')
+  @ApiBearerAuth()
+  async generateSignBatchData(
+    @Request() request: UserRequest,
+    @Body() signBatchDataDto: SignBatchDataDto,
+  ) {
+    const data = await this.saleService.generateSignBatchData(
+      signBatchDataDto,
+      request.user,
+    );
+    return formatResponse(data);
+  }
+
   @Post('')
   @ApiBearerAuth()
   async createSale(
@@ -77,6 +91,19 @@ export class SaleController {
     @Body() createSaleDto: CreateSaleDto,
   ): Promise<ResponseData<any>> {
     const entity = await this.saleService.createSale(
+      createSaleDto,
+      request.user,
+    );
+    return formatResponse(entity);
+  }
+
+  @Post('batch')
+  @ApiBearerAuth()
+  async createBatchSale(
+    @Request() request: UserRequest,
+    @Body() createSaleDto: CreateSaleDto,
+  ): Promise<ResponseData<any>> {
+    const entity = await this.saleService.createBatchSale(
       createSaleDto,
       request.user,
     );
@@ -97,7 +124,10 @@ export class SaleController {
     @Request() request: UserRequest,
     @Body() checkSaleDto: CheckSaleDto,
   ): Promise<ResponseData<any>> {
-    const entity = await this.saleService.checkSaleStatus(request.user.id, checkSaleDto);
+    const entity = await this.saleService.checkSaleStatus(
+      request.user.id,
+      checkSaleDto,
+    );
     return formatResponse(entity);
   }
 }
