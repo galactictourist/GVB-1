@@ -152,7 +152,6 @@ export class NftService {
   ): Promise<NftEntity | null> {
     const nft = await this.nftRepository.findOne({
       where: { id: nftId },
-      relationLoadStrategy: 'query',
       relations,
     });
     return nft;
@@ -275,8 +274,6 @@ export class NftService {
       id,
     });
 
-    await this.adminRepository.findOneByOrFail({ id: user.id });
-
     if (nftEntity.isImmutable()) {
       throw new BadRequestException('NFT is immutable');
     }
@@ -291,8 +288,6 @@ export class NftService {
     const nftEntity = await this.nftRepository.findOneByOrFail({
       id,
     });
-
-    await this.adminRepository.findOneByOrFail({ id: user.id });
 
     if (!nftEntity.isImmutable()) {
       const metadata = await nftEntity.generateMetadata();
