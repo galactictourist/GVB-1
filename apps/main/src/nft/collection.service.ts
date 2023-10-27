@@ -93,7 +93,6 @@ export class CollectionService {
       try {
         const storage = await this.storageService.getStorage({
           id: updateCollectionDto.imageStorageId,
-          ownerId: user.id,
           label: StorageLabel.COLLECTION_IMAGE,
         });
         imageUrl = storage.url;
@@ -113,8 +112,6 @@ export class CollectionService {
     const collectionEntity = await this.collectionRepository.findOneByOrFail({
       id,
     });
-
-    await this.adminRepository.findOneByOrFail({ id: user.id });
 
     collectionEntity.name = updateCollectionDto.name;
     collectionEntity.artistAddress = updateCollectionDto.artistAddress;
