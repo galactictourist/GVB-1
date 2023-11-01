@@ -16,6 +16,7 @@ import { BlockchainNetwork } from '~/main/types/blockchain';
 import { ResponseData, formatResponse } from '~/main/types/response-data';
 import { UserRequest } from '~/main/types/user-request';
 import { JwtAdminAuthGuard } from '../auth/guard/jwt-admin-auth.guard';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { CollectionService } from './collection.service';
 import { CreateNftDto } from './dto/create-nft.dto';
 import { ImportNftsDto } from './dto/import-nfts.dto';
@@ -50,9 +51,8 @@ export class NftController {
     });
   }
 
-  @Public()
   @Post('_search/mine')
-  @UseGuards(JwtAdminAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async searchMine(
     @Request() request: UserRequest,
     @Body() searchNftDto: SearchNftDto,
@@ -69,9 +69,8 @@ export class NftController {
     });
   }
 
-  @Public()
   @Post('_search/causes')
-  @UseGuards(JwtAdminAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async searchMyCauses(@Request() request: UserRequest) {
     const result = await this.nftService.search(
       {},
