@@ -157,8 +157,14 @@ export class CollectionService {
       where.ownerId = In(searchCollectionDto.ownerIds);
     }
 
-    const [data, total] = await this.collectionRepository.findAndCountBy(where);
-    return { data, total };
+    const [data, count] = await this.collectionRepository.findAndCount({
+      where,
+      order: {
+        name: 'DESC',
+      },
+    });
+
+    return { data, total: count };
   }
 
   async getNftsInCollection(collectionId: string) {
