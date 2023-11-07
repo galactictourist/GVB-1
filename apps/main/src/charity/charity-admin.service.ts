@@ -16,7 +16,13 @@ export class CharityAdminService {
   ) {}
 
   async getCharities(where: FindOptionsWhere<CharityEntity> = {}) {
-    const [data, count] = await this.charityRepository.findAndCountBy(where);
+    const [data, count] = await this.charityRepository.findAndCount({
+      where,
+      order: {
+        name: 'DESC',
+      },
+    });
+
     return { data, count };
   }
 

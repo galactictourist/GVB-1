@@ -19,6 +19,9 @@ export class CharityService {
       where: {
         status: CharityStatus.ACTIVE,
       },
+      order: {
+        name: 'ASC',
+      },
     });
     return { data, count };
   }
