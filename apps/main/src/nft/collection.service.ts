@@ -7,6 +7,7 @@ import { StorageService } from '../storage/storage.service';
 import { StorageLabel } from '../storage/types';
 import { BlockchainNetwork } from '../types/blockchain';
 import { AdminRepository } from '../user/repository/admin.repository';
+import { UserRepository } from '../user/repository/user.repository';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { FilterCollectionDto } from './dto/filter-collection.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
@@ -23,6 +24,7 @@ export class CollectionService {
     private readonly collectionRepository: CollectionRepository,
     private readonly storageService: StorageService,
     private readonly nftRepository: NftRepository,
+    private readonly userRepository: UserRepository,
     private readonly topicService: TopicService,
     private readonly nftService: NftService,
   ) {}
@@ -164,7 +166,19 @@ export class CollectionService {
       },
     });
 
-    return { data, total: count };
+    const res = await this.userRepository.find();
+    const userData: any = res.reduce(
+      (obj, user) => ({ ...obj, [user.wallet as string]: user.name }),
+      {},
+    );
+    const collectionData = data.map((collection) => {
+      return {
+        ...collection,
+        artistName: userData[collection.artistAddress],
+      };
+    });
+
+    return { data: collectionData, total: count };
   }
 
   async getNftsInCollection(collectionId: string) {
