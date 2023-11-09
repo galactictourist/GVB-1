@@ -71,8 +71,8 @@ export class SaleController {
     return formatResponse(data);
   }
 
+  @Public()
   @Post('signNftBatch')
-  @ApiBearerAuth()
   async generateSignBatchData(
     @Request() request: UserRequest,
     @Body() signBatchDataDto: SignBatchDataDto,
@@ -97,8 +97,8 @@ export class SaleController {
     return formatResponse(entity);
   }
 
+  @Public()
   @Post('batch')
-  @ApiBearerAuth()
   async createBatchSale(
     @Request() request: UserRequest,
     @Body() createSaleDto: CreateSaleDto,
