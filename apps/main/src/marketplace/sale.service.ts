@@ -164,7 +164,7 @@ export class SaleService {
           network: signBatchDataDto.network,
           currency: signBatchDataDto.currency,
           price: nft.price,
-          charityShare: signBatchDataDto.charityShare * 100,
+          charityShare: signBatchDataDto.charityShare,
           expiryInMinutes: 30 * 24 * 60,
           quantity: 1,
           countryCode: CountryCode.US,
@@ -467,9 +467,9 @@ export class SaleService {
     if (!nft) {
       throw new BadRequestException('NFT is invalid');
     }
-    if (nft.ownerId !== contextUser.id) {
-      throw new BadRequestException('Owner mismatch');
-    }
+    // if (nft.ownerId !== contextUser.id) {
+    //   throw new BadRequestException('Owner mismatch');
+    // }
     if (nft.network !== signingSaleDto.network) {
       throw new BadRequestException('Network mismatch');
     }
