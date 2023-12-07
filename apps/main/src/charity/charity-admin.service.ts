@@ -89,8 +89,22 @@ export class CharityAdminService {
 
     if (charity) {
       charity.name = charityDto.name;
-      charity.charityTopics[0].topicId = charityDto.causeId;
-      charity.charityTopics[0].wallet = charityDto.wallet;
+      charity.status = charityDto.status;
+
+      if (charityDto.causeId !== '' && charity.charityTopics.length === 0) {
+        charity.charityTopics[0] = await this.createCharityTopic(id, {
+          topicId: charityDto.causeId,
+          wallet: charityDto.wallet,
+        });
+      } else if (charity.charityTopics.length > 0) {
+        if (charityDto.causeId !== '') {
+          charity.charityTopics[0].topicId = charityDto.causeId;
+        }
+
+        if (charityDto.wallet !== '') {
+          charity.charityTopics[0].wallet = charityDto.wallet;
+        }
+      }
 
       if (charityDto.status) {
         charity.status = charityDto.status;

@@ -21,5 +21,5 @@ export class CharityDto {
   @ApiProperty({ enum: CharityStatus, nullable: true, required: false })
   @IsOptional()
   @IsEnum(CharityStatus)
-  status?: CharityStatus;
+  status: CharityStatus;
 }
