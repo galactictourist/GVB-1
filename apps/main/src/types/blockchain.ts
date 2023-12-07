@@ -91,7 +91,8 @@ export const BLOCKCHAIN_INFO: {
     alchemyNetwork: Network.MATIC_MUMBAI,
     name: 'Polygon Testnet - Mumbai',
     endpoints: [
-      'https://polygon-mumbai.g.alchemy.com/v2/2nMHQF5YQQybtCijNX-tNWi9qo7PObMx',
+      // 'https://polygon-mumbai.g.alchemy.com/v2/2nMHQF5YQQybtCijNX-tNWi9qo7PObMx',
+      `https://polygon-mumbai.g.alchemy.com/v2/${process.env.MUMBAI_ALCHEMY_API_KEY}`,
     ],
     explorer: 'https://mumbai.polygonscan.com',
     constract: {
@@ -100,7 +101,7 @@ export const BLOCKCHAIN_INFO: {
         name: 'GBCollection',
       } as const,
       marketplace: {
-        address: '0x9bFe84A3c26dAFf7aD67E9ab1Cfc9C36C961AE51',
+        address: '0x403Fa3cbdA11Bfd05e0df664a4714Faa74AFB5F1',
         name: 'GBMarketplace',
         version: '1.0.0',
         types: {

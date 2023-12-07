@@ -274,11 +274,10 @@ export class NftService {
       id,
     });
 
-    if (nftEntity.isImmutable()) {
-      throw new BadRequestException('NFT is immutable');
-    }
     nftEntity.name = updateNftDto.name || nftEntity.name;
     nftEntity.description = updateNftDto.description || nftEntity.description;
+    nftEntity.ownerId = updateNftDto.ownerId || nftEntity.ownerId;
+    nftEntity.isMinted = updateNftDto.isMinted || nftEntity.isMinted;
 
     await nftEntity.save();
     return nftEntity;

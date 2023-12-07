@@ -248,7 +248,6 @@ export class NftController {
 
   @Public()
   @Put(':id')
-  @UseGuards(JwtAdminAuthGuard)
   async updateNft(
     @Param('id') id: string,
     @Request() request: UserRequest,
