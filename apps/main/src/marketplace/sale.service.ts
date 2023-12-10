@@ -375,6 +375,14 @@ export class SaleService {
     return saleEntities;
   }
 
+  async deleteSale(id: string): Promise<boolean> {
+    const res = await this.saleRepository.delete({
+      nftId: id,
+    });
+
+    return true;
+  }
+
   async createSale(
     createSaleDto: CreateSaleDto,
     contextUser: ContextUser,

@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Request } from '@nestjs/common';
+import { Body, Controller, Delete, Param, Post, Request } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { MoreThan } from 'typeorm';
 import { Public } from '~/main/auth/decorator/public.decorator';
@@ -95,6 +95,16 @@ export class SaleController {
       request.user,
     );
     return formatResponse(entity);
+  }
+
+  @Delete(':id')
+  @ApiBearerAuth()
+  async deleteSale(
+    @Param('id') id: string,
+    @Request() request: UserRequest,
+  ): Promise<ResponseData<any>> {
+    const res = await this.saleService.deleteSale(id);
+    return formatResponse(res);
   }
 
   @Public()
