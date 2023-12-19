@@ -18,7 +18,7 @@ import { Public } from '~/main/auth/decorator/public.decorator';
 import { Roles } from '~/main/auth/decorator/roles.decorator';
 import { JwtAdminAuthGuard } from '~/main/auth/guard/jwt-admin-auth.guard';
 import { RolesGuard } from '~/main/auth/guard/roles.guard';
-import { formatResponse, ResponseData } from '~/main/types/response-data';
+import { ResponseData, formatResponse } from '~/main/types/response-data';
 import { AdminRole } from '~/main/user/types';
 import { appConfig } from '../config/app.config';
 import { StorageEntity } from '../storage/entity/storage.entity';
@@ -76,7 +76,9 @@ export class TopicAdminController {
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          new FileTypeValidator({ fileType: new RegExp('.(jpg|jpeg|png)$') }),
+          new FileTypeValidator({
+            fileType: new RegExp('.(gif|jpg|jpeg|png|mp4)$'),
+          }),
           new MaxFileSizeValidator({
             maxSize: appConfig().maxFileUploadSize,
           }),

@@ -69,7 +69,9 @@ export class StorageController {
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          new FileTypeValidator({ fileType: new RegExp('.(jpg|jpeg|png)$') }),
+          new FileTypeValidator({
+            fileType: new RegExp('.(gif|jpg|jpeg|png|mp4)$'),
+          }),
           new MaxFileSizeValidator({
             maxSize: appConfig().maxFileUploadSize,
           }),
@@ -97,7 +99,9 @@ export class StorageController {
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          new FileTypeValidator({ fileType: new RegExp('.(jpg|jpeg|png)$') }),
+          new FileTypeValidator({
+            fileType: new RegExp('.(gif|jpg|jpeg|png|mp4)$'),
+          }),
           new MaxFileSizeValidator({
             maxSize: appConfig().maxFileUploadSize,
           }),
@@ -125,7 +129,9 @@ export class StorageController {
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          new FileTypeValidator({ fileType: new RegExp('.(jpg|jpeg|png)$') }),
+          new FileTypeValidator({
+            fileType: new RegExp('.(gif|jpg|jpeg|png|mp4)$'),
+          }),
           new MaxFileSizeValidator({
             maxSize: appConfig().maxFileUploadSize,
           }),
